@@ -1,0 +1,323 @@
+@import '../../node_modules/normalize.css/normalize.css';
+
+$bodyPaddingSides: 20px;
+$bodyPaddingTop: 10px;
+$textColor: #444;
+$aokayGreen: #0EBF61;
+$tileColor: white;
+
+@mixin clearfix {
+    clear: both;
+    content: "";
+    display: table;
+}
+
+body {
+    margin: 0;
+    min-height: calc(100% - #{2*$bodyPaddingTop});
+    padding: $bodyPaddingTop $bodyPaddingSides;
+    position: absolute;
+    width: calc(100% - #{2*$bodyPaddingSides});
+    background-image: url('light_wool.png');
+}
+
+.page-header {
+    text-align: center;
+    width: 70%;
+    max-width: 1000px;
+    margin: 10px auto;
+}
+
+.next-class {
+    margin: 0;
+}
+
+.page-title {
+    font-family: monospace;
+    margin: 0;
+}
+
+.page-footer {
+    bottom: 3px;
+    font-size: 90%;
+    position: absolute;
+    text-align: center;
+    width: calc(100% - #{2*$bodyPaddingSides};
+    color: gray;
+
+    a {
+        color: gray !important;
+    }
+}
+
+.main-content {
+    margin: auto;
+    max-width: 1300px;
+    width: 80%;
+    max-width: 800px;
+}
+
+.clip {
+    overflow: hidden;
+}
+
+.modal-trigger {
+    text-decoration: underline;
+    color: inherit;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.btn {
+    border-radius: 0;
+    border: 0px solid transparent;
+    padding: 5px 10px;
+    color: white;
+    font-weight: bold;
+    background-color: lightgray;
+    color: $textColor;
+    &.primary {
+        color: white;
+        background-color: $aokayGreen;
+    }
+    &:active {
+        box-shadow: 0px 0px 5px 0 #222 inset;
+    }
+}
+
+.modal {
+    position: fixed;
+    background-color: white;
+    opacity: 0;
+    transition: opacity .3s;
+    z-index: -1;
+
+    .modal-buttons {
+        margin-top: 4px;
+        text-align: right;
+
+        .btn {
+            margin-right: 6px;
+            &:last-of-type {
+                margin: 0;
+            }
+        }
+    }
+
+    .modal-wrap {
+        transform-style: preserve-3d;
+        padding: 15px 15px 10px 15px;
+        box-shadow: 0 2px 8px 2px #888;
+        border: 1px solid gray;
+    }
+
+    &.floating {
+        z-index: 42;
+    }
+
+    &.visible {
+        opacity: 1;
+    }
+}
+
+.modal-backsplash {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    opacity: 0;
+    background-color: white;
+
+    &.visible {
+        z-index: 41;
+        opacity: 0.7;
+    }
+}
+
+.tile-groups {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+.tile-group {
+    margin: 20px;
+
+    &:last-of-type {
+        border-bottom: 0;
+        margin-bottom: 0;
+    }
+    .group-name {
+        margin: 10px 0;;
+    }
+}
+
+$tileSize: 150px;
+$tileBorderWidth: 2px;
+.tiles {
+    @include clearfix;
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+}
+.tile-base {
+    float: left;
+    width: $tileSize;
+    height: $tileSize;
+    margin: 5px 10px;
+}
+.dummytile {
+    @extend .tile-base;
+}
+.tile {
+    @extend .tile-base;
+    // transform-origin: #{$tileSize / 2 + $tileBorderWidth} 0%;
+    list-style-type: none;
+    transform-style: preserve-3d;
+    transition: transform .6s;
+    background-color: $tileColor;
+    top: 0;
+    left: 0;
+
+    $bsparams: 0 1px 9px -1px gray;
+    .wrap {
+        transform-style: preserve-3d;
+        width: 100%;
+        height: 100%;
+        border: $tileBorderWidth solid gray;
+        transition: transform .2s, box-shadow .2s;
+        box-shadow: 0 0 0 0 gray;
+    }
+
+    .title {
+        margin: 0;
+    }
+
+    .side {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+
+        &.front {
+            cursor: pointer;
+            transform: rotate3d(0, 1, 0, 0);
+            background-image: url(banner_undef.png);
+            background-color: $tileColor;
+            background-repeat: no-repeat;
+        }
+
+        &.back {
+            transform: rotate3d(0, 1, 0, 180deg);
+            overflow: hidden;
+
+            .content {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                transform-origin: top center;
+                transform: scale(0.2,0.2);
+            }
+        }
+    }
+
+    &.backgrounded {
+        z-index: -1;
+    }
+
+    &.expanded {
+        width: 100%;
+        height:100%;
+        $tTime: 0.8s;
+        transition: transform $tTime, width $tTime, height $tTime;
+
+        .side.back .content {
+            transform: scale(1, 1);
+            transition: transform $tTime;
+            overflow: auto;
+        }
+
+        .wrap {
+            box-shadow: 0 0 0 0 gray !important;
+        }
+    }
+
+    &.detached {
+        position: absolute;
+        z-index: 20;
+        .wrap {
+            box-shadow: $bsparams;
+        }
+    }
+
+    &.flipped {
+        transform: rotate3d(0, 1, 0, 180deg);
+    }
+
+    &.closing {
+        transition: all 0.8s;
+        .content {
+            transition: transform 0.8s;
+        }
+    }
+    &.notransition {
+        transition: all 0s;
+    }
+
+    &.fixed {
+        position: fixed;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100%;
+        height: 100%;
+        transform: rotate3d(0,1,0,180deg) !important;
+        margin: 0;
+        .wrap {
+            border: 1px solid white; // making this 0 causes chrome to choke
+        }
+    }
+
+    &:hover {
+        .wrap {
+            box-shadow: $bsparams;
+        }
+    }
+}
+
+.letterboxes {
+    white-space: nowrap;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+%letterbox-side {
+    position: absolute;
+    backface-visibility: hidden;
+}
+.letterbox {
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    display: inline-block;
+
+    &.flipped {
+        transform: rotate3d(0, 1, 0, 180deg);
+    }
+
+    .front {
+        @extend %letterbox-side;
+        transform: rotate3d(0, 1, 0, 0deg);
+    }
+
+    .back {
+        @extend %letterbox-side;
+        transform: rotate3d(0, 1, 0, 180deg);
+    }
+
+    .placeholder {
+        display: inline-block;
+    }
+}

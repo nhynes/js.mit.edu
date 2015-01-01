@@ -1,0 +1,35 @@
+@import '../scss/base';
+
+.exercise {
+    body {
+        background: url(/light_wool.png);
+    }
+
+    .page-header {
+        width: 60%;
+    }
+
+    .back {
+        float: left;
+        margin-right: -100%;
+        font-weight: bold;
+        font-size: 1.2em;
+        height: 2em;
+        border: 0 solid transparent;
+        background-color: transparent;
+
+        .arrow {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            margin-right: 3px;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-right: 7px solid black;
+        }
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

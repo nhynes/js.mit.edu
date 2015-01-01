@@ -15,7 +15,7 @@ $aokayGreen: #0EBF61;
     font-family: 'Inconsolata';
     font-style: normal;
     font-weight: 400;
-    src: local('Inconsolata'), url(/inconsolata.woff2) format('woff2');
+    src: local('Inconsolata'), url(/inconsolata.woff) format('woff');
 }
 
 @mixin clearfix {

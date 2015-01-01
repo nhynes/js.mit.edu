@@ -9,7 +9,7 @@ body {
     padding: $bodyPaddingTop $bodyPaddingSides;
     position: absolute;
     width: calc(100% - #{2*$bodyPaddingSides});
-    background-image: url(/light_wool.png);
+    background: url(/light_wool.png);
 }
 
 .next-class {
@@ -101,7 +101,7 @@ $tileBorderWidth: 2px;
     }
 
     .title {
-        margin: 0;
+        margin: 20px 0 0 0;
     }
 
 
@@ -109,7 +109,15 @@ $tileBorderWidth: 2px;
         @extend %tile-side;
         cursor: pointer;
         transform: rotate3d(0, 1, 0, 0);
-        background-color: $tileColor;
+
+        background: #ffffff;
+        background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5));
+        background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
+        background: -o-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
+        background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
+        background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 );
     }
 
     .back {
@@ -151,6 +159,8 @@ $tileBorderWidth: 2px;
     }
 
     &.detached {
+        transform: translate3d(0, 0, 424242);
+        transform-style: preserve-3d;
         position: absolute;
         z-index: 20;
         .wrap {
@@ -164,7 +174,7 @@ $tileBorderWidth: 2px;
 
     &.closing {
         transition: all 0.8s;
-        .content-window {
+        .content {
             transition: transform 0.8s;
         }
     }
@@ -182,6 +192,11 @@ $tileBorderWidth: 2px;
         margin: 0;
         .wrap {
             border: 1px solid white; // making this 0 causes chrome to choke
+        }
+
+        .content {
+            width: 100% !important;
+            height: 100% !important;
         }
     }
 
@@ -237,4 +252,17 @@ $tileBorderWidth: 2px;
             color: red;
         }
     }
+}
+
+.score {
+    font-size: 1.5em;
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    width: 100%;
+    padding: 5px 0 10px 0;
+    line-height: 2ex;
+
+    border-top: 1px solid #999;
+    box-shadow: 0 1px 1px .2px white inset;
 }

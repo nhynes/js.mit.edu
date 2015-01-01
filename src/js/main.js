@@ -4,9 +4,7 @@ var $ = require('zeptojs'),
     _ = require('lodash'),
     moment = require('moment'),
     modals = require('./modals'),
-    tileGroupTmp = require('../templates/tile_group.hbs'),
-    PHRASES = [ 'HelloWorld!', 'console.log', 'WebWidgets!', 'MagicalHTML',
-        'Client-Side', 'Server-Side', 'WebAppGUIs', 'Asynchrony!', 'HTTP 200 :)' ];
+    tileGroupTmp = require('../templates/tile_group.hbs');
 
 window.$ = $;
 
@@ -60,13 +58,13 @@ $(window).resize( function() {
         name: 'Frontend',
         tiles: [
             { ex: 'htmlcss', title: 'The Web GUI: HTML & CSS' },
-            { ex: 'apis', title: 'Hello Backend: AJAX & APIs' },
+            { ex: 'apis', title: 'Hello World AJAX & APIs' },
             { ex: 'fecap', title: 'Designing a Frontend' }
         ]
     }, {
         name: 'Backend',
         tiles: [
-            { ex: 'backend', title: 'Node.js: Server-Side JavaScript' },
+            { ex: 'backend', title: 'Node.js:<br>Server-Side JavaScript' },
             { ex: 'serving', title: 'Clients, the Cloud, & You' },
             { ex: 'becap', title: 'Designing a Backend' }
         ]
@@ -104,72 +102,31 @@ $(window).resize( function() {
 
 (function eventTiles() {
     $('.tile').each( function() {
-        var tile = this,
-            $tile = $( tile ),
-            ttFlip = 500, // 500 ms to flip
-            tileSize = 150,
-            ratioWidth = tileSize / window.innerWidth,
-            ratioHeight = tileSize / window.innerHeight;
-
-        // scale the back content
-        $tile.find('.content').css({
-            transform: 'scale(' + ratioWidth + ',' + ratioHeight + ')',
-            width: window.innerWidth,
-            height: window.innerHeight
-        });
-
-        // add the tile opener listener
+        var $tile = $( this );
         $tile.find('.front')
-        .mouseover( function() {
-            var ex = $tile.attr('data-exercise'),
-                $content = $tile.find('.content');
-
-            if ( $content.attr('src') ) {
-                return;
-            }
-            $content.attr( 'src', 'exercises/' + ex );
-        })
         .click( function() {
-            var rect = tile.getBoundingClientRect(),
-                csTile = window.getComputedStyle( $tile[0] ),
-                csWrap = window.getComputedStyle( $tile.find('.wrap')[0] ),
-                borderWidth = parseInt( csWrap.borderWidth || csWrap.borderTopWidth ),
-                topMargin = parseInt( csTile.marginTop ),
-                leftMargin = parseInt( csTile.marginLeft ),
-                leftOffset = rect.left - borderWidth,
-                topOffset = rect.top + borderWidth;
-            $tile.before('<li class="dummytile">');
-            $tile.addClass('flipped detached').css({
-                top: rect.top + window.scrollY - topMargin,
-                left: rect.left + window.scrollX - leftMargin
-            });
-            $('.tile:not(.detached)').addClass('backgrounded');
-            setTimeout( function() {
-                var translate = 'translate(' + leftOffset + 'px, ' + (-topOffset) + 'px)',
-                    ttExpand = 800; // 800 ms to expand
-                $tile.addClass('expanded');
-                $tile.css( 'transform', 'rotate3d(0,1,0,180deg) ' + translate );
-                $(document.body).addClass('clip');
-                setTimeout( function() {
-                    $tile.addClass('fixed notransition');
-                }, ttExpand );
-            }, ttFlip );
+            window.location.hash = $tile.attr('data-exercise');
         });
     });
 })();
 
-window.closeTile = function() {
+function closeTile() {
     var $open = $('.tile.fixed'),
-        cs = window.getComputedStyle( $open[0] ),
-        dummyRect = $('.dummytile')[0].getBoundingClientRect();
+        cs = window.getComputedStyle( $open[0] );
+
+    if ( !cs ) {
+        return;
+    }
 
     $open.removeClass('fixed').css({
         transform: '',
         top: -parseInt( cs.marginTop ),
         left: -parseInt( cs.marginLeft )
     });
+    $(document.body).removeClass('clip');
     setTimeout( function() {
-        var ttClose = 800; // 800 ms to close
+        var ttClose = 800, // 800 ms to close
+            dummyRect = $('.dummytile')[0].getBoundingClientRect();
         $open
         .addClass('closing')
         .removeClass('expanded notransition flipped')
@@ -179,18 +136,14 @@ window.closeTile = function() {
             left: dummyRect.left + window.scrollX - parseInt( cs.marginLeft )
         });
         setTimeout( function() {
-            // $open.removeClass('flipped');
+            $('.dummytile').remove();
+            $open.removeClass('detached notransition closing');
             setTimeout( function() {
-                $('.dummytile').remove();
-                $open.removeClass('detached notransition closing');
-                $(document.body).removeClass('clip');
-                setTimeout( function() {
-                    $('.tile').removeClass('backgrounded');
-                }, 100 );
-            }, ttClose );
+                $('.tile').removeClass('backgrounded');
+            }, 100 );
         }, ttClose );
     }, 50 );
-};
+}
 
 (function eventModalTriggers() {
     function hideModal( shouldHide ) {
@@ -234,6 +187,10 @@ window.closeTile = function() {
             showModal( modalOpts() );
         });
     });
+
+    $('.modal-backsplash').click( function() {
+        hideModal();
+    });
 })();
 
 (function checkLogin() {
@@ -244,7 +201,7 @@ window.closeTile = function() {
         $.ajax({
             type: 'GET',
             url: '/user?action=checklogin',
-            error: function( xhr, type ) {
+            error: function( xhr ) {
                 if ( xhr.status === 401 ) {
                     delete localStorage.login;
                     window.location = window.location;
@@ -253,3 +210,84 @@ window.closeTile = function() {
         });
     }
 })();
+
+function openTile( name ) {
+    if ( $('[data-exercise="' + name + '"]').length === 0 ) {
+        return;
+    }
+
+    var $tile = $('[data-exercise="' + name + '"]'),
+    tile = $tile[0],
+    ttFlip = 500, // 500 ms to flip
+    tileSize = 150,
+
+    rect = tile.getBoundingClientRect(),
+    csTile = window.getComputedStyle( tile ),
+    csWrap = window.getComputedStyle( $tile.find('.wrap')[0] ),
+    borderWidth = parseInt( csWrap.borderWidth || csWrap.borderTopWidth ),
+    topMargin = parseInt( csTile.marginTop ),
+    leftMargin = parseInt( csTile.marginLeft ),
+    leftOffset = rect.left - borderWidth,
+    topOffset = rect.top + borderWidth,
+    ratioWidth = tileSize / window.innerWidth,
+    ratioHeight = tileSize / window.innerHeight;
+
+    $tile.find('.content').css({
+        transform: 'scale(' + ratioWidth + ',' + ratioHeight + ')',
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+    $tile.before('<li class="dummytile">');
+    $tile.addClass('flipped detached').css({
+        top: rect.top + window.scrollY - topMargin,
+        left: rect.left + window.scrollX - leftMargin
+    });
+    $('.tile:not(.detached)').addClass('backgrounded');
+    setTimeout( function() {
+        var translate = 'translate(' + leftOffset + 'px, ' + (-topOffset) + 'px)',
+        ttExpand = 800; // 800 ms to expand
+        $tile.addClass('expanded');
+        $tile.css( 'transform', 'rotate3d(0,1,0,180deg) ' + translate );
+        setTimeout( function() {
+            $(document.body).addClass('clip');
+            $tile.addClass('fixed notransition');
+        }, ttExpand );
+    }, ttFlip );
+}
+
+(function openLinkedExercise() {
+    setTimeout( function() {
+        openTile( window.location.hash.substring( 1 ) );
+    }, 1000 );
+})();
+
+function hashChange() {
+    var hash = window.location.hash.substring( 1 ),
+        ttClose = 900;
+
+    function openTheTile() {
+        openTile( hash );
+        setTimeout( function() {
+            window.onhashchange = hashChange;
+        }, 900 );
+    }
+
+    window.onhashchange = function() {
+        window.location.hash = hash;
+    };
+
+    if ( $('.tile.detached').length ) {
+        closeTile();
+        if( $('[data-exercise="' + hash + '"]').length ) {
+            setTimeout( openTheTile, ttClose );
+        } else {
+            setTimeout( function() {
+                window.onhashchange = hashChange;
+            }, ttClose )
+        }
+    } else {
+        openTheTile();
+    }
+}
+
+window.onhashchange = hashChange;

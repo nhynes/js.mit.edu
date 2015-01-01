@@ -54,7 +54,7 @@ app.post( '/user', function( req, res ) {
 
             return q.nfcall( users.ensureIndex.bind( users ), { name: 1 }, { unique: true } )
             .then( function() {
-                return q.nfcall( crypto.pseudoRandomBytes, 32 );
+                return q.nfcall( crypto.pseudoRandomBytes, 8 );
             }, function() {
                 res.status(500).end();
             })

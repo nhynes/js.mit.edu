@@ -3,7 +3,10 @@
 var $ = require('zeptojs'),
     _ = require('lodash'),
     moment = require('moment'),
-    modals = require('./modals');
+    modals = require('./modals'),
+    tileGroupTmp = require('../templates/tile_group.hbs'),
+    PHRASES = [ 'HelloWorld!', 'console.log', 'WebWidgets!', 'MagicalHTML',
+        'Client-Side', 'Server-Side', 'WebAppGUIs', 'Asynchrony!', 'HTTP 200 :)' ];
 
 window.$ = $;
 
@@ -41,48 +44,60 @@ $(window).resize( function() {
     }
 });
 
-(function eventModalTriggers() {
-    function hideModal() {
-        var ttHide = 300, // 300 ms to fade out
-            $modal = $('.modal');
-        $modal.removeClass('visible');
-        $('.modal-backsplash').removeClass('visible');
-        setTimeout( function() {
-            $modal.removeClass('floating');
-        }, ttHide );
+(function renderTiles( groups ) {
+    $('.tile-groups').html( tileGroupTmp( groups ) );
+})({ groups: [
+    {
+        name: 'Register or <a class="modal-trigger" data-modal="login">Log In</a>',
+        tiles: [ { ex: 'register', title: 'Register' } ]
+    }, {
+        name: 'The Basics',
+        tiles: [
+            { ex: 'basics1', title: 'Syntax & Semantics I' },
+            { ex: 'basics2', title: 'Syntax & Semantics II' }
+        ]
+    }, {
+        name: 'Frontend',
+        tiles: [
+            { ex: 'htmlcss', title: 'The Web GUI: HTML & CSS' },
+            { ex: 'apis', title: 'Hello Backend: AJAX & APIs' },
+            { ex: 'fecap', title: 'Designing a Frontend' }
+        ]
+    }, {
+        name: 'Backend',
+        tiles: [
+            { ex: 'backend', title: 'Node.js: Server-Side JavaScript' },
+            { ex: 'serving', title: 'Clients, the Cloud, & You' },
+            { ex: 'becap', title: 'Designing a Backend' }
+        ]
     }
+] });
 
-    function closeModal( onClose ) {
-        return function() {
-            if ( typeof onClose !== 'function' || onClose( $('.modal-content') ) !== false ) {
-                hideModal();
-            }
-        };
-    }
+(function letterboxes() {
+    var PHRASES = [ 'HelloWorld!', 'console.log', 'WebWidgets!', 'MagicalHTML',
+        'Client-Side', 'Server-Side', 'WebAppGUIs', 'Asynchrony!', 'HTTP 200 :)' ];
+    $('.letterboxes').each( function() {
+        var $lboxes = $( this ),
+            visible = $lboxes.html().split(''),
+            flipped = _.sample( PHRASES ),
+            boxes = _.zip( visible, flipped ).reduce( function( boxes, letters ) {
+                var $lbox = $('<div class="letterbox">');
+                $('<div class="front">').html( letters[0] || '&nbsp;' ).appendTo( $lbox );
+                $('<div class="back">').html( letters[1] || '&nbsp;' ).appendTo( $lbox );
+                $('<div class="placeholder">').html( '&nbsp;' ).appendTo( $lbox );
+                return boxes.concat( $lbox );
+            }, [] );
 
-    function showModal( opts ) {
-        var $modalButtons = $('.modal-buttons').html('');
-        opts.buttons.forEach( function( btn, i ) {
-            var $btn = $('<button class="btn">')
-                .html( typeof btn === 'string' ? btn : btn.txt )
-                .click( closeModal( btn.cb ) );
-            if ( i === opts.buttons.length - 1 ) {
-                $btn.addClass('primary');
-            }
-            $btn.appendTo( $modalButtons );
-        });
-        $('.modal-content').html( opts.content );
-        $('.modal').addClass('visible floating');
-        $('.modal-backsplash').addClass('visible');
-        setTimeout( centerModal, 10 );
-    }
+        $lboxes.html( boxes );
 
-    $('.modal-trigger').each( function() {
-        var $trigger = $(this);
-        $trigger.attr( 'href', '' ).click( function( e ) {
-            var modalOpts = modals[ $trigger.attr('data-modal') ];
-            e.preventDefault();
-            showModal( modalOpts() );
+        $lboxes.click( function() {
+            var ttFlip = 500, // 300 ms to flip
+                speed = 8;
+            boxes.forEach( function( box, i ) {
+                setTimeout( function() {
+                    $(box).toggleClass('flipped');
+                }, ttFlip * i / speed );
+            });
         });
     });
 })();
@@ -91,8 +106,30 @@ $(window).resize( function() {
     $('.tile').each( function() {
         var tile = this,
             $tile = $( tile ),
-            ttFlip = 500; // 500 ms to flip
-        $tile.find('.front').click( function() {
+            ttFlip = 500, // 500 ms to flip
+            tileSize = 150,
+            ratioWidth = tileSize / window.innerWidth,
+            ratioHeight = tileSize / window.innerHeight;
+
+        // scale the back content
+        $tile.find('.content').css({
+            transform: 'scale(' + ratioWidth + ',' + ratioHeight + ')',
+            width: window.innerWidth,
+            height: window.innerHeight
+        });
+
+        // add the tile opener listener
+        $tile.find('.front')
+        .mouseover( function() {
+            var ex = $tile.attr('data-exercise'),
+                $content = $tile.find('.content');
+
+            if ( $content.attr('src') ) {
+                return;
+            }
+            $content.attr( 'src', 'exercises/' + ex );
+        })
+        .click( function() {
             var rect = tile.getBoundingClientRect(),
                 csTile = window.getComputedStyle( $tile[0] ),
                 csWrap = window.getComputedStyle( $tile.find('.wrap')[0] ),
@@ -132,53 +169,87 @@ window.closeTile = function() {
         left: -parseInt( cs.marginLeft )
     });
     setTimeout( function() {
-        var ttClose = 800, // 800 ms to close
-            cs = window.getComputedStyle( $open[0] ),
-            dummyRect = $('.dummytile')[0].getBoundingClientRect();
-        $('.tile').removeClass('backgrounded');
+        var ttClose = 800; // 800 ms to close
         $open
         .addClass('closing')
-        .removeClass('expanded notransition')
+        .removeClass('expanded notransition flipped')
         .css({
             transform: '',
             top: dummyRect.top + window.scrollY - parseInt( cs.marginTop ),
             left: dummyRect.left + window.scrollX - parseInt( cs.marginLeft )
         });
         setTimeout( function() {
-            $open.removeClass('flipped');
+            // $open.removeClass('flipped');
             setTimeout( function() {
                 $('.dummytile').remove();
                 $open.removeClass('detached notransition closing');
                 $(document.body).removeClass('clip');
+                setTimeout( function() {
+                    $('.tile').removeClass('backgrounded');
+                }, 100 );
             }, ttClose );
         }, ttClose );
     }, 50 );
 };
 
-(function letterboxes() {
-    var PHRASES = [ 'HelloWorld!', 'console.log', 'WebWidgets!', 'MagicalHTML', 'Client-Side', 'Server-Side', 'WebAppGUIs' ];
-    $('.letterboxes').each( function() {
-        var $lboxes = $( this ),
-            visible = $lboxes.html().split(''),
-            flipped = _.sample( PHRASES ),
-            boxes = _.zip( visible, flipped ).reduce( function( boxes, letters ) {
-                var $lbox = $('<div class="letterbox">');
-                $('<div class="front">').html( letters[0] || '&nbsp;' ).appendTo( $lbox );
-                $('<div class="back">').html( letters[1] || '&nbsp;' ).appendTo( $lbox );
-                $('<div class="placeholder">').html( '&nbsp;' ).appendTo( $lbox );
-                return boxes.concat( $lbox );
-            }, [] );
+(function eventModalTriggers() {
+    function hideModal( shouldHide ) {
+        if ( shouldHide === false ) {
+            return;
+        }
 
-        $lboxes.html( boxes );
+        var ttHide = 300, // 300 ms to fade out
+            $modal = $('.modal');
+        $modal.removeClass('visible');
+        $('.modal-backsplash').removeClass('visible');
+        setTimeout( function() {
+            $modal.removeClass('floating');
+        }, ttHide );
+    }
 
-        $lboxes.click( function() {
-            var ttFlip = 500, // 300 ms to flip
-                speed = 8;
-            boxes.forEach( function( box, i ) {
-                setTimeout( function() {
-                    $(box).toggleClass('flipped');
-                }, ttFlip * i / speed );
-            });
+    function showModal( opts ) {
+        var $modalButtons = $('.modal-buttons').html('');
+        opts.buttons.forEach( function( btn, i ) {
+            var $btn = $('<button class="btn">')
+                .html( typeof btn === 'string' ? btn : btn.txt )
+                .click( function() {
+                    btn.cb ? btn.cb( $('.modal-content').children(), hideModal ) : hideModal();
+                });
+            if ( i === opts.buttons.length - 1 ) {
+                $btn.addClass('primary');
+            }
+            $btn.appendTo( $modalButtons );
+        });
+        $('.modal-content').html( opts.content );
+        $('.modal').addClass('visible floating');
+        $('.modal-backsplash').addClass('visible');
+        setTimeout( centerModal, 10 );
+    }
+
+    $('.modal-trigger').each( function() {
+        var $trigger = $(this);
+        $trigger.attr( 'href', '' ).click( function( e ) {
+            var modalOpts = modals[ $trigger.attr('data-modal') ];
+            e.preventDefault();
+            showModal( modalOpts() );
         });
     });
-})()
+})();
+
+(function checkLogin() {
+    if ( !localStorage.login ) {
+        $( $('.tile-group').slice(1) ).addClass('sunken');
+    } else {
+        $('.tile-group .group-name')[0].innerHTML = 'Register';
+        $.ajax({
+            type: 'GET',
+            url: '/user?action=checklogin',
+            error: function( xhr, type ) {
+                if ( xhr.status === 401 ) {
+                    delete localStorage.login;
+                    window.location = window.location;
+                }
+            }
+        });
+    }
+})();

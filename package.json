@@ -1,13 +1,19 @@
 {
   "name": "WebTile",
   "version": "1.0.0",
-  "description": "An interactive Git tutor",
   "main": "dist/index.html",
   "author": "Nick Hynes",
   "license": "MIT",
-  "repository": "https://github.com/uid/gitstream",
+  "browserify": {
+    "transform": [
+      "hbsfy"
+    ]
+  },
   "dependencies": {
+    "body-parser": "^1.10.0",
     "browserify": "^8.0.2",
+    "cookie-parser": "^1.3.3",
+    "express": "^4.10.6",
     "gulp": "^3.8.7",
     "gulp-autoprefixer": "0.0.10",
     "gulp-concat-css": "^0.1.4",
@@ -15,11 +21,13 @@
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^0.7.3",
     "gulp-uglify": "^1.0.2",
+    "handlebars": "^1.3.0",
+    "hbsfy": "^2.2.1",
     "lodash": "^2.4.1",
     "moment": "^2.8.4",
+    "mongodb": "^1.4.26",
     "normalize.css": "^3.0.1",
-    "q": "^1.0.1",
-    "ssc": "nhynes/ssc",
+    "q": "^1.1.2",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^0.1.1",
     "zeptojs": "^1.1.4"

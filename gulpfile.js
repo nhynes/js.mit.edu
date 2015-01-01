@@ -21,12 +21,15 @@ var gulp = require('gulp'),
             all: 'src/**/*',
             js: [ '!src/js/modals.js', 'src/js/*.js' ],
             main: './src/js/main.js',
-            scss: 'src/scss/*.scss',
-            static: [ 'src/**/*.html', 'src/resources/**/*' ]
+            scss: 'src/**/*.scss',
+            exerciseSCSS: 'src/exercises/**/*.scss',
+            static: [ 'src/**/*.html', 'src/resources/**/*' ],
+            exercises: 'src/exercises/**/*'
         },
         dist: {
             base: 'dist/',
             all: 'dist/**/*',
+            exercises: 'dist/exercises/'
         },
     },
 
@@ -38,7 +41,7 @@ function notilde( path ) {
 }
 
 gulp.task( 'build', [ 'scss', 'browserify', 'collectstatic', ] );
-gulp.task( 'default', [ 'checkstyle', 'watch', 'build' ] );
+gulp.task( 'default', [ 'watch', 'build' ] );
 
 gulp.task( 'checkstyle', function() {
     gulp.src( path.src.js )
@@ -56,6 +59,13 @@ gulp.task( 'scss', function() {
             .pipe( concatCss('main.css') )
             .pipe( prefixer('> 5%') )
             .pipe( gulp.dest( path.dist.base ) );
+    gulp.src( path.src.exerciseSCSS )
+            .pipe( plumber() )
+            .pipe( sass() )
+            .pipe( minifyCss() )
+            .pipe( concatCss('exercise.css') )
+            .pipe( prefixer('> 5%') )
+            .pipe( gulp.dest( path.dist.exercises ) );
 });
 
 gulp.task( 'browserify', function() {
@@ -94,13 +104,17 @@ gulp.task( 'browserify', function() {
 gulp.task( 'collectstatic', function() {
     gulp.src( notilde( path.src.static ) )
         .pipe( gulp.dest( path.dist.base ) );
+    gulp.src( notilde( path.src.exercises ) )
+        .pipe( gulp.dest( path.dist.exercises ) );
 });
 
 gulp.task( 'watch', function() {
     livereload({ silent: true });
     watching = true;
     gulp.watch( notilde( path.src.js ), [ 'checkstyle' ] );
+    gulp.watch( notilde( path.src.exerciseSCSS ), [ 'scss' ] );
     gulp.watch( notilde( path.src.scss ), [ 'scss' ] );
     gulp.watch( notilde( path.src.static ), [ 'collectstatic' ] );
+    gulp.watch( notilde( path.src.exercises ), [ 'collectstatic' ] );
     gulp.watch( notilde( path.dist.all ) ).on( 'change', livereload.changed );
 });

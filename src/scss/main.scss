@@ -1,39 +1,18 @@
-@import '../../node_modules/normalize.css/normalize.css';
+@import 'base';
 
 $bodyPaddingSides: 20px;
 $bodyPaddingTop: 10px;
-$textColor: #444;
-$aokayGreen: #0EBF61;
 $tileColor: white;
 
-@mixin clearfix {
-    clear: both;
-    content: "";
-    display: table;
-}
-
 body {
-    margin: 0;
     min-height: calc(100% - #{2*$bodyPaddingTop});
     padding: $bodyPaddingTop $bodyPaddingSides;
     position: absolute;
     width: calc(100% - #{2*$bodyPaddingSides});
-    background-image: url('light_wool.png');
-}
-
-.page-header {
-    text-align: center;
-    width: 70%;
-    max-width: 1000px;
-    margin: 10px auto;
+    background-image: url(/light_wool.png);
 }
 
 .next-class {
-    margin: 0;
-}
-
-.page-title {
-    font-family: monospace;
     margin: 0;
 }
 
@@ -50,101 +29,17 @@ body {
     }
 }
 
-.main-content {
-    margin: auto;
-    max-width: 1300px;
-    width: 80%;
-    max-width: 800px;
-}
-
 .clip {
     overflow: hidden;
-}
-
-.modal-trigger {
-    text-decoration: underline;
-    color: inherit;
-
-    &:hover {
-        cursor: pointer;
-    }
-}
-
-.btn {
-    border-radius: 0;
-    border: 0px solid transparent;
-    padding: 5px 10px;
-    color: white;
-    font-weight: bold;
-    background-color: lightgray;
-    color: $textColor;
-    &.primary {
-        color: white;
-        background-color: $aokayGreen;
-    }
-    &:active {
-        box-shadow: 0px 0px 5px 0 #222 inset;
-    }
-}
-
-.modal {
-    position: fixed;
-    background-color: white;
-    opacity: 0;
-    transition: opacity .3s;
-    z-index: -1;
-
-    .modal-buttons {
-        margin-top: 4px;
-        text-align: right;
-
-        .btn {
-            margin-right: 6px;
-            &:last-of-type {
-                margin: 0;
-            }
-        }
-    }
-
-    .modal-wrap {
-        transform-style: preserve-3d;
-        padding: 15px 15px 10px 15px;
-        box-shadow: 0 2px 8px 2px #888;
-        border: 1px solid gray;
-    }
-
-    &.floating {
-        z-index: 42;
-    }
-
-    &.visible {
-        opacity: 1;
-    }
-}
-
-.modal-backsplash {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    opacity: 0;
-    background-color: white;
-
-    &.visible {
-        z-index: 41;
-        opacity: 0.7;
-    }
 }
 
 .tile-groups {
     list-style-type: none;
     padding: 0;
-    margin-top: 20px;
+    margin: 20px 0 25px 0;;
 }
 .tile-group {
-    margin: 20px;
+    margin: 20px 0;
 
     &:last-of-type {
         border-bottom: 0;
@@ -152,6 +47,12 @@ body {
     }
     .group-name {
         margin: 10px 0;;
+    }
+
+    &.sunken {
+        opacity: .5;
+        position: relative;
+        z-index: -1;
     }
 }
 
@@ -162,25 +63,32 @@ $tileBorderWidth: 2px;
     list-style-type: none;
     padding: 0;
     text-align: center;
+    margin: auto;
 }
-.tile-base {
+%tile-base {
     float: left;
     width: $tileSize;
     height: $tileSize;
     margin: 5px 10px;
 }
+%tile-side {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
 .dummytile {
-    @extend .tile-base;
+    @extend %tile-base;
 }
 .tile {
-    @extend .tile-base;
-    // transform-origin: #{$tileSize / 2 + $tileBorderWidth} 0%;
+    @extend %tile-base;
     list-style-type: none;
     transform-style: preserve-3d;
     transition: transform .6s;
     background-color: $tileColor;
     top: 0;
     left: 0;
+    opacity: 1;
 
     $bsparams: 0 1px 9px -1px gray;
     .wrap {
@@ -196,36 +104,34 @@ $tileBorderWidth: 2px;
         margin: 0;
     }
 
-    .side {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
 
-        &.front {
-            cursor: pointer;
-            transform: rotate3d(0, 1, 0, 0);
-            background-image: url(banner_undef.png);
-            background-color: $tileColor;
-            background-repeat: no-repeat;
-        }
+    .front {
+        @extend %tile-side;
+        cursor: pointer;
+        transform: rotate3d(0, 1, 0, 0);
+        background-color: $tileColor;
+    }
 
-        &.back {
-            transform: rotate3d(0, 1, 0, 180deg);
-            overflow: hidden;
+    .back {
+        @extend %tile-side;
+        transform: rotate3d(0, 1, 0, 180deg);
+        overflow: hidden;
+
+        .content-window {
+            width: 100%;
+            height: 100%;
+            position: absolute;
 
             .content {
-                width: 100%;
-                height: 100%;
-                position: absolute;
-                transform-origin: top center;
-                transform: scale(0.2,0.2);
+                transform-origin: top left;
+                overflow: hidden;
+                border: 0 solid transparent;
             }
         }
     }
 
     &.backgrounded {
-        z-index: -1;
+        transform: translate3d(0, 0, -4242px);
     }
 
     &.expanded {
@@ -234,10 +140,9 @@ $tileBorderWidth: 2px;
         $tTime: 0.8s;
         transition: transform $tTime, width $tTime, height $tTime;
 
-        .side.back .content {
-            transform: scale(1, 1);
+        .content {
+            transform: scale(1, 1) !important;
             transition: transform $tTime;
-            overflow: auto;
         }
 
         .wrap {
@@ -259,7 +164,7 @@ $tileBorderWidth: 2px;
 
     &.closing {
         transition: all 0.8s;
-        .content {
+        .content-window {
             transition: transform 0.8s;
         }
     }
@@ -319,5 +224,17 @@ $tileBorderWidth: 2px;
 
     .placeholder {
         display: inline-block;
+    }
+}
+
+.login {
+    input {
+        margin-bottom: 5px;
+    }
+
+    &.error {
+        input {
+            color: red;
+        }
     }
 }

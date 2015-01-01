@@ -1,0 +1,22 @@
+{{#each groups}}
+    <li class="tile-group">
+      <h2 class="group-name">{{{name}}}</h2>
+      <ol class="tiles">
+        {{#each tiles}}
+            <li class="tile" data-exercise="{{ex}}">
+              <div class="wrap">
+                <div class="front">
+                  <h3 class="title">{{title}}</h3>
+                  <div class="score"><span class="earned">10</span>/10</div>
+                </div>
+                <div class="back">
+                  <div class="content-window">
+                    <iframe class="content">Your browser isn&apos;t very good. You should upgrade it.</iframe>
+                  </div>
+                </div>
+              </div>
+            </li>
+        {{/each}}
+      </ol>
+    </li>
+{{/each}}

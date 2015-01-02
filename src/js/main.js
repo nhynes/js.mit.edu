@@ -176,7 +176,7 @@ function closeTile() {
         $('.modal-content').html( opts.content );
         $('.modal').addClass('visible floating');
         $('.modal-backsplash').addClass('visible');
-        setTimeout( centerModal, 10 );
+        setTimeout( centerModal, 80 );
     }
 
     $('.modal-trigger').each( function() {

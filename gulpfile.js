@@ -24,7 +24,8 @@ var gulp = require('gulp'),
             scss: 'src/**/*.scss',
             exerciseSCSS: 'src/exercises/**/*.scss',
             static: [ 'src/**/*.html', 'src/resources/**/*' ],
-            exercises: 'src/exercises/**/*'
+            exercises: 'src/exercises/**/*',
+            exerciseJS: [ 'src/exercises/**/*.js', '!src/exercises/exercise.js' ]
         },
         dist: {
             base: 'dist/',
@@ -117,4 +118,37 @@ gulp.task( 'watch', function() {
     gulp.watch( notilde( path.src.static ), [ 'collectstatic' ] );
     gulp.watch( notilde( path.src.exercises ), [ 'collectstatic' ] );
     gulp.watch( notilde( path.dist.all ) ).on( 'change', livereload.changed );
+    gulp.watch( notilde( path.src.exerciseJS ), function( change ) {
+        if ( change.type !== 'changed' ) {
+            return;
+        }
+
+        var bundler = browserify({
+                cache: {}, packageCache: {}, fullPaths: true,
+                entries: change.path,
+                debug: !production
+            }),
+            changePath = change.path.split('/'),
+            filename = 'bundle-' + changePath.pop(),
+            destPath = changePath.join('/').replace( 'src', 'dist' ) + '/',
+            bundle = function() {
+                var stream = bundler.bundle()
+                    .on( 'error', function( e ) {
+                        console.error( '\x1b[31;1m', 'Browserify Error', e.toString(), '\x1b[0m' );
+                    })
+                    .pipe( source( filename ) );
+
+                if ( production ) {
+                    stream = stream
+                        .pipe( buffer() )
+                        .pipe( uglify() )
+                }
+
+                stream.pipe( gulp.dest( destPath ) );
+
+                return stream;
+            };
+
+        bundle();
+    });
 });

@@ -13,20 +13,19 @@ app.use( cookieParser('rbmllr') );
 app.post( '/user', function( req, res ) {
     var action = req.body.action,
         name = req.body.name,
-        pass = req.body.pass;
+        pass = req.body.pass,
+        question = req.body.question;
 
     res.set( 'Content-Type', 'text/plain' );
 
     if ( !name || !pass ) {
-        res.status(400).end();
-        return;
+        console.log( req.body )
+        return res.status(400).end();
     }
 
     if ( action === 'login' ) {
         dbcon.then( function( db ) {
             var users = db.collection('users');
-
-            // q.nfcall( users.findOne.bind( users ), { name: name }, { hashword: 1, salt: 1 } )
 
             users.findOne( { name: name }, { hashword: 1, salt: 1 }, function( err, data ) {
                 var hashpass;
@@ -52,7 +51,7 @@ app.post( '/user', function( req, res ) {
         dbcon.then( function( db ) {
             var users = db.collection('users');
 
-            return q.nfcall( users.ensureIndex.bind( users ), { name: 1 }, { unique: true } )
+            q.nfcall( users.ensureIndex.bind( users ), { name: 1 }, { unique: true } )
             .then( function() {
                 return q.nfcall( crypto.pseudoRandomBytes, 8 );
             }, function() {
@@ -67,6 +66,7 @@ app.post( '/user', function( req, res ) {
                                 { name: name, salt: salt, hashword: hashword });
             })
             .then( function() {
+                res.cookie( 'login', name, { maxAge: 42424242, signed: true } ).end();
                 res.end();
             }, function( err ) {
                 if ( err.code === 11000 ) { // duplicate key error
@@ -81,16 +81,83 @@ app.post( '/user', function( req, res ) {
     }
 });
 
-app.get( '/user', function( req, res ) {
-    var action = req.query.action;
+app.post( '/questions', function( req, res ) {
+    var user = req.signedCookies.login,
+        action = req.body.action,
+        qn = req.body.question
 
-    res.set( 'Content-Type', 'text/plain' );
 
-    if ( action === 'checklogin' ) {
-        res.status( req.signedCookies.login ? 200 : 401 ).end();
-    }  else {
-        res.status(400).end();
+    res.set( 'Content-Type', 'text/plain' )
+
+    if ( !user ) {
+        return res.status(401).end()
     }
-});
+    if ( !qn.questionName || !qn.exerciseName || !qn.pts || !qn.data ) {
+        return res.status(400).end()
+    }
+
+
+    if ( action === 'save' ) {
+        dbcon.then( function( db ) {
+            var users = db.collection('users'),
+                exerciseField = { _id: 0 },
+                enqn = 'exercises.' + qn.exerciseName + '.' + qn.questionName
+
+            exerciseField[ enqn ] = 1
+
+            q.nfcall( users.findOne.bind( users ), { name: user }, exerciseField )
+            .then( function( savedData ) {
+                var theUpdate = { $set: {} }
+
+                theUpdate.$set[ enqn ] = qn.data
+
+                console.log( enqn )
+
+                if ( !savedData.exercises ||
+                     !savedData.exercises[ qn.exerciseName ] ||
+                     !savedData.exercises[ qn.exerciseName ][ qn.questionName ] ) {
+                    theUpdate.$inc = {}
+                    theUpdate.$inc[ 'exercises.' + qn.exerciseName + '.pts' ] = parseInt( qn.pts )
+                }
+
+                return q.nfcall( users.update.bind( users ), { name: user }, theUpdate )
+            })
+            .then( function( result ) {
+                console.log( result )
+                res.end()
+            })
+            .catch( function( err ) {
+                console.error( err )
+                res.status(500).end();
+            })
+        })
+    } else {
+        res.status(400).end()
+    }
+})
+
+app.get( '/questions', function( req, res ) {
+    var user = req.signedCookies.login
+
+    res.set( 'Content-Type', 'application/json' );
+
+    if ( !user ) {
+        return res.status(401).end()
+    }
+
+    dbcon.then( function( db ) {
+        var users = db.collection('users'),
+        exerciseField = { _id: 0, exercises: 1 }
+
+        q.nfcall( users.findOne.bind( users ), { name: user }, exerciseField )
+        .then( function( savedData ) {
+            res.end( JSON.stringify( savedData ) )
+        })
+        .catch( function( err ) {
+            console.error( err )
+            res.status(500).end();
+        })
+    })
+})
 
 app.listen( 4242 );

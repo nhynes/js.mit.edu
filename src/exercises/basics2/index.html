@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Syntax Semantics II</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+      .qlist li {
+        margin-bottom: 8px;
+      }
+      .flavortext {
+        color: #740;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body class="exercise exercise-basics1">
+    <header class="page-header">
+      <h1 class="page-title">Syntax &amp; Semantics II</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        In a way, the infinite loops and off-by-one errors had while completing the last exercise should motivate the content of this one! One of the topics we&apos;ll be covering is performing operations on arrays by applying a <em>function</em> to each sequential element of an array.
+        The <code>takeWhile</code> function that you wrote in the last exercise is actually one such operation!
+        </p>
+        <p>
+        Otherwise, we&apos;ll be looking at how objects are more than simple key-value stores and the unique take JavaScript has on inheritance.
+        </p>
+      </div>
+      <div class="readings">
+        <h2>Suggested Readings</h2>
+        <ul>
+          <li><a href="https://stackoverflow.com/questions/1013385" target="_blank">What is the difference between function expression vs declaration in JS? - StackOverflow</a><br>
+            This wasn&apos;t made clear last time. Declarations are loaded before the code is run, but expressions are evaluated when encountered.
+          </li>
+          <li><a href="https://dorey.github.io/JavaScript-Equality-Table/" target="_blank">JS Comparison Table - github.com/dorey</a><br>
+            The reason why you should <em>never</em> user <pc i>==</pc>
+          </li>
+          <li><a href="http://eloquentjavascript.net/03_functions.html#c_rwDFIqBrDl" target="_blank">Functions - Eloquent JavaScript</a><br>
+            Just read Closure (very important!), Growing Functions (farther down the page)
+          </li>
+          <li>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach" target="_blank"><code>forEach</code></a>,
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank"><code>map</code></a>,
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target="_blank"><code>filter</code></a>,
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank"><code>reduce</code></a>
+            - MDN</a><br>
+          Read the Syntax section, then the first Example, then the Description, then rest of the Examples. You&apos;ll use these (mainly <pc i>forEach</pc>, <pc i>map</pc>, and <pc i>reduce</pc>) very often.
+          </li>
+          <li><a href="http://eloquentjavascript.net/06_object.html#c_hpZYGIH9dn" target="_blank">The Secret Life of Objects - Eloquent JavaScript</a><br>
+            Skim &quot;Prototypes&quot; through &quot;Overriding Derived Properties&quot;
+          </li>
+        </ul>
+        <p>
+        Below are implementations of the <code>map</code>, <code>filter</code>. You&apos;re recommended to read the docs first.
+        <h3><code>map</code></h3>
+        <pc>// returns a new array that is the result of applying
+// a function to each element of the input array
+function map( fn, inputArray ) {
+    var outputArray = [],
+        i
+    for ( i = 0; i < inputArray.length; i++ ) {
+        outputArray.push( fn( inputArray[ i ] ) )
+    }
+    return outputArray
+}
+</pc>
+        <h3><code>filter</code></h3>
+        <pc>// returns a new array containing only elements
+// for which a function returns true
+function filter( fn, inputArray ) {
+    var outputArray = [],
+        i, elem
+    for ( i = 0; i < inputArray.length; i++ ) {
+        elem = inputArray[ i ]
+        if ( fn( elem ) ) {
+            outputArray.push( elem )
+        }
+    }
+    return outputArray
+}
+</pc>
+        </p>
+      </div>
+      <script type="application/javascript" src="../basics1/bundle-basics1.js"></script>
+    </div>
+  </body>
+</html>

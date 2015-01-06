@@ -10,7 +10,7 @@
         margin-top: 15px;
       }
       .final-submit input[type="submit"] {
-        margin-bottom: 10px;
+        margin-top: 10px;
       }
     </style>
   </head>
@@ -42,7 +42,7 @@
       <div class="exercise">
         <h2>Exercise</h2>
         <p>
-        Create an Object that representing your registration information by filling in the code boxes.
+        Create an Object that represents your registration information by filling in the code boxes.
         </p>
         <pc>var myRegistration = {</pc>
         <pc>    // ===== The essentials =====</pc><br>
@@ -50,14 +50,14 @@
         <question name="firstName" pts="1">
           <pc i>    firstName: </pc> <textarea cm="inline" rows="1" cols="20"></textarea><pc i>, // ex: "Nick"</pc>
           <script type="feedback" trigger="blur" format="<pre class='pc'><code>    %s</code></pre>">
-          return this.expectType( editorValue, 'string' )
+          this.expectType( editorValue, 'string' )
           </script>
         </question><br><br>
 
         <question name="lastName" pts="1">
           <pc i>    lastName: </pc> <textarea cm="inline" rows="1" cols="20"></textarea><pc i>,</pc>
           <script type="feedback" trigger="blur" format="<pre class='pc'><code>    %s</code></pre>">
-          return this.expectType( editorValue, 'string' )
+          this.expectType( editorValue, 'string' )
           </script>
         </question><br><br>
 
@@ -65,7 +65,10 @@
           <pc i>    graduationYear: </pc> <textarea cm="inline" rows="1" cols="4"></textarea><pc i>,</pc>
           <script type="feedback" trigger="blur" format="<pre class='pc'><code>    %s</code></pre>">
           var year = parseFloat( editorValue )
-          return this.expectType( editorValue, 'number' ) || ( year % 1 !== 0 || year < new Date().getFullYear() ? 'Expected a year in the future' : '' )
+          this.expectType( editorValue, 'number' )
+          if ( year % 1 !== 0 || year < new Date().getFullYear() )  {
+            throw Error('Expected a year in the future')
+          }
           </script>
         </question><br><br>
 
@@ -73,7 +76,7 @@
         <question name="takingForCredit" pts="1">
           <pc i>    takingForCredit: </pc> <textarea cm="inline" rows="1" cols="5"></textarea><pc i>,          // Boolean (true or false)</pc>
           <script type="feedback" trigger="blur" format="<pre class='pc'><code>    %s</code></pre>">
-          return this.expectType( editorValue, 'boolean' )
+          this.expectType( editorValue, 'boolean' )
           </script>
         </question><br><br>
         <pc>    /* How much computer programming experience do you have?
@@ -86,8 +89,10 @@
           <pc i>    priorExperience: </pc> <textarea cm="inline" rows="1" cols="1"></textarea><pc i>,</pc>
           <script type="feedback" trigger="blur" format="<pre class='pc'><code>    %s</code></pre>">
           var val = parseFloat( editorValue )
-          return this.expectType( editorValue, 'number' ) ||
-          ( val  % 1 !== 0 || val < 0 || val > 3 ? 'Expected an integer between 0 and 3' : '' )
+          this.expectType( editorValue, 'number' )
+          if ( val  % 1 !== 0 || val < 0 || val > 3 ) {
+            throw Error('Expected an integer between 0 and 3')
+          }
           </script>
         </question><br><br>
 
@@ -103,17 +108,17 @@
           <script type="feedback" trigger="blur" format="<pre class='pc'><code>    %s</code></pre>">
           var ranking = eval( editorValue ),
               examination
-          if ( editorValue.indexOf(';') !== -1 ) { return 'Unexpected token ;' }
-          if ( !(ranking instanceof Array) ) { return 'Expected an Array' }
+          if ( editorValue.indexOf(';') !== -1 ) { throw Error('Unexpected token ;') }
+          if ( !(ranking instanceof Array) ) { throw Error('Expected an Array') }
           examination = ranking.reduce( function( goodnums, num ) {
             if ( typeof goodnums === 'string' ) { return goodnums; } // already has feedback
 
             if ( num in goodnums ) {
-              return 'You must use each reason exactly once'
+              throw Error('You must use each reason exactly once')
             } else if ( !(typeof num === 'number') ) {
-              return 'Unexpected ' + typeof num + ' in ranking'
+              throw Error('Unexpected ' + typeof num + ' in ranking')
             } else if ( num % 1 !== 0 || num < 1 || num > 5) {
-              return 'Unfortunately, you\'re not allowed to make up new reasons'
+              throw Error('Unfortunately, you\'re not allowed to make up new reasons')
             }
 
             goodnums[ num ] = true
@@ -121,9 +126,9 @@
           }, {} )
 
           if ( typeof examination === 'string' ) {
-            return examination
+            throw Error( examination )
           } else if ( ranking.length !== 5 ) {
-            return 'You must use each reason exactly once'
+            throw Error('You must use each reason exactly once')
           }
           </script>
         </question><br>
@@ -134,20 +139,20 @@
           <textarea cm rows="4"></textarea>
           <script type="feedback" trigger="blur">
           var login = eval( editorValue )
-          if ( myLogin === undefined ) { return 'myLogin is not defined' }
+          if ( myLogin === undefined ) { throw Error('myLogin is not defined') }
           if ( window.myLogin ) {
             delete window.myLogin
-            return 'You forgot the var keyword'
+            throw Error('You forgot the var keyword')
           }
-          if ( !myLogin.user || !myLogin.pass ) { return 'myLogin must have keys: user, pass' }
+          if ( !myLogin.user || !myLogin.pass ) { throw Error('myLogin must have keys: user, pass') }
           if ( !(typeof myLogin.user === 'string' ) || !(typeof myLogin.pass === 'string') ) {
-            return 'user and pass must both be strings'
+            throw Error('user and pass must both be strings')
           }
           </script>
         </question>
         <br>
         Excellent work! Check to make sure that everything is correct and submit it to the server!
-        <div class="final-submit"><input type="submit" value="Submit Registration"><p class="feedback" id="submitFeedback"></p></div>
+        <div class="final-submit"><p class="feedback" id="submitFeedback"></p><input type="submit" value="Submit Registration"></div>
       </div>
     </div>
     <script type="feedback-helper" name="expectType">
@@ -155,9 +160,9 @@
       var actualType = typeof eval( editorValue )
 
       if ( actualType !== expectedType ) {
-        return 'Expected type \'' + expectedType + '\' but was \'' + actualType + '\''
+        throw Error('Expected type \'' + expectedType + '\' but was \'' + actualType + '\'')
       } else if ( editorValue.indexOf(';') !== -1 ) {
-        return 'Unexpected token ;'
+        throw Error('Unexpected token ;')
       }
     }
     </script>

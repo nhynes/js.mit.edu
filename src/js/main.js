@@ -47,29 +47,66 @@ $(window).resize( function() {
 })({ groups: [
     {
         name: 'Register or <a class="modal-trigger" data-modal="login">Log In</a>',
-        tiles: [ { ex: 'register', title: 'Register' } ]
+        tiles: [ { ex: 'register', title: 'Register', maxpts: 10 } ]
     }, {
         name: 'The Basics',
         tiles: [
-            { ex: 'basics1', title: 'Syntax & Semantics I' },
-            { ex: 'basics2', title: 'Syntax & Semantics II' }
+            { ex: 'basics1', title: 'Syntax & Semantics I', maxpts: 20 },
+            { ex: 'basics2', title: 'Syntax & Semantics II', maxpts: 20 }
         ]
     }, {
         name: 'Frontend',
         tiles: [
-            { ex: 'htmlcss', title: 'The Web GUI: HTML & CSS' },
-            { ex: 'apis', title: 'Hello World AJAX & APIs' },
-            { ex: 'fecap', title: 'Designing a Frontend' }
+            { ex: 'htmlcss', title: 'The Web GUI: HTML & CSS', maxpts: 20 },
+            { ex: 'apis', title: 'Hello World AJAX & APIs', maxpts: 20 },
+            { ex: 'fecap', title: 'Designing a Frontend', maxpts: 35 }
         ]
     }, {
         name: 'Backend',
         tiles: [
-            { ex: 'backend', title: 'Node.js:<br>Server-Side JavaScript' },
-            { ex: 'serving', title: 'Clients, the Cloud, & You' },
-            { ex: 'becap', title: 'Designing a Backend' }
+            { ex: 'backend', title: 'Node.js:<br>Server-Side JavaScript', maxpts: 20 },
+            { ex: 'serving', title: 'Clients, the Cloud, & You', maxpts: 20 },
+            { ex: 'becap', title: 'Designing a Backend', maxpts: 35 }
         ]
     }
 ] });
+
+window.fetchUserData = function fetchUserData( callback ) {
+    if ( !localStorage.login ) {
+        $( $('.tile-group').slice(1) ).addClass('sunken');
+    } else {
+        $('.tile-group .group-name')[0].innerHTML = 'Register';
+        $('.tile-group').removeClass('sunken');
+
+        $.ajax({
+            type: 'GET',
+            url: '/questions',
+            success: function( data ) {
+                Object.keys( data.exercises ).map( function( exerciseName ) {
+                    var exercise = data.exercises[ exerciseName ]
+
+                    localStorage[ exerciseName + 'pts' ] = exercise.pts;
+                    delete exercise.pts;
+
+                    Object.keys( exercise ).map( function( questionId ) {
+                        if ( !localStorage[ exerciseName + questionId ] ) {
+                            localStorage[ exerciseName + questionId ] = exercise[ questionId ];
+                        }
+                    });
+                });
+
+                if ( callback ) callback();
+            },
+            error: function( xhr ) {
+                if ( xhr.status === 401 ) {
+                    delete localStorage.login;
+                    window.location = window.location;
+                }
+            }
+        });
+    }
+};
+window.fetchUserData();
 
 (function letterboxes() {
     var PHRASES = [ 'HelloWorld!', 'console.log', 'WebWidgets!', 'MagicalHTML',
@@ -110,13 +147,48 @@ $(window).resize( function() {
     });
 })();
 
+function tallyPoints( $tile, animate ) {
+    var $ptsEarnedDisp = $tile.find('.earned'),
+    ptsPreviouslyEarned = parseInt( $ptsEarnedDisp.html() ) || 0,
+    curPtsEarned = parseInt( localStorage[ $tile.attr('data-exercise') + 'pts' ] ),
+    i,
+    DELAY = 70;
+
+    function inc( pts ) {
+        $ptsEarnedDisp.html( pts );
+        if ( pts >= parseInt( $ptsEarnedDisp.attr('data-maxpts') ) ) {
+            $tile.find('.front').removeClass('started').addClass('complete');
+        } else {
+            $tile.find('.front').addClass('started');
+        }
+    }
+
+    if ( animate !== false ) {
+        for ( i = ptsPreviouslyEarned + 1; i <= curPtsEarned; i++ ) {
+            setTimeout( inc.bind( null, i ), DELAY * ( i - ptsPreviouslyEarned - 1) );
+        }
+    } else {
+        if ( !curPtsEarned ) { return; }
+        inc( curPtsEarned );
+    }
+}
+
+(function initTallyPoints() {
+    $('.tile').each( function() {
+        tallyPoints( $( this ), false );
+    });
+})();
+
 function closeTile() {
     var $open = $('.tile.fixed'),
         cs = window.getComputedStyle( $open[0] );
 
-    if ( !cs ) {
-        return;
+    if ( localStorage.login ) {
+        $('.tile-group .group-name')[0].innerHTML = 'Register';
+        $('.tile-group').removeClass('sunken');
     }
+
+    if ( !cs ) { return; } // there is no tile currently open
 
     $open.removeClass('fixed').css({
         transform: '',
@@ -136,6 +208,7 @@ function closeTile() {
             left: dummyRect.left + window.scrollX - parseInt( cs.marginLeft )
         });
         setTimeout( function() {
+            tallyPoints( $open );
             $('.dummytile').remove();
             $open.removeClass('detached notransition closing');
             setTimeout( function() {
@@ -193,25 +266,9 @@ function closeTile() {
     });
 })();
 
-(function checkLogin() {
-    if ( !localStorage.login ) {
-        $( $('.tile-group').slice(1) ).addClass('sunken');
-    } else {
-        $('.tile-group .group-name')[0].innerHTML = 'Register';
-        $.ajax({
-            type: 'GET',
-            url: '/user?action=checklogin',
-            error: function( xhr ) {
-                if ( xhr.status === 401 ) {
-                    delete localStorage.login;
-                    window.location = window.location;
-                }
-            }
-        });
-    }
-})();
-
 function openTile( name ) {
+    if ( $('.dummytile').length ) { return; }
+
     if ( $('[data-exercise="' + name + '"]').length === 0 ) {
         return;
     }
@@ -278,15 +335,15 @@ function hashChange() {
 
     if ( $('.tile.detached').length ) {
         closeTile();
-        if( $('[data-exercise="' + hash + '"]').length ) {
+        if ( $('[data-exercise="' + hash + '"]').length ) {
             setTimeout( openTheTile, ttClose );
         } else {
             setTimeout( function() {
                 window.onhashchange = hashChange;
-            }, ttClose )
+            }, ttClose );
         }
     } else {
-        openTheTile();
+        setTimeout( openTheTile(), 500 );
     }
 }
 

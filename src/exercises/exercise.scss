@@ -49,6 +49,7 @@
 
 .CodeMirror {
     background-color: #e4e4e4;
+    margin: 10px 0;
 
     .CodeMirror-scroll.noscroll {
         overflow-y: hidden !important;
@@ -56,17 +57,21 @@
 
     &.inline {
         display: inline-block;
+        margin: 0;
+        vertical-align: text-top;
     }
 }
 
 $onelineCMHeight: 24px;
 .pc {
-    margin: 0;
+    margin: 5px 0;
     line-height: $onelineCMHeight;
 
     &.inline {
-        display: inline-block;
+        margin: 0;
+        display: inline;
     }
+
 }
 
 .feedback {

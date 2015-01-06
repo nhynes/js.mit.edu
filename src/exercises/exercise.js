@@ -1,7 +1,8 @@
 var CodeMirror = require('codemirror'),
     $ = require('zeptojs'),
+    _ = require('lodash'),
     editors = {},
-    feedbackHelpers = {},
+    feedbackHelpers = { _: _ },
     feedbackTriggers = {}
 
 require('codemirror/addon/runmode/runmode')
@@ -64,7 +65,7 @@ $('textarea[cm]').each( function() {
 })
 
 $('pc').each( function() {
-    var text = this.innerHTML,
+    var text = $('<div/>').html( this.innerHTML ).text(),
         $code = $('<code>').html( text ).addClass('cm-s-default'),
         $pre = $('<pre>').append( $code ).addClass('pc')
 
@@ -92,7 +93,7 @@ $('question').each( function() {
         editor = editors[ editorId ],
         $fbDef = $question.find('script[type="feedback"]'),
         fbFn = eval( '(function( editorValue ) { try {' + $fbDef.html() +
-                    '} catch( e ) { return e.message } })' ),
+                    '} catch( e ) { return e } })' ),
         fbTrigger = $fbDef.attr('trigger'),
         $fbDisplay = $('<p class="feedback">').appendTo( $question ),
         format = $fbDef.attr('format'),
@@ -101,17 +102,41 @@ $('question').each( function() {
         ptsId = exerciseName + 'pts'
 
     function saveQuestion( content ) {
+        if ( !localStorage.login ) { return }
+
+        var editorValue = editor.getValue(),
+            saveData = {
+                questionName: questionName,
+                exerciseName: exerciseName,
+                pts: pointValue,
+                data: editorValue
+            },
+            prevSave = localStorage[ qId ]
+
         if ( !localStorage[ qId ] ) {
             localStorage[ ptsId ] = ( parseInt( localStorage[ ptsId ] ) || 0 ) + pointValue
         }
-        localStorage[ qId ] = editor.getValue()
+        localStorage[ qId ] = editorValue
+        if ( prevSave !== editorValue ) {
+            $.ajax({
+                type: 'POST',
+                url: '/questions',
+                data: {
+                    action: 'save',
+                    question: saveData
+                },
+                error: function( xhr, type ) {
+                    console.error( xhr.status, xhr.response )
+                }
+            })
+        }
     }
     if ( localStorage[ qId ] ) {
         editor.setValue( localStorage[ qId ] )
     }
 
     function triggerFeedback() {
-        var feedback = fbFn.call( feedbackHelpers, editor.getValue() ),
+        var feedback = ( fbFn.call( feedbackHelpers, editor.getValue() ) || {} ).message,
         dispOutput = format ? format.replace( '%s', feedback ) : feedback
 
         if ( feedback ) {
@@ -133,5 +158,10 @@ $('question').each( function() {
 module.exports = {
     getExerciseName: getExerciseName,
     editors: editors,
-    feedbackTriggers: feedbackTriggers
+    feedbackTriggers: feedbackTriggers,
+    triggerFeedbacks: function() {
+        Object.keys( feedbackTriggers ).forEach( function( qId ) {
+            feedbackTriggers[ qId ]()
+        })
+    }
 }

@@ -1,14 +1,11 @@
 var $ = require('zeptojs'),
     exerciseUtils = require('../exercise.js'),
-    editors = exerciseUtils.editors,
-    feedbackTriggers = exerciseUtils.feedbackTriggers
+    editors = exerciseUtils.editors
 
 $('input[type="submit"]').click( function() {
     var regInfo, loginInfo
 
-    Object.keys( feedbackTriggers ).forEach( function( qId ) {
-        feedbackTriggers[ qId ]()
-    })
+    exerciseUtils.triggerFeedbacks()
 
     if ( $('.feedback.shown:not(#submitFeedback').length ) {
         $('#submitFeedback').addClass('shown').html('Please correct the issues shown above')
@@ -32,12 +29,16 @@ $('input[type="submit"]').click( function() {
             type: 'POST',
             url: '/user',
             data: {
+                action: 'register',
                 regInfo: regInfo,
-                loginInfo: loginInfo
+                name: loginInfo.user,
+                pass: loginInfo.pass
             },
             success: function() {
+                localStorage.login = true;
                 $('#submitFeedback').addClass('shown good')
                 .html('Registration submitted successfully! You are now logged in.')
+                exerciseUtils.triggerFeedbacks() // save all exercises
             },
             error: function( xhr, type ) {
                 if ( xhr.status === 409 ) {

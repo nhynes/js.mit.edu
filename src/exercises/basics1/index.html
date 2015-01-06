@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Syntax &amp; Semantics I</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+      .qlist li {
+        margin-bottom: 8px;
+      }
+      .flavortext {
+        color: #740;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body class="exercise exercise-basics1">
+    <header class="page-header">
+      <h1 class="page-title">Syntax &amp; Semantics I</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        Well hello there! You must be rearing to begin your Introduction to JavaScript adventure. Let me not keep you, then&mdash;JavaScript awaits!
+        </p>
+      </div>
+      <div class="readings">
+        <h2>Suggested Readings</h2>
+        If you looked at the readings for the Register exercise, then you already have everything you need for this one, too!
+        <ul>
+          <li><a href="/2014/notes/lecture1_notes.pdf" target="_blank">Introduction to JavaScript - IntroJS 2014</a><br>
+            Sections 1, 2 (and <a href="/2014/slides/lecture1_slides.pdf" target="_blank">slide 2</a>), 3 (skim the details), 4.1-2, 4.3 (only first box), 4.4 (read conditionals but skim loops&mdash;you&apos;ll rarely use them)
+          </li>
+          <li><a href="http://eloquentjavascript.net/01_values.html" target="_blank">Values, Types, and Operators - Eloquent JavaScript</a><br>
+            Helpful if you have less of a programming background. Covers the same material as above, but gives more of the basic intuitions.
+          </li>
+          <li><a href="http://eloquentjavascript.net/03_functions.html" target="_blank">Functions - Eloquent JavaScript</a><br>
+            Defining a Function, Parameters and Scopes
+          </li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        <h3>Variables</h3>
+
+        <script type="feedback-helper" name="expectType">
+        function( editorValue, expectedType ) {
+          var actualType = typeof eval( editorValue )
+
+          if ( actualType !== expectedType ) {
+            throw Error('Expected type \'' + expectedType + '\' but was \'' + actualType + '\'')
+          }
+        }
+        </script>
+        <script type="feedback-helper" name="expectValue">
+        function( editorValue, expected ) {
+          var actual = eval( editorValue ),
+              expectedStr = typeof expected === 'string' ? '"' + expected + '"' : expected
+
+          if ( typeof actual !== typeof expected ) {
+            throw Error('Expected type \'' + ( typeof expected ) + '\' but was \'' + ( typeof actual ) + '\'')
+          }
+          if ( actual !== expected ) {
+            throw Error('Nope, try again')
+          }
+        }
+        </script>
+
+        <question name="varreq" pts="1">
+        <code>true</code> or <code>false</code>:&nbsp;the <code>var</code> keyword is always necessary when safely declaring variables
+        <br>
+        <textarea cm="inline" rows="1" cols="5"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.expectType( editorValue, 'boolean' )
+        if ( !eval(editorValue ) ) {
+          throw Error('The var keyword is required to prevent accidentally creating globals')
+        }
+        </script>
+        </question>
+
+        <h3>Strings</h3>
+
+        These are here just for you to get a feel for the kinds of things you can do with Strings. You should definitely check out the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#Methods_2" target="_blank">full list</a> at some point.
+
+        Enter the output of the following statements:
+
+        <ul class="qlist">
+          <li>
+              <question name="strlen" pts="1">
+              <pc i>'Hello, world!'</pc><code>.<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length" target="_blank">length</a> === </code>
+              <textarea cm="inline" rows="1" cols="2"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectValue( editorValue, 12 )
+              </script>
+              </question>
+          </li>
+          <li>
+              <question name="concatstr" pts="1">
+              <pc i>'Intro' + ' ' + 'JS' === </pc>
+              <textarea cm="inline" rows="1" cols="11"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectValue( editorValue, 'Intro JS' )
+              </script>
+              </question>
+          </li>
+          <li>
+              <question name="substr" pts="1">
+              <pc i>'thefacebook'</pc><code>.<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring" target="_blank">substring</a>(3) === </code>
+              <textarea cm="inline" rows="1" cols="12"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectValue( editorValue, 'facebook' )
+              </script>
+              </question>
+          </li>
+        </ul>
+
+        <h3>Conditionals</h3>
+
+        <script type="feedback-helper" name="expectCond">
+function( editorValue, truthTable ) {
+  var condFn = eval( '(function( a, b, c ) {' + editorValue + '{ return true; } else { return false; } })' )
+  console.log( condFn )
+  truthTable.map( function( assignment ) {
+    function stringify( item ) {
+      if ( typeof item === 'string' ) {
+         return '"' + item + '"'
+      } else {
+         return item
+      }
+    }
+    var expected = assignment.pop(),
+        result = condFn.apply( null, assignment ),
+        assignStr = 'a = ' + stringify( assignment[0] ) + ', b = ' + stringify( assignment[1] ) + ', c = ' + stringify( assignment[2] )
+    if ( result !== expected ) {
+      throw Error('For ' + assignStr + ', expected ' + expected + ' but was ' + result )
+    }
+  })
+}
+        </script>
+
+        Translate the following English statements into conditionals. The variables <code>a</code>, <code>b</code>, and <code>c</code> are provided for you.
+        <ul class="qlist">
+          <li>
+            If <code>a</code> and <code>b</code> are true.<br>
+            <question name="condand" pts="1">
+              <textarea cm="inline" rows="1" cols="30">if ( a /* operator here */ b )</textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectCond( editorValue, [ [ true, true, null, true ], [ true, false, null, false ], [ false, true, null, false ], [ false, false, null, false ] ] )
+              </script>
+            </question>
+          </li>
+          <li>
+            If <code>a</code> is not true.<br>
+            <question name="condnota" pts="1">
+              <textarea cm="inline" rows="1" cols="30">if (  )</textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectCond( editorValue, [ [ true, null, null, false ], [ false, null, null, true ] ] )
+              </script>
+            </question>
+          </li>
+          <li>
+            If <code>a</code> or <code>b</code> is true.<br>
+            <question name="condor" pts="1">
+              <textarea cm="inline" rows="1" cols="30">if (  )</textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectCond( editorValue, [ [ true, true, null, true ], [ true, false, null, true ], [ false, true, null, true ], [ false, false, null, false ] ] )
+              </script>
+            </question>
+          </li>
+          <li>
+            If <code>a</code> is strictly equal to <code>b</code>.<br>
+            <question name="condeqeqeq" pts="1">
+              <textarea cm="inline" rows="1" cols="30"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectCond( editorValue, [ [ 42, '42', null, false ], [ 11, 11, null, true ], [ 11, true, null, false ], [ false, [], null, false ], [ true, 'hi', null, false ], [ 'hello', 'hello', null, true ] ] )
+              </script>
+            </question>
+          </li>
+          <li>
+            If <code>a</code> is greater than <code>b</code> but less than or equal to <code>c</code>.<br>
+            <question name="condgtleq" pts="1">
+              <textarea cm="inline" rows="1" cols="30"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectCond( editorValue, [ [ 0, 1, 2, false ], [ 3, 2, 1, false ], [ 3, 3, 4, false ], [ 42, 5, 100, true ], [ 24, 23, 24, true ] ] )
+              </script>
+            </question>
+          </li>
+          <li>
+            <span class="flavortext">
+            // Conditionals like those in the next two questions comes up a lot when creating functions that have optional arguments (you have to know which options you're getting!).<br>
+            </span>
+            If <code>a</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof" target="_blank">is a Number</a>.<br>
+            <question name="condtypeof" pts="1">
+              <textarea cm="inline" rows="1" cols="30"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectCond( editorValue, [ [ '42', null, null, false ], [ 42, null, null, true ], [ NaN, null, null, true ], [ {}, null, null, false ], [ 24, null, null, true ] ] )
+              </script>
+            </question>
+          </li>
+          <li>
+            If <code>a</code> (in this case, an optional argument) has been set.<br>
+            <question name="conddef" pts="1">
+              <textarea cm="inline" rows="1" cols="30"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectCond( editorValue, [ [ 'defined', null, null, true ], [ 42, null, null, true ], [ '', null, null, false ], [ {}, null, null, true ], [ null, null, null, false ], [ undefined, null, null, false ] ] )
+              </script>
+            </question>
+          </li>
+        </ul>
+
+        <h2>Loops</h2>
+
+        The most common loop types are <code>for</code> and <code>while</code>. In JavaScript, the main use of <code>for</code> loops is to maintain a counter that is <em>not</em> an index into an array.
+
+        <h3><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for" target="_blank">For</a> loops</h3>
+        Complete the following code:
+        <question name="forloopfillin"  pts="2">
+        <textarea cm="lineno" rows="11">
+// Calculates the sum of a function from a start point to end point (inclusive)
+function sumFunction( fn, start, end ) {
+    var sum = 0,
+        i // define all variables at top of the function
+
+    for ( /* your code here */ ) {
+        sum += fn( i )
+    }
+
+    return sum
+}
+        </textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+          var summer = eval( '(' + editorValue + ')' ),
+
+
+              randConst = Math.floor( Math.random() * 25 ),
+              constant = function( x ) { return randConst },
+              x = function( x ) { return x },
+
+              rangeStart = Math.floor( 100 * Math.random() ),
+              rangeEnd = rangeStart + Math.floor( 100 * Math.random() ),
+
+              expectedSumConst = randConst * ( rangeEnd - rangeStart + 1 ),
+              sumConst = summer( constant, rangeStart, rangeEnd ),
+              expectedSumX = ( rangeEnd - rangeStart + 1 ) * ( rangeStart + rangeEnd ) / 2,
+              sumX = summer( x, rangeStart, rangeEnd )
+
+          if ( sumConst !== expectedSumConst ) {
+              throw Error('Expected sum of ' + randConst + ' from ' + rangeStart + ' to ' + rangeEnd + ' to be ' + expectedSumX + ' but was ' + sumX )
+          }
+          if ( sumX !== expectedSumX ) {
+              throw Error('Expected sum of x from ' + rangeStart + ' to ' + rangeEnd + ' to be ' + expectedSumX + ' but was ' + sumX )
+          }
+        </script>
+        </question>
+
+        <h3><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/while">While</a> loops</h3>
+        <question name="whileloopfillin"  pts="1">
+        <textarea cm="lineno" rows="13">
+// generates a random ID of a given length
+function generateUniqueId( len ) {
+    var uniqueId = '',
+        randomLetter
+
+    while ( /* your code here */ ) {
+        randomLetter = String.fromCharCode( Math.random() * 25 + 65 ) // A-Z
+        // your code here
+    }
+
+    return uniqueId
+}
+        </textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+          var generator = eval( '(' + editorValue + ')' ),
+              randLen = Math.floor( Math.random() * 10 ) + 5,
+              uniqueId1 = generator( randLen ),
+              uniqueId2 = generator( randLen ),
+              uniqueIdRe = /^[A-Z]+$/
+
+          if ( uniqueId1 === uniqueId2 ) {
+              throw Error('IDs not unique')
+          }
+          if ( uniqueId1.length !== randLen ) {
+              throw Error('Returned ID is of incorrect length. Expected ' + randLen + ' but was ' + uniqueId1.length )
+          }
+          if ( !uniqueIdRe.test( uniqueId1 ) || !uniqueIdRe.test( uniqueId2 ) ) {
+              throw Error('ID should consist of only the letters A-Z')
+          }
+        </script>
+        </question>
+
+        <h2>Arrays</h2>
+
+        So, I know that I just said that you usually don&apos;t use loops to iterate through array indices, but we until we get to the more idiomatic way in the next class, just use a for loop.
+
+        <script type="feedback-helper" name="randArray">
+          function() {
+            var randArray = [],
+                randArrayLen = Math.floor( Math.random() * 10 ) + 2,
+                i = 0
+
+            while ( i < randArrayLen ) {
+              randArray.push( Math.floor( Math.random() * 20 + 5 ) )
+              i++
+            }
+
+            return randArray
+          }
+        </script>
+        <h3>Maximum in an array</h3>
+
+        <question name="maxarray"  pts="3">
+        Complete the following function to find the maimum value in an array.<br>
+        <span class="flavortext">Hint: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max" target="_blank">Math.max</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NEGATIVE_INFINITY" target="_blank">Number.NEGATIVE_INFINITY</a> may come in handy.</span>
+        <textarea cm="lineno" rows="11">
+// finds the maximum value in an array of numbers
+function arrayMax( arr ) {
+    var i
+    for ( i = 0; /* your code here */ ) {
+      // your code here
+      // define any new variables at the top of the function!
+    }
+}
+        </textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+          var maximizer = eval( '(' + editorValue + ')' ),
+          solution = function( arr ) {
+            return arr.reduce( function( max, val ) {
+              return Math.max( max, val )
+            })
+          },
+          expected,
+          actual,
+          randArray = this.randArray()
+
+          actual = maximizer( randArray )
+          expected = solution( randArray )
+
+          if ( actual !== expected ) {
+            throw Error('Error. Maximum in [' + randArray.toString() + '] is ' + expected + ', but ' + actual + ' was returned.')
+          }
+
+          randArray = randArray.map( function( val ) { return -val })
+
+          actual = maximizer( randArray )
+          expected = solution( randArray )
+
+          if ( actual !== expected ) {
+            throw Error('Error. Maximum in [' + randArray.toString() + '] is ' + expected + ', but ' + actual + ' was returned.')
+          }
+        </script>
+        </question>
+
+        <h3>Take While</h3>
+        <question name="takewhile"  pts="3">
+        Write the following function that returns a subarray starting at the beginning of the input array and ending at the first element for which the predicate function returns false (exclusive). For instance,
+        <pc>takeWhile( [1, 2, 3, 4, 5 ], function( value ) {
+    return value < 3;
+})</pc>
+        would return
+        <pc>[1, 2]</pc>
+        <span class="flavortext">Hint: add elements to an array using its <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push" target="_blank">push</a> method.</span>
+        <textarea cm="lineno" rows="20">
+/**
+ * Returns the prefix of the input array that satisfies a given predicate
+ * The input array is not modified.
+ * @param {Array} arr the input array
+ * @param {Function} pred returns true iff the element should be included
+ * @return {Array} the first n elements of arr that satisfy pred
+ */
+function takeWhile( arr, pred ) {
+    var taken = [],
+        i = 0
+
+    // your code here
+
+    return taken
+}
+        </textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+          var takeWhile = eval( '(' + editorValue + ')' ),
+
+          p1 = function( val ) { return val < 3 },
+          p2 = function( val ) { return val === 1 },
+          p3 = function( val ) { return true },
+          p4 = function( val ) { return false },
+          inp1 = [ 1, 2, 3, 4, 5 ],
+          inp2 = [ 1, 1, true, 2, 1 ],
+          inp3 = [ 1, 1, 2, 3, 5],
+          inp4 = [ 'nothing', 'to', 'see', 'here' ],
+          exp1 = [1, 2],
+          exp2 = [1, 1],
+          exp3 = [ 1, 1, 2, 3, 5],
+          exp4 = [],
+          actual1 = takeWhile( inp1, p1 ),
+          actual2 = takeWhile( inp2, p2 ),
+          actual3 = takeWhile( inp3, p3 ),
+          actual4 = takeWhile( inp4, p4 ),
+
+          compare = [
+            [ inp1, exp1, actual1 ],
+            [ inp2, exp2, actual2 ],
+            [ inp3, exp3, actual3 ],
+            [ inp4, exp4, actual4 ]
+          ],
+          j
+
+          function stringifyArr( arr ) {
+            return arr.reduce( function( str, val, i ) {
+              if ( typeof str === 'string' ) {
+                str += '"' + val + '"'
+              } else {
+                str += val
+              }
+
+              if ( i !== arr.length - 1 ) {
+                str += ', '
+              } else {
+                str += ']'
+              }
+              return str
+            }, '[' )
+          }
+
+          for( j = 0; j < compare.length; j++ ) {
+            if ( !this._.isEqual( compare[j][1], compare[j][2] ) ) {
+              throw Error('Expected takeWhile(' + stringifyArr( compare[j][0] ) + ')\n    to be' + stringifyArr( compare[j][1] ) + ' but was ' + stringifyArr( compare[j][2] ) )
+              break
+            }
+          }
+        </script>
+        </question>
+
+        <br><br>
+        <h3>You did it!</h3>
+        <p class="blurb">
+        Great job! You finished the first exercise!
+        <br>You must be wondering why we skipped functions and objects. Those are interesting enough for their very own section. See you next time!
+        </p>
+      </div>
+      <script type="application/javascript" src="../exercise-bundle.js"></script>
+    </div>
+  </body>
+</html>

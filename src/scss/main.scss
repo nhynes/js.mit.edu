@@ -106,6 +106,7 @@ $tileBorderWidth: 2px;
 
 
     .front {
+        transition: all 1.3s;
         @extend %tile-side;
         cursor: pointer;
         transform: rotate3d(0, 1, 0, 0);
@@ -118,6 +119,49 @@ $tileBorderWidth: 2px;
         background: -ms-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);
         background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%);
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 );
+
+        &.complete {
+            background: #fefcea;
+            background: -moz-linear-gradient(top, #fefcea 0%, #f1da36 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefcea), color-stop(100%,#f1da36));
+            background: -webkit-linear-gradient(top, #fefcea 0%,#f1da36 100%);
+            background: -o-linear-gradient(top, #fefcea 0%,#f1da36 100%);
+            background: -ms-linear-gradient(top, #fefcea 0%,#f1da36 100%);
+            background: linear-gradient(to bottom, #fefcea 0%,#f1da36 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefcea', endColorstr='#f1da36',GradientType=0 );
+
+            .score {
+                box-shadow: 0 1px 1px .2px yellow inset;
+            }
+        }
+
+        &.started {
+            background: #feffff;
+            background: -moz-linear-gradient(top, #feffff 0%, #ddf1f9 35%, #a0d8ef 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#feffff), color-stop(35%,#ddf1f9), color-stop(100%,#a0d8ef));
+            background: -webkit-linear-gradient(top, #feffff 0%,#ddf1f9 35%,#a0d8ef 100%);
+            background: -o-linear-gradient(top, #feffff 0%,#ddf1f9 35%,#a0d8ef 100%);
+            background: -ms-linear-gradient(top, #feffff 0%,#ddf1f9 35%,#a0d8ef 100%);
+            background: linear-gradient(to bottom, #feffff 0%,#ddf1f9 35%,#a0d8ef 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feffff', endColorstr='#a0d8ef',GradientType=0 );
+
+            .score {
+                box-shadow: 0 1px 1px .2px lighten(#a0d8ef, 15%) inset;
+            }
+        }
+
+        .score {
+            font-size: 1.5em;
+            position: absolute;
+            bottom: 0px;
+            text-align: center;
+            width: 100%;
+            padding: 5px 0 10px 0;
+            line-height: 2ex;
+
+            border-top: 1px solid #999;
+            box-shadow: 0 1px 1px .2px white inset;
+        }
     }
 
     .back {
@@ -252,17 +296,4 @@ $tileBorderWidth: 2px;
             color: red;
         }
     }
-}
-
-.score {
-    font-size: 1.5em;
-    position: absolute;
-    bottom: 0px;
-    text-align: center;
-    width: 100%;
-    padding: 5px 0 10px 0;
-    line-height: 2ex;
-
-    border-top: 1px solid #999;
-    box-shadow: 0 1px 1px .2px white inset;
 }

@@ -25,7 +25,8 @@ var gulp = require('gulp'),
             exerciseSCSS: 'src/exercises/**/*.scss',
             static: [ 'src/**/*.html', 'src/resources/**/*' ],
             exercises: 'src/exercises/**/*',
-            exerciseJS: [ 'src/exercises/**/*.js', '!src/exercises/exercise.js' ]
+            exerciseJS: [ 'src/exercises/**/*.js', '!src/exercises/exercise.js' ],
+            exerciseJSMain: './src/exercises/exercise.js'
         },
         dist: {
             base: 'dist/',
@@ -41,7 +42,7 @@ function notilde( path ) {
     return [].concat( path, '!**/*~' );
 }
 
-gulp.task( 'build', [ 'scss', 'browserify', 'collectstatic', ] );
+gulp.task( 'build', [ 'scss', 'browserify', 'browserify-exercise', 'collectstatic', ] );
 gulp.task( 'default', [ 'watch', 'build' ] );
 
 gulp.task( 'checkstyle', function() {
@@ -72,6 +73,34 @@ gulp.task( 'scss', function() {
 gulp.task( 'browserify', function() {
     var bundler = browserify({
         cache: {}, packageCache: {}, fullPaths: true,
+        entries: path.src.exerciseJSMain,
+        debug: !production
+    });
+
+    var bundle = function() {
+        var stream = bundler.bundle()
+            .on( 'error', function( e ) {
+                console.error( '\x1b[31;1m', 'Browserify Error', e.toString(), '\x1b[0m' );
+            })
+            .pipe( source('exercise-bundle.js') )
+            .pipe( buffer() )
+            .pipe( uglify() )
+            .pipe( gulp.dest( path.dist.exercises ) );
+
+        return stream;
+    };
+
+    if ( watching ) {
+        bundler = watchify( bundler );
+        bundler.on( 'update', bundle );
+    }
+
+    return bundle();
+});
+
+gulp.task( 'browserify-exercise', function() {
+    var bundler = browserify({
+        cache: {}, packageCache: {}, fullPaths: true,
         entries: path.src.main,
         debug: !production
     });
@@ -81,15 +110,10 @@ gulp.task( 'browserify', function() {
             .on( 'error', function( e ) {
                 console.error( '\x1b[31;1m', 'Browserify Error', e.toString(), '\x1b[0m' );
             })
-            .pipe( source('bundle.js') );
-
-        if ( production ) {
-            stream = stream
-                .pipe( buffer() )
-                .pipe( uglify() )
-        }
-
-        stream.pipe( gulp.dest( path.dist.base ) );
+            .pipe( source('bundle.js') )
+            .pipe( buffer() )
+            .pipe( uglify() )
+            .pipe( gulp.dest( path.dist.base ) );
 
         return stream;
     };
@@ -123,6 +147,8 @@ gulp.task( 'watch', function() {
             return;
         }
 
+        console.log( change );
+
         var bundler = browserify({
                 cache: {}, packageCache: {}, fullPaths: true,
                 entries: change.path,
@@ -136,15 +162,10 @@ gulp.task( 'watch', function() {
                     .on( 'error', function( e ) {
                         console.error( '\x1b[31;1m', 'Browserify Error', e.toString(), '\x1b[0m' );
                     })
-                    .pipe( source( filename ) );
-
-                if ( production ) {
-                    stream = stream
-                        .pipe( buffer() )
-                        .pipe( uglify() )
-                }
-
-                stream.pipe( gulp.dest( destPath ) );
+                    .pipe( source( filename ) )
+                    .pipe( buffer() )
+                    .pipe( uglify() )
+                    .pipe( gulp.dest( destPath ) );
 
                 return stream;
             };

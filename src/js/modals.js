@@ -24,10 +24,10 @@ module.exports = {
                             url: '/user',
                             data: $form.serialize(),
                             success: function() {
-                                $('.tile-group .group-name')[0].innerHTML = 'Register';
-                                $('.tile-group').removeClass('sunken');
                                 localStorage.login = true;
-                                done( true );
+                                fetchUserData(function() {
+                                    window.location = window.location;
+                                });
                             },
                             error: function( xhr, type ) {
                                 if ( xhr.status === 401 ) {

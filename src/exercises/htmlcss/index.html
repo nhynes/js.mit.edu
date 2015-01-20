@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>The Web GUI: HTML &amp; CSS</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+      .qlist li {
+        margin-bottom: 8px;
+      }
+      h3 {
+        margin-top: 30px;
+      }
+      .what-did-i-sel {
+        margin-left: 4px;
+      }
+      .orangeSquare {
+        width: 50px;
+        height: 50px;
+        background-color: orange;
+        margin-top: 5px;
+      }
+      .hidden {
+        display: none;
+      }
+      .cart li {
+        padding: 2px 0;
+      }
+      .playlist li {
+        text-decoration: underline;
+        padding: 2px 0;
+        float: left;
+        clear: both;
+        color: initial !important;
+        font-family: 'Open Sans', sans-serif !important;
+      }
+      .playlist:after {
+        content:"";
+        display:table;
+        clear:both;
+      }
+      .playlist li:hover {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body class="exercise exercise-htmlcss">
+    <header class="page-header">
+      <h1 class="page-title">The Web GUI: HTML &amp; CSS</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        Now that you have a working knowledge of the JavaScript language, it&apos;s time to start creating richly interactive application frontends!<br>
+        One of the nicest things about JS is that it comes with a fairly easy-to-use and fantastically powerful graphical UI toolkit: the pair of HTML and CSS.<br>
+        </p>
+        <p>
+        Since this is a class on JavaScript, though, the HTML and CSS will be provided for you. Proficiency with HTMLCSS will come with lots of searching for how to do specific things, so don&apos;t get frustrated if you can&apos;t figure it out immediately.
+        </p>
+        <p>
+        You will, however, need a halfway decent text editor to work with actual source files. If you don&apos;t already have one, I&apos;ve listed a few recommendations below. Try writing some HTML in each to see which one you like best!
+        </p>
+      </div>
+      <div class="readings">
+        <h2>Suggested Readings</h2>
+        <ul>
+          <li><a href="/2014/notes/lecture2_notes.pdf" target="_blank">JavaScript and the HTML DOM - Intro JS 2014</a><br>
+            Sections 1, 2.1, 2.2 but skip Example 7 and focus on the jQuery methods, 2.3, 2.4, 3-3.1<br>
+            Just get a basic understanding of what HTML and CSS do, the structure of the DOM and the types of CSS selectors. These are essential to making a web app GUI.
+          </li>
+          <li><a href="http://www.w3schools.com/css/css_selectors.asp" target="_blank">CSS Selectors - w3schools.com</a><br>
+            The &quot;Try it yourself&quot; examples capture the essence of what you need to know about HTML &amp; CSS.
+          </li>
+          <li><a href="http://www.impressivewebs.com/jquery-tutorial-for-beginners/" target="_blank">jQuery Tutorial for Beginners - impressivewebs.com</a><br>
+            &quot;Selecting Elements in JQuery&quot; through &quot; Adding, Removing, and Appending Elements and Content&quot;
+          </li>
+          <li><a href="/2014/notes/lecture3_notes.pdf" target="_blank">[Optional] Events, Forms, and Animations - Intro JS 2014</a><br>
+            We&apos;ll be covering events and forms more in the next class, but if you want to get started now, just skim the tables in section 1.1 and read 1.2
+          </li>
+        </ul>
+        <h2>Suggested Text Editors</h2>
+        <ul>
+          <li><a href="https://atom.io/" target="_blank">Atom by Github</a><br>
+            Built using web technologies. Looks like Sublime text. Has lots of packages.
+          </li>
+          <li><a href="http://brackets.io/" target="_blank">Brackets by Adobe</a><br>
+            Built using web technologies and has some nice conveniences for web developers like inline CSS editors and automatic reloading your your code. Also has a <em>really cool</em> extension called Theseus that allows you to visually debug your asynchronous code.
+          </li>
+          <li><a href="http://www.vim.org/" target="_blank">Vim</a><br>
+            Highly configurable and speedy. Never leave your terminal or move your hands off the keyboard!
+          </li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        <h3>Selectors</h3>
+        <p>
+        A web GUI starts with a framework of HTML and CSS is built up or modified using JS. Whether adding or modifying elements, the first step is to get a reference to an existing HTML element (loaded from file or previously created by JS). When adding, the desired parent or sibling is selected. When modifying, the element itself is selected.
+        </p>
+        <p>
+        Almost always, selection is done using CSS selectors. In the next questions, you are asked to provide the CSS selector string that selects the desired element(s) loaded from the HTML document, below.
+        </p>
+        <pc html>&lt;body&gt;
+  &lt;div id="mainContent"&gt;
+    &lt;ul class="products"&gt;
+      &lt;li&gt;Widgets&lt;/li&gt;
+      &lt;li&gt;Gigawidgets &lt;span&gt;(Out of stock)&lt;/span&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+    &lt;span class="products"&gt;Also try Organic and Death Crystal-free!&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;span&gt;Batteries not included&lt;/span&gt;
+&lt;/body&gt;</pc>
+        <p>Output:</p>
+        <div id="sampleWrapper" style="border: 1px solid gray;">
+          <div id="mainContent">
+            <ul class="products">
+              <li>Widgets</li>
+              <li>Gigawidgets <span>(Out of stock)</span></li>
+            </ul>
+            <span class="products">Also try Organic and Death Crystal-free!</span>
+          </div>
+          <span>Batteries not included</span>
+        </div>
+        <script type="feedback-helper" name="expectType">
+        function( editorValue, expectedType ) {
+          var actualType = typeof eval( editorValue )
+
+          if ( actualType !== expectedType ) {
+            throw Error('Expected type \'' + expectedType + '\' but was \'' + actualType + '\'')
+          } else if ( editorValue.indexOf(';') !== -1 ) {
+            throw Error('Unexpected token ;')
+          }
+        }
+        </script>
+        <script type="text/javascript">
+        function whatDidISel( sel ) {
+          var sel = sel === 'body' ? '' : sel,
+              selected = document.querySelectorAll('#sampleWrapper ' + sel),
+              all = document.querySelectorAll('#sampleWrapper *')
+
+          Array.prototype.slice.call( all ).forEach( function( elem ) {
+              elem.style.border = '0px solid transparent'
+          })
+          document.querySelector('#sampleWrapper').style.border = '1px solid gray'
+
+          Array.prototype.slice.call( selected ).forEach( function( elem ) {
+              elem.style.border = '2px solid hotpink'
+          })
+        }
+        </script>
+        <p>Enter the string containing the correct CSS selector. Click on the "What did I select?" button to see your selection outlined in pink, above.</p>
+        <ol class="qlist">
+          <li>
+              <question name="selectid" pts="1">
+              Select the element with ID <code>"mainContent"</code><br>
+              <textarea cm="inline" rows="1" cols="20"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectType( editorValue, 'string' )
+              var selector = eval( editorValue )
+              $q.find('button').attr( 'data-sel', selector )
+              if ( selector !== '#mainContent' ) {
+                  throw Error('Incorrect selector')
+              }
+              </script>
+              <button onclick="whatDidISel(this.getAttribute('data-sel'))">What did I select?</button>
+              </question>
+          </li>
+          <li>
+              <question name="selectclass" pts="1">
+              Select the element with class <code>"products"</code><br>
+              <textarea cm="inline" rows="1" cols="20"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectType( editorValue, 'string' )
+              var selector = eval( editorValue )
+              $q.find('button').attr( 'data-sel', selector )
+              if ( selector !== '.products' ) {
+                  throw Error('Incorrect selector')
+              }
+              </script>
+              <button onclick="whatDidISel(this.getAttribute('data-sel'))">What did I select?</button>
+              </question>
+          </li>
+          <li>
+              <question name="selectelem" pts="1">
+              Select all <code>li</code> elements<br>
+              <textarea cm="inline" rows="1" cols="20"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectType( editorValue, 'string' )
+              var selector = eval( editorValue )
+              $q.find('button').attr( 'data-sel', selector )
+              if ( selector !== 'li' ) {
+                  throw Error('Incorrect selector')
+              }
+              </script>
+              <button onclick="whatDidISel(this.getAttribute('data-sel'))">What did I select?</button>
+              </question>
+          </li>
+          <li>
+              <question name="selectfirstelem" pts="1">
+              Select the <a href="http://css-tricks.com/almanac/selectors/f/first-of-type/" target="_blank">first</a> <code>li</code> element<br>
+              <textarea cm="inline" rows="1" cols="20"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectType( editorValue, 'string' )
+              var selector = eval( editorValue )
+              $q.find('button').attr( 'data-sel', selector )
+              if ( selector !== 'li:first-of-type' ) {
+                  throw Error('Incorrect selector')
+              }
+              </script>
+              <button onclick="whatDidISel(this.getAttribute('data-sel'))">What did I select?</button>
+              </question>
+          </li>
+          <li>
+              <question name="selectmultilevel" pts="1">
+              Select only <code>span</code>s with class <code>"products"</code><br>
+              <textarea cm="inline" rows="1" cols="20"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectType( editorValue, 'string' )
+              var selector = eval( editorValue )
+              $q.find('button').attr( 'data-sel', selector )
+              if ( selector !== 'span.products' ) {
+                  throw Error('Incorrect selector')
+              }
+              </script>
+              <button onclick="whatDidISel(this.getAttribute('data-sel'))">What did I select?</button>
+              </question>
+          </li>
+          <li>
+              <question name="selectinterior" pts="2">
+              Select only <code>span</code>s that are children of the <code>div</code> with ID <code>"#mainContent"</code><br>
+              <textarea cm="inline" rows="1" cols="20"></textarea>
+              <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+              this.expectType( editorValue, 'string' )
+              var selector = eval( editorValue )
+              $q.find('button').attr( 'data-sel', selector )
+              if ( selector !== '#mainContent span' ) {
+                  throw Error('Incorrect selector')
+              }
+              </script>
+              <button onclick="whatDidISel(this.getAttribute('data-sel'))">What did I select?</button>
+              </question>
+          </li>
+        </ol>
+
+        <h3>Modifying CSS Properties</h3>
+
+        <p>
+        There are two ways to dynamically change the presentation of an element. The first is by adding or removing <code>class</code>es and the second is by directly modifying the element's <code>style</code> attribute.
+        Here are some lo-fi rules for deciding whether to use style or class modifications:
+        </p>
+
+        <p>
+        Modify classes when:
+        <ul>
+          <li>Many elements must receive the same modification</li>
+          <li>Many CSS rules must be applied at once</li>
+          <li>You know ahead of time what the CSS rules should be</li>
+        </ul>
+        </p>
+
+        <p>
+        Modify styles when:
+        <ul>
+          <li>Only one element is going to be modified</li>
+          <li>The applied style should take precedence over previously applied rules</li>
+          <li>The new CSS rules must be dynamically recalculated</li>
+        </ul>
+        </p>
+
+        <h4>Setting styles</h4>
+        <question name="movesquarestylemanual" pts="1">
+        Change this orange square's color to <code>'green'</code> by directly editing the Element object. Select it by its ID using <pc>document.getElementById('orangeSquare')</pc> and set its <code>style.backgroundColor<code> property.
+        <div id="orangeSquare1" class="orangeSquare"></div>
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        editorValue = editorValue.replace( 'orangeSquare', 'orangeSquare1' )
+        if ( editorValue.indexOf('$') !== -1 ) {
+            throw Error('Hey, no jQuery!')
+        }
+        eval( editorValue )
+        if ( $('#orangeSquare1').css('backgroundColor').toLowerCase() !== 'rgb(0, 128, 0)' ) {
+            throw Error('The square does not have the correct color')
+        }
+        </script>
+        </question>
+
+        <p style="text-align: center">&bull;&nbsp;&bull;&nbsp;&bull;</p>
+
+        <question name="movesquarestylejq" pts="1">
+        Wow, that last one was a mouthful! Do the same thing again, except this time use jQuery to select the element using <a href="https://api.jquery.com/jquery/" target="_blank"><code>$</code></a> and then set its style using the <a href="https://api.jquery.com/css/" target="_blank"><code>css</code></a> method.
+        <div id="orangeSquare2" class="orangeSquare"></div>
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        if ( editorValue.indexOf('document') !== -1 ) {
+            throw Error('Why would you want to do it the hard way?')
+        }
+        editorValue = editorValue.replace( 'orangeSquare', 'orangeSquare2' )
+        eval( editorValue )
+        if ( $('#orangeSquare2').css('backgroundColor').toLowerCase() !== 'rgb(0, 128, 0)' ) {
+            throw Error('The square does not have the correct color')
+        }
+        </script>
+        </question>
+
+        <p style="text-align: center">&bull;&nbsp;&bull;&nbsp;&bull;</p>
+
+        <question name="toggleclass" pts="2">
+        Complete the following code to make clicking the button show or hide the list of users (child of <code>"#mainPanel"</code> with class <code>"user-list"</code>)
+        <br>
+        <span class="flavortext">Hint: use <a href="https://api.jquery.com/toggleClass/" target="_blank">toggleClass</a> and the <code>"hidden"</code> class.</span>
+        <p>
+          <button id="showHideUsers">Show/Hide Users</button><br>
+          <ul class="user-list hidden bad">
+            <li style="color: red">Wrong list!</li>
+          </ul>
+          <div id="mainPanel">
+            <ul class="user-list good">
+              <li>The Venerable Anne Hunter</li>
+              <li>The Esteemed Rob Miller</li>
+              <li>Nick</li>
+            </ul>
+          </div>
+        </p>
+        <script type="setup">
+        </script>
+        <textarea cm="lineno" rows="3">
+$('#showHideUsers').click( function() {
+    // your code here
+})</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        var $shu = $('#showHideUsers'),
+            $ulbad = $('.user-list.bad').addClass('hidden'),
+            $ulgood = $('.user-list:not(.bad)').removeClass('hidden')
+        $shu.off()
+        eval( editorValue )
+        $shu.click()
+        if ( !$ulbad.hasClass('hidden') ) {
+            throw Error('You selected the wrong list!')
+        }
+        if ( $('#mainPanel').hasClass('hidden') ) {
+            throw Error('#mainPanel should not be hidden')
+        }
+        if ( !$ulgood.hasClass('hidden') ) {
+            throw Error('The list was not hidden')
+        }
+        $shu.click()
+        if ( $ulgood.hasClass('hidden') ) {
+            throw Error('The list was not unhidden')
+        }
+        </script>
+        </question>
+
+        <h3>Adding and Removing Elements</h3>
+
+        <h4>Adding</h4>
+        <question name="templatefn" pts="3">
+        <p>
+        In most cases, the elements you add to the DOM will be created using template function. Just so they&apos;re not a magical black box, try your hand at implementing one. We&apos;ll look at some examples of templating systems in the Advanced Topics class.
+        </p>
+        <p>
+        The <code>playlistTmp</code> function takes an array of song objects of the form
+        <pc>{
+    artist: String,
+    album: String,
+    title: String
+}</pc>
+        and returns a jQuery object representing an ordered list (<code>&lt;ol&gt;</code>) of class <code>"playlist"</code> with list items of the format <code>"Title - Artist, Album"</code>.
+        <br>Example output is shown below:
+        <ol class="playlist">
+          <li>Title - Artist, Album</li>
+          <li>Title - Artist, Album</li>
+        </ol>
+        </p>
+        <span class="flavortext">Suggested implementation (of many): turn the array of songs into an array of list items and <a href="https://api.jquery.com/append/" target="_blank"><code>append</code></a> it to the ol to which the <code>"playlist"</code> <a href="https://api.jquery.com/addClass/" target="_blank"><code>class has been added</code></a></span><br>
+        <span class="flavortext">Hint: set the text of an element by modifying its <code>innerHTML</code>. jQuery provides the <a href="https://api.jquery.com/html/" target="_blank"><code>html</code></a> convenience method.</span>
+        <textarea cm="lineno" rows="10">
+function playlistTmp( playlist ) {
+    var $ol = $('<ol>') // creates <ol> wrapped as a jQuery object
+    // your code here
+}
+</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        var templater = eval( '(' + editorValue + ')' ),
+            PLAYLIST = this._.shuffle( [
+                { artist: 'The Beatles', album: 'Yellow Submarine', title: 'Yellow Submarine' },
+                { artist: 'Idina Menzel', album: 'Disney Frozen', title: 'Let It Go' },
+                { artist: 'Franz Schubert', album: 'The Best Works', title: 'Symphony No. 8' },
+            ] ),
+            expected = (function( playlist ) {
+                return $('<ol>').addClass('playlist').append( playlist.map( function( song ) {
+                    return $li = $('<li>').html( song.title + ' - ' + song.artist + ', ' + song.album )
+                }) )
+            })( PLAYLIST ),
+            actual = templater( PLAYLIST )
+
+        if ( !actual || !actual.jquery ) {
+            throw Error( 'Template did not produce a jQuery object:\n' + this.stringify( actual ) )
+        }
+        if ( actual.length !== 1 || expected[0].outerHTML !== actual[0].outerHTML ) {
+            throw Error( 'Expected' + expected[0].outerHTML + 'but was\n' + actual[0].outerHTML )
+        }
+        </script>
+        </question>
+
+        <p style="text-align: center">&bull;&nbsp;&bull;&nbsp;&bull;</p>
+
+        <question name="removeelem" pts="2">
+        Complete the following code to make clicking the button remove its containing list item from the DOM.
+        <br>
+        <span class="flavortext">Hint: use <a href="https://api.jquery.com/remove/" target="_blank">remove</a> after selecting the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Node.parentElement" target="_blank"><code>parentElement</code></a>.</span>
+        <div id="cartWrap">
+          <ul class="cart">
+            <li>Death Crystal-free Widget&nbsp;<button class="remove-cart">Remove from cart</button></li>
+            <li>High-fat Widget&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="remove-cart">Remove from cart</button></li>
+            <li>High-sodium Widget&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="removeMe" class="remove-cart">Remove from cart</button></li>
+          </ul>
+        </div>
+        <div id="shadowcart" style="display:none">
+          <ul class="cart">
+            <li>Death Crystal-free Widget&nbsp;<button class="remove-cart">Remove from cart</button></li>
+            <li>High-fat Widget&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="remove-cart">Remove from cart</button></li>
+            <li>High-sodium Widget&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="remove-cart">Remove from cart</button></li>
+          </ul>
+        </div>
+        <script type="setup">
+        </script>
+        <textarea cm="lineno" rows="4">
+$('.remove-cart').click( function() {
+    var btnElt = this // vanilla DOM node, no jQuery
+    // your code here
+})</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        editorValue = editorValue.replace('.remove-cart', '#cartWrap .remove-cart')
+        $('#cartWrap').html( $('#shadowcart').html() )
+        var $buttons = $('#cartWrap .remove-cart'),
+            $firstButton = $( $buttons[0] ),
+            $firstLi = $( $buttons[0].parentElement ).attr( 'id', 'firstcartitem' )
+
+        $buttons.off()
+        eval( editorValue )
+        $firstButton.click()
+        if ( $('#cartWrap #firstcartitem').length > 0 ) {
+            throw Error('Cart item was not removed')
+        }
+        </script>
+        </question>
+
+        <h3>Onward, into the browser!</h3>
+
+        <question name="dlfile" pts="2">
+        Great work so far! It's now time to take the leap into your own browser!<br>
+        Download <a href="/exercises/htmlcss/thebeginning.html" download>this HTML page</a> and follow the instructions contained within.<br>
+        After successfully running the <code>checkExercise1</code> function, you will receive a token. Paste it here to complete this task:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user,
+            token = atob( editorValue )
+
+        if ( token !== uname + 'thebeginning' ) {
+            throw Error('Invalid token.')
+        }
+        </script>
+        </question>
+
+        <h3>Edutainment</h3>
+        <question name="cookies" pts="2">
+        I was able to get 100 billion cookies in <a href="http://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a>. Can you beat my score? Enter the number of cookies and upload a screenshot here!
+        <span class="flavortext">Hint: see what you can do with the <code>Game</code> object.</span>
+        <textarea cm rows="1">0</textarea>
+        <input id="cookies" type="file">
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        if ( eval(editorValue) <= 100e9 ) {
+            throw Error('You can do better!')
+        }
+        if ( $('#cookies').val() === '' ) {
+            throw Error('You must upload a screenshot')
+        }
+        </script>
+        </question>
+      </div>
+      <script type="application/javascript" src="../exercise-bundle.js"></script>
+    </div>
+  </body>
+</html>

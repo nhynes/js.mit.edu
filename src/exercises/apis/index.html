@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AJAX &amp; APIs</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+      .qlist li {
+        margin-bottom: 8px;
+      }
+      h3 {
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body class="exercise exercise-apis">
+    <header class="page-header">
+      <h1 class="page-title">AJAX &amp; APIs</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        Up until now, all of the data used in the questions has been provided.
+        Very reasonably, you may be wondering how and from where the application gets real data!
+        You will be pleased, then, to know that during this exercise you&apos;ll practice loading data from a <em>REST API</em>.
+        </p>
+        <p>
+        Far from just another industry buzzword, a REST API is an efficient (stateless) scheme in which a server provides data and services at particular URLs known as <em>endpoints</em>. Endpoints are queried using the HTTP verbs like <code>GET</code>, <code>POST</code>, and <code>DELETE</code> and responses to queries include one of many, descriptive <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">status codes</a> and, optionally, some data in a <a href="https://www.json.com/" target="_blank">convenient format</a>.
+        </p>
+        In this exercise, the data will come from someone else&apos;s server, but in a short while you will be querying your own REST endpoints!
+        </p>
+      </div>
+      <div class="readings">
+        <h2>Suggested Readings</h2>
+        <ul>
+          <li><a href="/2014/notes/lecture4_notes.pdf" target="_blank">HTTP &amp; AJAX - Intro JS 2014</a><br>
+            The first two paragraphs of section 2 and sections 2.1-2.3, 3.1, 3.3
+          </li>
+          <li><a href="/2014/slides/lecture3_slides.pdf" target="_blank">Events, Forms, and Animations - Intro JS 2014</a><br>
+            Skim the (linked) slides for a summary of event types and methods for adding/removing callbacks.
+          </li>
+          <li>Quick explanation of asynchrony and callbacks:<br>
+            Some operations, like network requests, take a very long time. JavaScript is single threaded, meaning that only one operation runs at a time, so if a network request is done <em>synchronously</em>, the JS engine waits (blocks) until the operation completes to continue running code, leaving your application unresponsive in the meantime. The alternative is to make an immediately-returning <em>asynchronous</em> request while providing a function that gets <em>called back</em> when the long-running operation completes. You can find some examples of asynchronous calls and callbacks here: <a href="http://www.mosync.com/docs/sdk/js/guides/basic/using-javascript-callbacks/index.html">JavaScript Callbacks and Closures - MoSync</a>.
+          </li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        <p>
+        Let&apos;s start with a few warmups, here, before moving into your own editor.
+        </p>
+
+        <h3>JSON</h3>
+
+        <p>
+        JavaScript Object Notation, or JSON for short, is a handy method of <em>serializing</em> (converting) data for transmission over the network since it can easily be used by JavaScript using the <code>JSON</code> object and its <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse" target="_blank"><code>parse</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify" target="_blank"><code>stringify</code></a> methods.
+        </p>
+
+        <question name="writejson" pts="2">
+        To highlight the difference between JS and JSON syntax, convert the following object to <a href="https://www.json.com/" target="_blank">JSON</a>:
+        <pc>{
+    username: 'AaronJax',
+    roomsJoined: [
+        { name: 'javascript', isMod: false },
+        { name: 'nodejs', isMod: true }
+    ],
+    loggedInSince: 809913642101
+}</pc>
+        <textarea cm="lineno" rows="8">{
+    
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        var obj = JSON.parse( editorValue ),
+            strstr = function( obj ) {
+                return typeof obj === 'string' ? '"' + obj + '"' : obj
+            }
+
+        if ( typeof obj !== 'object' ) {
+            throw Error( 'Expected an object but had type ' + typeof obj )
+        }
+        if ( obj.username !== 'AaronJax' ) {
+            throw Error( 'Expected username to be "AaronJax" but was ' + obj.username )
+        }
+        if ( obj.loggedInSince !== 809913642101 ) {
+            throw Error( 'Expected loggedInSince to be 809913642101 but was ' + strstr( obj.loggedInSince ) )
+        }
+        if ( !(obj.roomsJoined instanceof Array) || obj.roomsJoined.length !== 2 ) {
+            throw Error( 'Expected roomsJoined to be an Array of length 2' )
+        }
+        if ( obj.roomsJoined[0].name !== 'javascript' ) {
+            throw Error('First room joined had incorrect name. Expected "javascript" but was ' + strstr( obj.roomsJoined[0].name ) )
+        }
+        if ( typeof obj.roomsJoined[0].isMod !== 'boolean' ) {
+            throw Error( 'Expected "isMod" of first room joined to be a boolean but had type ' + typeof obj.roomsJoined[0].isMod )
+        }
+        if ( obj.roomsJoined[0].isMod !== false ) {
+            throw Error('Expected "isMod" of first room to be false')
+        }
+        if ( obj.roomsJoined[1].name !== 'nodejs' ) {
+            throw Error('Second room joined had incorrect name. Expected "nodejs" but was ' + strstr( obj.roomsJoined[1].name ) )
+        }
+        if ( typeof obj.roomsJoined[1].isMod !== 'boolean' ) {
+            throw Error('Expected "isMod" of first room joined to be a boolean but had type ' + typeof obj.roomsJoined[1].isMod )
+        }
+        if ( obj.roomsJoined[1].isMod !== true ) {
+            throw Error('Expected "isMod" of second room to be true')
+        }
+        </script>
+        </question>
+
+        <h3>AJAX</h3>
+
+        <p>
+        Constructing an <a href="https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest?redirectlocale=en-US&redirectslug=DOM%2FXMLHttpRequest" target="_blank">XMLHttpRequest</a>, the object that allows a script to make requests without reloading the page, involves a lot of boilerplate code (see section 3.2 in the <a href="http://js.mit.edu/2014/notes/lecture4_notes.pdf" target="_blank">2014 notes</a>). For this reason, you will almost always want to use the jQuery <a href="https://api.jquery.com/jQuery.ajax/" target="_blank"><code>$.ajax</code></a> convenience method instead.
+        In fact, when the request and response are straightforward (no exotic parameters, only one or two failure modes), you&apos;ll often use the convenience methods of the convenience method: <a href="https://api.jquery.com/jQuery.get/" target="_blank"><code>$.get</code></a> and <a href="https://api.jquery.com/jQuery.post/" target="_blank"><code>$.post</code></a>, which correspond to requests using the two most common HTTP verbs.
+        </p>
+
+        <h4>GET</h4>
+
+        <question name="get" pts="2">
+        Use <code>$.get</code> to GET the <pre><code>http://js.mit.edu/e/apis/hello</code></pre> endpoint, which has the following specification (remember that HTTP APIs are just function calls that work over the Internet).
+        <br>Call the provided <code>showHello</code> method with the returned data.
+        <pre><code>GET http://js.mit.edu/e/apis/hello - Returns a greeting</code></pre>
+        <span class="flavortext">Since this webpage and the requested resource share the same URL root (js.mit.edu), you can use a relative path like &quot;/e/apis/hello&quot; instead of the full URL.</span>
+        <textarea cm="lineno" rows="3">$.get(/* your code here */)</textarea>
+        <script type="feedback async" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        $('#greeting').html('')
+        var showHello = function( data ) {
+                if ( data === 'Greetings!' ) {
+                    $('#greeting').html( 'js.mit.edu REST API says: ' + data )
+                    done( null )
+                } else {
+                    done('Greeting not loaded correctly. Returned data was: ' + data)
+                }
+            },
+            get = eval( '(' + editorValue + ')' )
+        if ( !get.fail ) {
+            throw Error('You have to create an XHR using the $.get function')
+        }
+        get.fail( function( xhr ) {
+            done('Response code ' + xhr.status + ': ' + xhr.statusText )
+        })
+        </script>
+        <span id="greeting" style="font-size:110%;color: green"></span>
+        </question>
+
+        <h4>POST</h4>
+        <question name="post" pts="2">
+        Use <code>$.post</code> to POST the <a href="https://api.jquery.com/val/" target="_blank">value</a> of a textbox (ID: <code>"saveData"</code>) to the <pre><code>http://js.mit.edu/e/apis/save</code></pre> endpoint, which has the following specification.
+        <pre><code>POST http://js.mit.edu/e/apis/save - Saves data for later retrieval
+  data:
+      value - the value to save
+  return: the ID of the saved resource</code></pre>
+        <span class="flavortext">No need to do anything with the returned data now.</span>
+        <input type="hidden" id="saveData">
+        <textarea cm="lineno" rows="4">
+$('#saveData').blur( function() {
+    // your code to POST the value here
+})</textarea>
+        <script type="feedback async" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        var post = eval( '(' + editorValue + '\n)' ),
+            hasStartedAjax = false
+
+        $( document ).ajaxStart( function() {
+            hasStartedAjax = true
+        })
+        $( document ).ajaxComplete( function( e, xhr ) {
+            $( document ).unbind('ajaxStart')
+            $( document ).unbind('ajaxComplete')
+            $('#saveData').off()
+            if ( xhr.responseText !== 'helloworld' ) {
+                done('Incorect data saved. Tried saving "helloworld" but was "' + xhr.responseText + '"')
+            } else {
+                done( null )
+            }
+        })
+
+        $('#saveData').val('helloworld')
+        $('#saveData').blur()
+        $('#saveData').val('')
+
+
+        if ( !hasStartedAjax ) {
+            $( document ).unbind('ajaxStart')
+            $( document ).unbind('ajaxComplete')
+            $('#saveData').off()
+            throw Error('POST request not sent')
+        }
+        </script>
+        </question>
+
+        <h3>APIs</h3>
+
+        <p>
+        In the rest of this exercise, you will create an application to search for and view food nutritional data provided by the <a href="http://ndb.nal.usda.gov/ndb/doc/index" target="_blank">National Nutrient Database API</a>.
+        Start by downloading the <a href="yum.zip" download>starter code</a>, including the jQuery library, and <b>setting the username meta tag to your username</b>.<br>
+        If everything is set up correctly, you will see the text &quot;Let&apos;s a-go!&quot; upon loading<code>index.html</code>
+        </p>
+        <p>
+        Next, to get a reasonable number of API requests per hour (1000 vs 30), <a href="https://api.data.gov/signup/" target="_blank">sign up</a> for an api.data.gov API key. You do not have to use a real name or email address (right on, government!). You can also try to share the one I&apos;ve already made:
+        <code>p7o78AUY4ykMowW4I2UUU4EmfAcrQm7ws5RixhWH</code>
+        </p>
+
+        <h4>The Application</h4>
+        <ol>
+          <li>
+            <question name="bindings" pts="5">
+            Start by following the instructions in <code>NDBAPI.js</code> for creating bindings to the NDB API. A binding, or a mapping between two dissimilar environments (like JS and HTML), makes interacting with the bound resource much more convenient.<br>
+            For instance, we don&apos;t want to use, for every single data request, an ad-hoc $.ajax call because this would make the code hard to change, so, instead, we make a function for each endpoint that allows us to tune the request parameters.
+            <br><br>When you have done this, run the <code>checkBindings()</code> function in your browser&apos;s terminal to receive a token that you should enter here:
+
+            <textarea cm rows="1" cols="30"></textarea>
+            <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+            eval( localStorage.registerlogin )
+            var uname = myLogin.user
+            if ( atob( editorValue ) !== uname + 'hasbindingsok' ) {
+                throw Error('Invalid token')
+            }
+            </script>
+            </question>
+          </li>
+          <li>
+            <question name="wireui1" pts="4">
+            Next, follow the instructions in <code>yum.js</code> for wiring up the search UI (attaching events to data).
+            <br>When you have done this, run the <code>checkSearchUI()</code> function in your browser&apos;s terminal to receive a token that you should enter here:
+
+            <textarea cm rows="1" cols="30"></textarea>
+            <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+            eval( localStorage.registerlogin )
+            var uname = myLogin.user
+            if ( atob( editorValue ) !== uname + 'hassearchok' ) {
+                throw Error('Invalid token')
+            }
+            </script>
+            </question>
+          </li>
+          <li>
+            <question name="wireui2" pts="5">
+            Finally, follow the instructions in <code>yum.js</code> for wiring up the display UI.
+            <br>When you have done this, run the <code>checkDisplayUI()</code> function in your browser&apos;s terminal to receive a token that you should enter here:
+
+            <textarea cm rows="1" cols="30"></textarea>
+            <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+            eval( localStorage.registerlogin )
+            var uname = myLogin.user
+            if ( atob( editorValue ) !== 'hasdisplayok' + uname ) {
+                throw Error('Invalid token')
+            }
+            </script>
+            </question>
+          </li>
+        </ol>
+      </div>
+      <script type="application/javascript" src="../exercise-bundle.js"></script>
+    </div>
+  </body>
+</html>

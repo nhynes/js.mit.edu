@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta username="YOUR_USERNAME_HERE!">
+	<title>Yum!</title>
+	<link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+	<div class="panel search">
+		<h3 class="search-heading top">Search:</h3>
+
+		<form id="searchForm" action="javascript:search()">
+			<label class="search-label"><span class="label-text">Search terms:</span><input class="search-field" type="text" name="q" required="true"></label>
+			<label class="search-label"><span class="label-text">Food group:</span>
+				<select name="fg" class="search-field">
+					<option value="" selected>All</option>
+					<option value="American Indian/Alaska Native Foods">American Indian/Alaska Native Foods</option>
+					<option value="Baby Foods">Baby Foods</option>
+					<option value="Baked Products">Baked Products</option>
+					<option value="Beef Products">Beef Products</option>
+					<option value="Beverages">Beverages</option>
+					<option value="Breakfast Cereals">Breakfast Cereals</option>
+					<option value="Cereal Grains and Pasta">Cereal Grains and Pasta</option>
+					<option value="Dairy and Egg Producs">Dairy and Egg Products</option>
+					<option value="Fast Foods">Fast Foods</option>
+					<option value="Fats and Oils">Fats and Oils</option>
+					<option value="Finfish and Shellfish Products">Finfish and Shellfish Products</option>
+					<option value="Fruits and Fruit Juices">Fruits and Fruit Juices</option>
+					<option value="Lamb, Veal, and Game">Lamb, Veal, and Game Products</option>
+					<option value="Legumes and Legume Products">Legumes and Legume Products</option>
+					<option value="Meals, Entrees, and Side Dishes">Meals, Entrees, and Side Dishes</option>
+					<option value="Nut and Seed Products">Nut and Seed Products</option>
+					<option value="Pork Products">Pork Products</option>
+					<option value="Poultry Products">Poultry Products</option>
+					<option value="Restaurant Foods">Restaurant Foods</option>
+					<option value="Sausages and Luncheon Meats">Sausages and Luncheon Meats</option>
+					<option value="Snacks">Snacks</option>
+					<option value="Soups, Sauces, and Gravies">Soups, Sauces, and Gravies</option>
+					<option value="Spices and Herbs">Spices and Herbs</option>
+					<option value="Sweets">Sweets</option>
+					<option value="Vegetables and Vegetable Products">Vegetables and Vegetable Products</option>
+				</select>
+			</label>
+			<input type="submit" value="Search" class="searchbtn">
+		</form>
+		<div class="search-results-box">
+			<h3 class="search-heading">Results:</h3>
+			<ul id="searchResults"></ul>
+		</div>
+	</div>
+	<div class="panel viewer">
+		<div class="nutrition-facts">
+			<h1 class="facts-heading">Nutrition Facts</h1>
+			<h3 class="facts-food"></h3>
+			<div class="serving-size">
+				Serving size:
+				<select name="serving-sizer">
+					<option>---</option>
+				</select>
+			</div>
+			<hr class="rule big">
+			<span class="inline-heading">Amount per serving</span>
+			<hr class="rule">
+			<span class="inline-heading">Calories</span> 0
+			<hr class="rule med">
+			<span class="inline-heading">Total Fat</span> 0g
+			<ul class="subnutrients">
+				<li>Saturated Fat 0g</li>
+				<li>Monounsaturated Fat 0g</li>
+				<li>Polyunsaturated Fat 0g</li>
+			</ul>
+			<hr class="rule">
+			<span class="inline-heading">Cholesterol</span> 0g
+			<hr class="rule">
+			<span class="inline-heading">Sodium</span> 0g
+			<hr class="rule">
+			<span class="inline-heading">Total Carbohydrate</span> 0g
+			<ul class="subnutrients">
+				<li>Dietary Fiber 0g</li>
+				<li>Sugars 0g</li>
+			</ul>
+			<hr class="rule">
+			<span class="inline-heading">Protein</span> 0g
+			<hr class="rule big">
+		</div>
+	</div>
+
+	<!-- the following scripts depend on jQuery -->
+	<script type="application/javascript" src="NDBAPI.js"></script>
+	<script type="application/javascript" src="yum.js"></script>
+	<script type="application/javascript" src="checker.js"></script>
+</body>
+</html>

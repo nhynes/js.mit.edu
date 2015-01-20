@@ -1,0 +1,119 @@
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.panel.search {
+    width: calc( 55% - 20px );
+    float: left;
+}
+.panel {
+    height: calc( 100% - 20px );
+    float: left;
+    padding: 10px;
+}
+.panel.viewer {
+    width: calc( 45% - 20px );
+    border-left: 1px solid gray;
+    position: fixed;
+    right: 0;
+}
+
+.search-heading {
+    margin: 5px 0px;
+}
+.search-heading.top {
+    margin: 0 0 5px 0;;
+}
+
+.search-label {
+    display: block;
+}
+
+.label-text {
+    margin-right: 5px;
+}
+
+.search-field {
+    width: 65%;
+    margin: 5px;
+}
+
+.searchbtn {
+    margin-top: 5px;
+}
+
+.search-results-box {
+    text-align: left;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-align: left;
+}
+
+#searchResults > li {
+    margin: 10px 0;
+}
+
+#searchResults .name {
+    text-decoration: underline;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 4px;
+}
+#searchResults .group {
+    color: #555;
+    text-decoration: none;
+    cursor: default;
+}
+
+.nutrition-facts {
+    border: 3px solid black;
+    max-width: 420px;
+    margin: auto;
+    padding: 5px;
+    text-align: left;
+}
+
+.nutrition-facts > .facts-heading {
+    margin: 0;
+}
+
+.nutrition-facts > .facts-food {
+    margin: 3px 0;
+}
+
+.nutrition-facts .rule {
+    background-color: black;
+    border: 0px solid transparent;
+    height: 2px;
+}
+
+.nutrition-facts .rule.big {
+    height: 8px;
+}
+
+.nutrition-facts .rule.med {
+    height: 3px;
+}
+
+.nutrition-facts .inline-heading {
+    display: inline-block;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.nutrition-facts .subnutrients {
+    margin: 5px 0 3px 0;
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.subnutrients > li {
+    margin: 3px;
+    border-top: 2px solid black;
+    padding-top: 6px;
+}

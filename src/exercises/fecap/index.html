@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Designing a Frontend</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+      .q {
+      }
+      .a {
+        color: #555;
+      }
+    </style>
+  </head>
+  <body class="exercise exercise-fecap">
+    <header class="page-header">
+      <h1 class="page-title">Designing a Frontend</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        Up until now, a good portion of the code used in the questions has been provided for you.
+        Very reasonably, you may be wondering how to go from blank file to application!
+        You will be pleased, then, to know that during this exercise you&apos;ll practice designing a sample application from the ground up.
+        </p>
+      </div>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        In the following steps, we&apos;ll create a client for a chat application. Depending on your specific application and goals, you may want to reorder, add, or remove some steps. The idea here is just to get an idea of what goes into making a web application.
+
+        <h3>Principles of Design</h3>
+
+        <h4>Step 1</h4>
+
+        Think about the application you want to build and imagine that it&apos;s already done and in users' hands. Next, determine the requirements by answering questions similar to the following:
+        <br>
+        <ul>
+          <li>
+            <span class="q">What is the basic functionality of the application?</span><br>
+            <span class="a">&gt; To send messages to users in rooms</span><br>
+          </li>
+          <li>
+            <span class="q">What kinds of other features should it have?</span><br>
+            <span class="a">&gt; chat histories</span><br>
+            <span class="flavortext">It&apos;s easier to build in features if you design your application to be extensible from the very beginning!</span>
+          </li>
+        </ul>
+
+        Your answers to these high-level design questions will guide your progress through writing the application.
+
+        <h4>Step 1.5</h4>
+        <p>
+        This step actually occurs concurrently with the previous step. As you are determining what high-level features go into your app, think about what <a href="https://en.wikipedia.org/wiki/Software_design_pattern" target="_blank">design patterns</a> can be used to implement each feature. For instance, to &quot;send messages between users,&quot; we want to use the <em>client-server</em> pattern in which clients pass messages to the server which passes messages to other clients. To handle chat histories, we will want to use a database on the server.
+        <p class="flavortext">
+        Rest assured that, even if you don&apos;t know which patterns to use right now, eventually, with practice, you&apos;ll mentally organize concepts that you continually write into reusable components. It&apos;s like learning an algorithm. At first you learn just the sequence of steps, but in this disjoint form, they&apos;re tough to translate into code. After further study, though, you learn the overall structure and the implementation flows naturally.
+        </p>
+        <p>
+        Sometimes you may not be able to perfectly match a pattern to a feature.
+        For example, so far, we&apos;ve only covered REST APIs (the request-response pattern).
+        If we tried to use this pattern to get new messages in the client, the client would have to continually make requests to, or <em>poll</em>, the server for new messages.
+        It would be much better if the server could send messages directly to the client.
+        <br>In these situations, the answer will come through learning more about your environment. With a bit of internet searching, you could discover <a href="https://developer.mozilla.org/en-US/docs/WebSockets" target="_blank">WebSockets</a>, a relatively new techology that allows real-time, bidirectional, client-server communication. This is what we&apos;re going to use to create the chat application.
+        <br>
+        <span class="flavortext">The web is <em>constantly</em> changing. Always stay up to date on new developments and make toy web apps that use new technologies, just to understand how they work.</span>
+        </p>
+
+        <h4>Step 2</h4>
+        <p>
+        Once you have outlined the features of the app and have determined the high level patterns you want to use, you can venture into the implementation details (although sometimes you may want to briefly think about implementation beforehand just to see if the pattern you want to use will work).
+        <br>
+        Start by recursively breaking the application into manageable chunks. For our chat application, we may have chunks like these:
+        <ul>
+          <li>
+            Client (frontend)
+            <ul>
+              <li>Login form</li>
+              <li>
+                Chat UI
+                <ul>
+                  <li>join room form</li>
+                  <li>message input form</li>
+                  <li>received message display</li>
+                </ul>
+              </li>
+              <li>sending/receiving messages</li>
+            </ul>
+          </li>
+          <li>
+            Server (backend)
+            <ul>
+              <li>sending/receiving messages</li>
+              <li>storing messages</li>
+            </ul>
+          </li>
+        </ul>
+
+        Next, determine how the components are connected. Focusing on the frontend, the user input form should have a submit event listener that sends a new message. When the client receives a new message, it should append it to the message display.
+        </p>
+        <p>
+        Now you can either implement each chunk or look for examples online using focused keywords like &quot;html form&quot;, &quot;js submit listener&quot; or &quot;js websocket api&quot;.
+        </p>
+        <p class="flavortext">
+        Since you have already thought about the overall design and how the high-level components interact (the <em>interface</em>), you don&apos;t have to keep every detail of the system in your head at once.
+        Since you broke the lower-level components into chunks and figured out how they interact, you can focus on independently implementing each chunk.<br>
+        Designing an application is just a process of making large things into progressively smaller things until you have a procedure for implementing them. You can then use the interfaces to put them all together into the final system.
+        </p>
+
+        <h4>Step 3</h4>
+        <p>
+        Incrementally test your chunks. Test early and test often, even if just by <code>console.log</code>ging some output! When you start assembling components, if you find a bug, you want to know that it&apos;s due to a faulty connection and not some problem with the components, themselves.
+        </p>
+
+        <h3>Principles to Practice</h3>
+
+        <p>
+        Okay, by now you must be thinking to yourself &quot;Okay... I see all of this abstract <del>nonsense</del> helpful information, but I still don&apos;t know how to actually <em>apply</em> any of it!&quot; Let&apos;s get started with the exercise, proper, then!
+        </p>
+
+        Start by downloading the <a href="jschat.zip" target="_blank" download>starter code</a>. It&apos;s about as minimal as it gets. You get to fill it up yourself!
+
+        <h4>Setup</h4>
+
+        <question name="setup" pts="2">
+        As before, enter your username in the &lt;meta username&gt; tag.<br>
+        Next, include the following libraries in the appropriate location:
+        <ul>
+          <li>
+            <a href="http://socket.io" target="_blank">Socket.io</a> - a WebSocket library. Include the source from <a href="http://js.mit.edu/socket.io/socket.io.js" target="_blank">here</a>.
+          </li>
+          <li>jQuery</li>
+        </ul>
+        In your browser console, run <code>checkSetup()</code> to receive a token that you should paste here:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'hassetupok' + uname ) {
+            throw Error('Invalid token')
+        }
+        </script>
+        <span id="greeting" style="font-size:110%;color: green"></span>
+        </question>
+
+        Fantastic! Now that you&apos;re set up, you are almost ready to work on completing each of the chunks of functionality. Before you go on, take a look at the API for the server that you will be using (and, very soon, implementing). It&apos;s a bit different from the APIs we used in the last exercise and is focused on <em>events</em> rather than requests since it&apos;s real-time.
+
+        <ul>
+          <li><b><code>socket.emit( 'login', username )</code></b> -<br>
+            Logs in as <code>username</code></li>
+          <li><b><code>socket.on( 'loginsuccess', callback )</code></b> -<br>
+            Emitted by the server when login has completed
+          </li>
+          <li><b><code>socket.emit( 'join', roomName )</code></b> -<br>
+            Joins the room specified by <code>roomName</code> while leaving any previously-joined rooms. Requires that the user has logged in.</li>
+          <li><b><code>socket.on( 'joinsuccess', callback )</code></b> -<br>
+            Emitted by the server when room join has completed
+          </li>
+          <li><b><code>socket.emit( 'message', message )</code></b> -<br>
+            Sends a message to the currently joined chat room. Requires the user to have joined a room.</li>
+          <li><b><code>socket.on( 'message', callback )</code></b> -<br>
+            Received when a user sends a message to the currently-joined room. The callback function is called with one argument, <code>data</code>, containing the sender&apos;s username and message.
+            <br><span class="flavortext">Hint: <code>console.log( data )</code> to get the exact names of the properties</span>
+          </li>
+        </ul>
+
+        <h4>Chat UI - Login form</h4>
+
+        <question name="login" pts="5">
+        <p>
+        Implement the <code>login</code> function in <code>index.js</code>.
+        </p>
+        In your browser console, run <code>checkLogin()</code> to receive a token that you should paste here:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'hasloginok' + uname ) {
+            throw Error('Invalid token')
+        }
+        </script>
+        </question>
+
+        <h4>Chat UI - Join room form</h4>
+
+        <question name="join" pts="5">
+        <p>
+        Implement the <code>joinRoom</code> function in <code>index.js</code>.
+        </p>
+        In your browser console, run <code>checkJoinRoom()</code> to receive a token that you should paste here:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'hasjoinroomok' + uname ) {
+            throw Error('Invalid token')
+        }
+        </script>
+        </question>
+
+        <h4>Chat UI - Sending messages</h4>
+
+        <question name="sendmessage" pts="5">
+        <p>
+        Implement the <code>sendMessage</code> function in <code>index.js</code>.
+        </p>
+        In your browser console, run <code>checkSendMessage()</code> to receive a token that you should paste here:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'hassendmessageok' + uname ) {
+            throw Error('Invalid token')
+        }
+        </script>
+        </question>
+
+        <h4>Chat UI - Receiving messages</h4>
+
+        <question name="recvmessage" pts="5">
+        <p>
+        Implement the <code>socket.on('message')</code> callback function in <code>index.js</code>.
+        </p>
+        In your browser console, run <code>checkReceiveMessage()</code> to receive a token that you should paste here:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'hasrecvmessageok' + uname ) {
+            throw Error('Invalid token')
+        }
+        </script>
+        </question>
+
+        <h4>Your own feature!</h4>
+
+        <question name="manual" pts="15">
+        <p>
+        Implement your own additional feature! Zip up your code and email it to js@mit.edu with a brief description of what it does. You will receive a token and feedback on your code in a reply :)
+        </p>
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'hascodeok' + uname ) {
+            throw Error('Invalid token')
+        }
+        </script>
+        </question>
+      </div>
+      <script type="application/javascript" src="../exercise-bundle.js"></script>
+    </div>
+  </body>
+</html>

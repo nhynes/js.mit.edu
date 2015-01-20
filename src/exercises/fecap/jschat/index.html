@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta username="nhynes">
+  <link rel="stylesheet" href="index.css">
+  <title>JS Chat</title>
+</head>
+<body>
+
+  <div class="login hidden">
+
+		<!-- login form -->
+    <form class="login-form" action="javascript:login()">
+      Username: <input type="text" class="username">
+    </form>
+
+  </div>
+
+  <div class="chat-ui">
+
+		<!-- join room form -->
+    <form class="chat-room" action="javascript:joinRoom()">
+    Chatting in room:&nbsp;<input type="text" placeholder="None" class="chatroom-name" disabled required autocomplete="off">
+    </form>
+
+		<!-- list of received messages -->
+    <ul class="messages"></ul>
+
+		<!-- user message input form -->
+    <form class="chat-input" action="javascript:sendMessage()">
+      <span class="input-preamble"><span class="username-disp"></span>:&nbsp;</span><input type="text" class="user-message" disabled>
+    </form>
+
+  </div>
+
+  <script type="application/javascript" src="index.js"></script>
+  <script type="application/javascript" src="checker.js"></script>
+</body>
+</html>

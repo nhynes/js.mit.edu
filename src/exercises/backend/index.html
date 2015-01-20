@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Node.js: Server-Side JavaScript</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+      .qlist li {
+        margin-bottom: 8px;
+      }
+      h3 {
+        margin-top: 30px;
+      }
+      .ifcomp {
+        margin: 10px 0;
+      }
+      .ipfloater {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        background-color: #ccc;
+        padding: 5px 0px;
+          box-shadow: 0px 0px 8px 1px #777;
+      }
+    </style>
+  </head>
+  <body class="exercise exercise-backend">
+    <header class="page-header">
+      <h1 class="page-title">Node.js: Server-Side JavaScript</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        Congratulations! You&apos;ve made it through learning JS on the client and are now ready to explore JS on the server! While the same syntax and semantics still apply, server-side JavaScript is a bit different in that
+        <ul>
+          <li>
+            You trade the DOM (HTML elements) for access to the filesystem and other programs on the server. Whereas in the client you were accessing data from the web and updating the UI, on the server you will be <em>providing</em> data to the web and updating data stores.
+          </li>
+          <li>
+            Callbacks are now more important than ever because, for high performance, Node.js runs slow tasks like network requests and file I/O in the background and calls you back when they&apos;re done.
+          </li>
+        </ul>
+        After this and the next class, you will know enough to build a data-backed, perhaps real-time web application entirely in JavaScript!
+        </p>
+      </div>
+      <div class="readings">
+        <h2>Suggested Readings</h2>
+        <ul>
+          <li><a href="/2014/notes/lecture5_notes.pdf" target="_blank">Node.js and Server-Side JavaScript - Intro JS 2014</a>
+          </li>
+          <li><span style="text-decoration:underline">A note on non-blocking IO:</span><br>
+            You&apos;ll recall that JavaScript is single threaded and only one operation can happen at a time. The power of Node.js is that long-running tasks (mainly I/O to files and the network) are initiated and then immediately set aside to stew until the results are ready. The server is then free to handle other requests in the meantime.<br>
+            Just like in the client, you specify what you want to do when the data is returned using callback functions! One of the keys to mastering Node.js is a good understanding of how and when callbacks are called.
+          </li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        <!-- # set up a GET endpoint -->
+        <!-- # npm install body&#45;parser and add a POST endpoint -->
+        <!-- # complete the chat application -->
+
+        <p>
+        <b>*Important. Read this!*</b><br>
+        In these and future problems, you will download and run starter code using Node.js. Keeping in mind that Node.js can do anything to the system that the user who ran it could, you should verify that the code, in fact, does exactly what it says it does. It will be well commented for this purpose. <em>Never</em> execute untrusted code unless it&apos;s in a properly isolated environment!
+        </p>
+
+        <h3>Salutations, server-side!</h3>
+
+        <question name="setup" pts="2">
+        Start by verifying that Node.js is set up correctly and that the auto-grader works with your network settings. Download the <a href="starter_code.js" target="_blank">starter code</a> and run it by entering <code>node starter_code</code> in your computer&apos;s terminal after <code>cd</code>ing to the location of <code>starter_code.js</code>.
+        <br>
+        <h4 class="ifcomp">If you are running on Windows</h4>
+        Run the Node.js installer and restart your computer. Open up a Command Prompt by doing Start &gt; Run &gt; cmd.exe. Verify that <code>node</code> is available by entering <code>node --version</code> into the command prompt and observing a number like &quot;v0.10.35&quot;.<br>To run a file using <code>node</code>, you must specify the path of the file. This is most easily done by using the <a href="http://www.cs.princeton.edu/courses/archive/spr05/cos126/cmd-prompt.html"><code>cd</code></a> command to change the directory (folder) to the one containing the <code>starter_code.js</code> file. For example, if I saved the file to my Desktop, I would enter <code>cd C:\Users\Nick\Desktop</code>. If you get lost, type <code>dir</code> to list the contents of the current directory.
+        <h4 class="ifcomp">If you are running on Macintosh</h4>
+        Run the Node.js installer. Open up Terminal and use <code>cd</code> to change the directory to the one containing <code>starter_code.js</code>. For example, if I saved the file to my Desktop, I would type <code>cd ~/Desktop</code>. Run <code>node starter_code.js</code> to get Node.js to run the file.
+        <h4 class="ifcomp">If you are running on GNU/Linux</h4>
+        I assume that you already know the basics of the terminal, but if you don&apos;t, just do the same thing as on Macintosh.
+        <p>
+        <button class="feedbutton">My server is ready!</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888 ),
+            connectTimeout = setTimeout( function() {
+                g.abort()
+                done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+            }, 1000 ),
+            $fb = $q.find('.feedbutton').css('color', 'inherit')
+            g = $.get( addr )
+              .always( function() {
+                  clearTimeout( connectTimeout )
+              })
+              .done( function( data ) {
+                if ( data === 'Salutations!' ) {
+                    done( null )
+                } else {
+                    done('Error: expected server to return "a-okay" but was "' + data + '"')
+                }
+              }.bind( this ) )
+              .fail( function( res ) {
+                if ( res.status === 0 ) {
+                  done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                } else {
+                  done('Error: Unable to connect to server (' + res.status + ' ' + res.statusText + ')')
+                }
+              })
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+        </script>
+         </question>
+
+        <h3>This will save you an internet search later</h3>
+
+       <p class="flavortext">Foreword: if you find yourself writing more than three lines of code for any of the chunks in the next exercises, you&apos;re writing too much code!</p>
+
+       <question name="lines" pts="3">
+       Let us begin with the straightforward yet oft queried task of reading a file line by line.
+       Node.js offers a <a href="http://strongloop.com/strongblog/practical-examples-of-the-new-node-js-streams-api/" target="_blank">slick streaming interface</a>, but this is still a new feature, so we&apos;ll stick with the tried and true method of reading the entire file into memory and working with it there.
+       <br>
+       Download <a href="filelines.zip" target="_blank" download>the starter code</a> and follow the instructions found in <code>filelines.js</code>. Start the server and hit the checker button to get some delicious, delicious points.<br>
+       <span class="flavortext">If <code>node</code> complains about EADDRINUSE, you have to kill the other server since a port can only be bound by one!</span>
+        <p>
+        <button class="feedbutton">Check away cap'n!</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var $fb = $q.find('.feedbutton').css('color', 'inherit')
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+        var addr = this.getURL( 8888 ),
+            timeout = setTimeout( function() {
+                g.abort()
+                done('Error: server did not end the response')
+            }, 1000 ),
+
+        g = $.get( addr )
+        .always( function() {
+          clearTimeout( timeout )
+        })
+        .done( function( lines, _, res ) {
+          if ( res.getResponseHeader('Content-Type').indexOf('application/json') === -1 ) {
+            return done('Error: Content-Type was not application/json')
+          }
+          if ( lines.length === 4 && lines[0] === 'some' && lines[3] === 'here' ) {
+              done( null )
+          } else if ( !(lines instanceof Array) ) {
+              done('Error: Expected server to return a JSON arraybut was\n' + this.stringify( lines ) )
+          } else if ( data === 'Salutations!' ) {
+              done('Error: You\'re still running the server from the last question!')
+          } else {
+              done('Error: Something seriously wrong happened!')
+          }
+        }.bind( this ) )
+        .fail( function( res ) {
+          if ( res.status === 0 ) {
+            done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+          } else if ( res.status === 200 ) {
+            done('Error: Returned data was not JSON:\n"' + res.responseText + '"')
+          } else {
+            done('Error: Unable to connect to server (' + res.status + ' ' + res.statusText + ')')
+          }
+        })
+        </script>
+        </question>
+
+        <h3>Express Train to Webappville</h3>
+
+        <question name="expresslinesget" pts="3">
+        Now, let&apos;s expand on the file reading server you just created to allow clients get only words that contain a specified string. This time, for convenience, we&apos;ll use the <a href="http://expressjs.com" target="_blank">Express.js</a> framework that, among other things, provides many abstractions for the methods found in the built-in <code>http</code> module.
+        <br>Download <a href="expresslines.zip" target="_blank" download>the Express-ified starter code</a> and follow the instructions in <code>expresslines.js</code>.<br>
+        When you have completed the first subtask, start your server and push the magic button.
+        <p>
+        <button class="feedbutton">Choo choo!</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888, '/words' ),
+            timeout = setTimeout( function() {
+                g.abort()
+                done('Error: server did not send the response')
+            }, 1000 ),
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            g
+
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+
+        g = $.get( addr, { contains: 'e' } )
+        .always( function() {
+          clearTimeout( timeout )
+        })
+        .done( function( words, _, res ) {
+          if ( res.getResponseHeader('Content-Type').indexOf('application/json') === -1 ) {
+            return done('Error: Content-Type was not application/json')
+          }
+
+          var allHasE = words.reduce( function( hasE, word ) {
+            return hasE && word.indexOf('e') !== -1
+          }, true )
+
+          if ( allHasE ) {
+              $.get( addr )
+              .done( function( allWords ) {
+                if ( allWords.indexOf('go') !== -1 ) {
+                    done( null )
+                } else {
+                    done('Error: Expected contains to default to the empty string. Returned:\n' + this.stringify( allWords ) )
+                }
+              }.bind( this ) )
+          } else if ( !(words instanceof Array) ) {
+              done('Error: Expected server to return a JSON arraybut was\n' + this.stringify( words ) )
+          } else {
+              done('Error: With contains=e, a result did not contain the letter e.\n' + this.stringify( words ) )
+          }
+        }.bind( this ) )
+        .fail( function( res ) {
+          if ( res.status === 0 ) {
+            done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+          } else if ( res.status === 200 ) {
+            done('Error: Returned data was not JSON:\n"' + res.responseText + '"')
+          } else {
+            done('Error: ' + res.status + ' ' + res.statusText )
+          }
+        })
+        </script>
+        </question>
+
+        <p style="text-align: center">&bull;&nbsp;&bull;&nbsp;&bull;</p>
+
+        <question name="expresslinespost" pts="3">
+        When you have completed the second subtask, re-start your server and check away!
+        <p>
+        <button class="feedbutton">The Webappville Post</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888, '/words' ),
+            timeout = setTimeout( function() {
+                g.abort()
+                done('Error: server did not send the response')
+            }, 1000 ),
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            g
+
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+
+        g = $.post( addr, { word: 'testword' } )
+        .always( function() {
+          clearTimeout( timeout )
+        })
+        .done( function( _, _, res ) {
+          $.get( addr, { contains: 'testword' } )
+          .done( function( words ) {
+            var isAllTestword = words.reduce( function( allTestword, word ) {
+              return allTestword && word === 'testword'
+            }, true )
+            if ( !isAllTestword ) {
+              done('Error: adding and then querying for \'testword\' should return an array of \'testword\' but was \'' + this.stringify( word ) + '\'')
+            } else {
+              $.post( addr )
+              .done( function() {
+                done('Error: Expected a 400 Bad Request when no new word is supplied')
+              })
+              .fail( function( res ) {
+                if ( res.status === 400 ) {
+                  done( null )
+                } else {
+                  done('Error: ' + res.status + ' ' + res.statusText )
+                }
+              })
+            }
+          }.bind( this ) )
+        }.bind( this ) )
+        .fail( function( res ) {
+          if ( res.status === 0 ) {
+            done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+          } else if ( res.status === 200 ) {
+            done('Error: Returned data was not JSON:\n"' + res.responseText + '"')
+          } else {
+            done('Error: ' + res.status + ' ' + res.statusText )
+          }
+        })
+        </script>
+        </question>
+
+        <p style="text-align: center">&bull;&nbsp;&bull;&nbsp;&bull;</p>
+
+        <p>By now, you must be thinking that plain text files are probably not the most effective means of storing data. If so, then you&apos;re absolutely correct. We&apos;ll be covering databases in the next class!</p>
+
+        <h3>Tying up some loose WebSockets</h3>
+
+        <p class="flavortext">
+        I&apos;dlike to apologize for giving you such an uninteresting and uncreative frontend project. To remedy this, I&apos;m going to put together a far more exciting backend project! It would be a shame, however, to leave the frontend project only half completed. Finish the remaining exercises and build a real-time backend for your chat client!
+        </p>
+        <p>
+        Recall from the last exercise the API provided to the client by the server that I had set up:
+        </p>
+        <ul>
+          <li><b><code>socket.emit( 'login', username )</code></b> -<br>
+            Logs in as <code>username</code></li>
+          <li><b><code>socket.on( 'loginsuccess', callback )</code></b> -<br>
+            Emitted by the server when login has completed
+          </li>
+          <li><b><code>socket.emit( 'join', roomName )</code></b> -<br>
+            Joins the room specified by <code>roomName</code> while leaving any previously-joined rooms. Requires that the user has logged in.</li>
+          <li><b><code>socket.on( 'joinsuccess', callback )</code></b> -<br>
+            Emitted by the server when room join has completed
+          </li>
+          <li><b><code>socket.emit( 'message', message )</code></b> -<br>
+            Sends a message to the currently joined chat room. Requires the user to have joined a room.</li>
+          <li><b><code>socket.on( 'message', callback )</code></b> -<br>
+            Received when a user sends a message to the currently-joined room. The callback function is called with one argument, <code>data</code>, containing the sender&apos;s username and message.
+          </li>
+        </ul>
+        <p>
+        This time, instead of emitting logins/joins/messages and receiving successes, you&apos;ll be listening for the three actions and emitting successes.
+        </p>
+
+        <h4>Chat Server - Login</h4>
+        <question name="chatlogin" pts="3">
+        All the chat server has to do is respond to three events: login, join, and message. This task asks you to implement the <code>login</code> event listener.
+
+        <br>Download <a href="jschat.js" target="_blank" download>the nearly-complete starter code</a> and follow the instructions within.<br>
+        As is customary, when you have completed the login task, run the server and click the button.
+        <p>
+        <button class="feedbutton">Log in</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888 ),
+            socket = io.connect( addr ),
+            connectTimeout,
+            loginTimeout,
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            docheck = function() {
+              loginTimeout = setTimeout( function() {
+                  socket.off()
+                  done('Error: No loginsuccess emitted')
+              }, 1000 )
+
+              socket.on( 'loginsuccess', function() {
+                  clearTimeout( loginTimeout )
+                  socket.off()
+                  done( null )
+              })
+              socket.emit('login', 'testuser')
+            }
+
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+
+        if ( !socket.connected ) {
+          connectTimeout = setTimeout( function() {
+              socket.off()
+              done('Error: Socket could not connect. Is your server running?')
+          }, 1000 )
+
+          socket.on( 'connect', function() {
+            clearTimeout( connectTimeout )
+
+            docheck()
+          })
+        } else {
+          docheck()
+        }
+
+        </script>
+        </question>
+
+        <h4>Chat Server - Join</h4>
+        <question name="chatjoin" pts="3">
+        So far so good. When you&apos;re satisfied with your <code>join</code> event handler, ask the button how you did!
+        <p>
+        <button class="feedbutton">Join</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888 ),
+            socket = io.connect( addr ),
+            connectTimeout,
+            loginTimeout,
+            joinTimeout,
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            docheck = function() {
+              loginTimeout = setTimeout( function() {
+                  socket.off()
+                  done('Error: No loginsuccess emitted')
+              }, 1000 )
+
+              socket.on( 'loginsuccess', function() {
+                clearTimeout( loginTimeout )
+
+                joinTimeout = setTimeout( function() {
+                    socket.off()
+                    done('Error: No joinsuccess emitted')
+                }, 1000 )
+
+                socket.on('joinsuccess', function() {
+                  clearTimeout( joinTimeout )
+                  socket.off()
+                  done( null )
+                })
+                socket.emit('join', 'testroom')
+              })
+              socket.emit('login', 'testuser')
+            }
+
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+
+        if ( !socket.connected ) {
+          connectTimeout = setTimeout( function() {
+              socket.off()
+              done('Error: Socket could not connect. Is your server running?')
+          }, 1000 )
+
+          socket.on( 'connect', function() {
+            clearTimeout( connectTimeout )
+            docheck()
+          })
+        } else {
+          docheck()
+        }
+
+        </script>
+        </question>
+
+        <h4>Chat Server - Message</h4>
+        <question name="chatmessage" pts="3">
+        And last but not least, sending the actual messages. Whip up a callback for the <code>message</code> event. You know the drill.
+        <p>
+        <button class="feedbutton">Send message</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888 ),
+            socket = io.connect( addr ),
+            connectTimeout,
+            loginTimeout,
+            joinTimeout,
+            messageTimeout,
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            docheck = function() {
+              loginTimeout = setTimeout( function() {
+                  socket.off()
+                  done('Error: No loginsuccess emitted')
+              }, 1000 )
+
+              socket.on( 'loginsuccess', function() {
+                clearTimeout( loginTimeout )
+
+                joinTimeout = setTimeout( function() {
+                    socket.off()
+                    done('Error: No joinsuccess emitted')
+                }, 1000 )
+
+                socket.on('joinsuccess', function() {
+                  clearTimeout( joinTimeout )
+
+                  messageTimeout = setTimeout( function() {
+                      socket.off()
+                      done('Error: No message emitted. Verify that you emit the message to\nthe most recently joined group.')
+                  }, 1000 )
+
+                  socket.on('message', function( data ) {
+                    clearTimeout( messageTimeout )
+                    socket.off()
+                    if ( data.username !== 'testuser' ) {
+                      return done('Error: Tried sending message as testuser but username was ' + data.user + '.\nVerify that you are saving the login name and sending it back out as\nthe user property in the message.')
+                    }
+                    if ( data.msg !== 'one small step' ) {
+                      return done('Error: Received incorrect message. Expected \'one small step\' but was\n' + data.msg)
+                    }
+                    done( null )
+                  })
+                  socket.emit('message', 'one small step')
+                })
+                socket.emit('join', 'testroom')
+              })
+              socket.emit('login', 'testuser')
+            }
+
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+
+        if ( !socket.connected ) {
+          connectTimeout = setTimeout( function() {
+              socket.off()
+              done('Error: Socket could not connect. Is your server running?')
+          }, 1000 )
+
+          socket.on( 'connect', function() {
+            clearTimeout( connectTimeout )
+            docheck()
+          })
+        } else {
+          docheck()
+        }
+
+        </script>
+        </question>
+
+        <p style="text-align: center">&bull;&nbsp;&bull;&nbsp;&bull;</p>
+
+        Great job! Now, if you wish, you can dredge up your chat client and replace the line that says
+        <pc>var socket = io.connect('http://js.mit.edu/chat')</pc>
+        with
+        <pc>var socket = io.connect('http://localhost')</pc>
+        and have your very own real-time chat server!
+      </div>
+      <input type="hidden" class="yourip">
+      <div class="ipfloater" style="display: none">
+        IP address of your computer:&nbsp;<input type="text" placeholder="Your IP address" class="yourip">
+      </div>
+      <script type="feedback-helper" name="getURL">
+      function( port, endpoint ) {
+        return 'http://' + $('.yourip').val() + ':' + port + ( endpoint ? endpoint : '' )
+      }
+      </script>
+      <script type="application/javascript" src="http://js.mit.edu/socket.io/socket.io.js"></script>
+      <script type="application/javascript" src="bundle-backend.js"></script>
+    </div>
+  </body>
+</html>

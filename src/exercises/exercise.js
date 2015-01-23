@@ -1,14 +1,21 @@
 var CodeMirror = require('codemirror'),
-    $ = require('zeptojs'),
+    $ = require('jquery'),
     _ = require('lodash'),
+    stringify = require('stringify-object'),
     editors = {},
-    feedbackHelpers = { _: _ },
+    feedbackHelpers = {
+        _: _,
+        stringify: function( obj ) {
+            return stringify( obj, { indent: '    ' } )
+        }
+    },
     feedbackTriggers = {}
 
 require('codemirror/addon/runmode/runmode')
 require('codemirror/addon/edit/matchbrackets')
 require('codemirror/addon/edit/closebrackets')
 require('codemirror/mode/javascript/javascript')
+require('codemirror/mode/htmlmixed/htmlmixed')
 
 function getExerciseName() {
     var nameRe = /exercise-(.+)/
@@ -67,11 +74,12 @@ $('textarea[cm]').each( function() {
 $('pc').each( function() {
     var text = $('<div/>').html( this.innerHTML ).text(),
         $code = $('<code>').html( text ).addClass('cm-s-default'),
-        $pre = $('<pre>').append( $code ).addClass('pc')
+        $pre = $('<pre>').append( $code ).addClass('pc'),
+        hlType = this.getAttribute('html') !== null ? 'htmlmixed' : 'javascript'
 
     if ( this.getAttribute('i') !== null ) { $pre.addClass('inline') }
     $( this ).replaceWith( $pre )
-    CodeMirror.runMode( text, 'javascript', $code[0] )
+    CodeMirror.runMode( text, hlType, $code[0] )
 })
 
 $('script[type="feedback-helper"]').each( function() {
@@ -91,67 +99,82 @@ $('question').each( function() {
         pointValue = parseInt( $question.attr('pts') ),
         editorId = $question.find('.CodeMirror').attr('data-editorid'),
         editor = editors[ editorId ],
-        $fbDef = $question.find('script[type="feedback"]'),
-        fbFn = eval( '(function( editorValue ) { try {' + $fbDef.html() +
-                    '} catch( e ) { return e } })' ),
+        $feedbutton = $question.find('.feedbutton'),
+        $fbDef = $question.find('script[type~="feedback"]'),
+        fbFn = eval( '(function( editorValue, $q, done ) { try {\n' + $fbDef.html() +
+                    '\n} catch( e ) { return e } })' ),
+        async = $fbDef.attr('type').indexOf('async') !== -1,
         fbTrigger = $fbDef.attr('trigger'),
         $fbDisplay = $('<p class="feedback">').appendTo( $question ),
         format = $fbDef.attr('format'),
         exerciseName = getExerciseName(),
         qId = exerciseName + questionName,
-        ptsId = exerciseName + 'pts'
+        ptsId = exerciseName + 'pts',
 
-    function saveQuestion( content ) {
-        if ( !localStorage.login ) { return }
+        saveQuestion = function( content ) {
+            if ( !localStorage.login ) { return }
 
-        var editorValue = editor.getValue(),
-            saveData = {
-                questionName: questionName,
-                exerciseName: exerciseName,
-                pts: pointValue,
-                data: editorValue
-            },
-            prevSave = localStorage[ qId ]
-
-        if ( !localStorage[ qId ] ) {
-            localStorage[ ptsId ] = ( parseInt( localStorage[ ptsId ] ) || 0 ) + pointValue
-        }
-        localStorage[ qId ] = editorValue
-        if ( prevSave !== editorValue ) {
-            $.ajax({
-                type: 'POST',
-                url: '/questions',
-                data: {
-                    action: 'save',
-                    question: saveData
+            var editorValue = editor ? editor.getValue() : null,
+                saveData = {
+                    questionName: questionName,
+                    exerciseName: exerciseName,
+                    pts: pointValue,
+                    data: editorValue
                 },
-                error: function( xhr, type ) {
-                    console.error( xhr.status, xhr.response )
-                }
-            })
-        }
-    }
-    if ( localStorage[ qId ] ) {
-        editor.setValue( localStorage[ qId ] )
-    }
+                prevSave = localStorage[ qId ]
 
-    function triggerFeedback() {
-        var feedback = ( fbFn.call( feedbackHelpers, editor.getValue() ) || {} ).message,
-        dispOutput = format ? format.replace( '%s', feedback ) : feedback
+            if ( !localStorage[ qId ] ) {
+                localStorage[ ptsId ] = ( parseInt( localStorage[ ptsId ] ) || 0 ) + pointValue
+            }
+            localStorage[ qId ] = editorValue
+            if ( prevSave !== editorValue ) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/questions',
+                    data: {
+                        action: 'save',
+                        question: saveData
+                    },
+                    error: function( xhr, type ) {
+                        console.error( xhr.status, xhr.response )
+                    }
+                })
+            }
 
-        if ( feedback ) {
-            $fbDisplay.addClass('shown').html( dispOutput )
-        } else {
+            if ( $feedbutton.length > 0 ) {
+                $feedbutton.css('color', 'green').append('&nbsp;&#10004;')
+            }
+        },
+        done = function( feedback ) {
+            var dispOutput = format ? format.replace( '%s', feedback ) : feedback
+
+            if ( feedback ) {
+                $fbDisplay.addClass('shown').html( dispOutput )
+            } else if ( !async || feedback === null ) {
+                $fbDisplay.removeClass('shown')
+                saveQuestion()
+            }
+        },
+        triggerFeedback = function() {
             $fbDisplay.removeClass('shown')
-            saveQuestion()
+            var feedback = ( fbFn.call( feedbackHelpers, editor ? editor.getValue() : null, $question, done ) || {} ).message
+            done( feedback )
         }
+
+    if ( localStorage[ qId ] && editor ) {
+        editor.setValue( localStorage[ qId ] )
+    } else if ( localStorage[ qId ] && $feedbutton.length > 0 ) {
+        $feedbutton.css('color', 'green').append('&nbsp;&#10004;')
     }
+
     feedbackTriggers[ qId ] = triggerFeedback
 
     if ( fbTrigger === 'blur' ) {
         editor.on( 'blur', function() {
             triggerFeedback()
         })
+    } else if ( fbTrigger === 'button' ) {
+        $feedbutton.click( triggerFeedback )
     }
 })
 

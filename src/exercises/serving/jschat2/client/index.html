@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta username="nhynes">
+  <link rel="stylesheet" href="index.css">
+  <title>JS Chat</title>
+</head>
+<body>
+
+  <div class="login">
+
+		<!-- login form -->
+    <form class="login-form" action="javascript:login()">
+      Username: <input type="text" class="username" placeholder="Username"><br>
+      &nbsp;Password:&nbsp;<input type="password" class="password" placeholder="Password"><br>
+      <input type="submit" value="Log in">
+      <input type="button" class="create-user" value="Create user">
+    </form>
+
+		<!-- new user form -->
+    <form class="create-user-form hidden" action="javascript:createUser()">
+      <div class="create-status" style="color:red"></div>
+      Username: <input type="text" class="create-username" placeholder="Username"><br>
+      &nbsp;Password:&nbsp;<input type="password" class="create-password" placeholder="Password"><br>
+      <input type="submit" value="Create user">
+    </form>
+  </div>
+
+  <div class="chat-ui">
+
+		<!-- join room form -->
+    <form class="chat-room" action="javascript:joinRoom()">
+    Chatting in room:&nbsp;<input type="text" placeholder="None" class="chatroom-name" disabled required autocomplete="off">
+    </form>
+
+		<!-- list of received messages -->
+    <ul class="messages"></ul>
+
+		<!-- user message input form -->
+    <form class="chat-input" action="javascript:sendMessage()">
+      <span class="input-preamble"><span class="username-disp"></span>:&nbsp;</span><input type="text" class="user-message" disabled>
+    </form>
+
+  </div>
+
+  <script type="application/javascript" src="http://localhost:8888/socket.io/socket.io.js"></script>
+  <script type="application/javascript" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script type="application/javascript" src="index.js"></script>
+  <script type="application/javascript" src="checker.js"></script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Clients, the Cloud, &amp; You</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+    .tabletable {
+      border: 1px solid black;
+      margin: auto;
+    }
+    .tabletable td,th {
+      padding: 5px 10px;
+      border: 1px solid black;
+    }
+    </style>
+  </head>
+  <body class="exercise exercise-serving">
+    <header class="page-header">
+      <h1 class="page-title">Clients, the Cloud, &amp; You</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        Congratulations on making it to the penultimate class in the Introduction to JavaScript series! Last time you made a simple REST API that stored data to text files and completed the WebSocket backend for your chat client. You probably noticed that text files weren&apos;t a great way to store data for later manipulation and retrieval. I bet you also would have liked for your chat application to store message logs!
+        </p>
+        <p>
+        To remedy both of these issues, we will now explore the use of databases to make useful web applications. There are (broadly speaking) two main flavors of database system: <a target="_blank" href="https://en.wikipedia.org/wiki/Relational_database_management_system">Relational Database Management System (RDBMS)</a> and <a href="https://en.wikipedia.org/wiki/NoSQL" target="_blank">NoSQL</a>. RDBMS are great for storing data as rows in tables that reference other rows in other tables&mdash;that is, data that has well defined <em>relations</em> that are known ahead of time. MySQL is a very popular example. On the other end of the spectrum, there are document-oriented and key-value stores known as NoSQL databases. These are ideal when you just want to store a bunch of mostly unstructured data and possibly split your database across many servers.
+        MongoDB is a highly popular document-oriented NoSQL database. If this interests you, a good comparison of RDBMS vs NoSQL can be found <a target="_blank" href="http://theprofessionalspoint.blogspot.com/2014/01/nosql-vs-rdbms-why-and-why-not-to-use.html">here</a>.
+        </p>
+      </div>
+      <div class="readings">
+        <h2>Suggested Readings</h2>
+        <ul>
+          <li><a href="/2014/notes/lecture6_notes.pdf" target="_blank">Making Useful Web Applications - Intro JS 2014</a><br>
+            Section 2 and, optionally, 5 if you want to see examples of a package that handles MongoDB schemas and data validation.
+          </li>
+          <li><a href="https://github.com/mongodb/node-mongodb-native" target="_blank">Node MongoDB Native Driver - GitHub</a><br>
+            Skim the QuickStart to get an idea of what things MongoDB can do and how to do them.
+          </li>
+          <li><a href="https://github.com/kriskowal/q" target="_blank">(Optional) Q - GitHub</a><br>
+            This is a really great library that vastly cleans up your code and can make it easier to understand. It allows you to chain callbacks using operations like <code>then</code>, <code>done</code>, <code>catch</code>, and <code>fail</code> (it's just like jQuery $.get/$.post but for all asynchronous events!)
+          </li>
+          <li><a href="http://kkovacs.eu/cassandra-vs-mongodb-vs-couchdb-vs-redis" target="_blank">(Optional) Comparison of NoSQL Databases - Kristof Kovacs</a><br>
+            This article offers a good overview of the types and use cases of the various NoSQL databases. This will likely come in handy if you ever plan on developing a large-scale web application. If you only learn one, Redis will probably be the most useful.
+          </li>
+        </ul>
+      </div>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        The following tasks guide you through the use of MySQL (RDBMS) and MongoDB (NoSQL) in implementing user logins and chat message logging, respectively.
+        We will be building upon the chat application built in the last two exercises.
+        Just so everyone is on the same page, download <a href="jschat2.zip" target="_blank" download>JSChat 2.0</a> and use that as your starter code.
+        You are more than welcome&mdash;encouraged, even&mdash;to paste in your own implementation and additional feature.
+        When you have extracted the folder, be sure to run <code>npm install</code> to pull down all of the dependencies (express, mongodb, mysql).
+
+        <h3>1. User Logins</h3>
+
+        <p>
+        Okay, for this task, we&apos;re going to implement user logins using MySQL.
+        While you can handle user accounts using a <a target="_blank" href="https://en.wikipedia.org/wiki/Social_login">social login</a> like the one provided by Facebook or Twitter, another, more freedom-respecting option is to roll your own!
+        Here&apos;s the gist:
+        </p>
+        <ol>
+          <li>A user creates an account by sending a username and password to the server.</li>
+          <li>The server generates some random bytes, known as a <a target="_blank" href="https://en.wikipedia.org/wiki/Salt_%28cryptography%29">salt</a>, and <a target="_blank" href="https://en.wikipedia.org/wiki/Cryptographic_hash_function">hashes</a> the result of appending (or prepending) the salt to the password. </li>
+          <li>The server stores the username, the salt, and the hash of the password+salt. Note that the password is <em>never</em> stored on the server. This is nice because even if an attacker gains access to the database, she will not be able to easily recover the passwords or log in as another user.</li>
+          <li>Now, when a user logs in, the server looks up the salt and hash associated with the provided username, hashes the salt+provided password, and compares it with the stored hash. If the hashes are equal, then the user is authenticated; if not, the login is rejected.</li>
+          <li>When a user is authenticated, you will likely want to set a login cookie so that the user does not have to send his credentials each time. Express makes it easy to do this and we&apos;ll cover it in this task.</li>
+        </ol>
+        <p>
+        <b>Important:</b> Only send passwords over an <a target="_blank" href="https://en.wikipedia.org/wiki/HTTP_Secure">HTTPS</a> connection! Otherwise, an attacker can just read the password as it&apos;s sent over the network. For simplicity, we won&apos;t worry about this in this exercise.
+        </p>
+
+        <h4>Warmup</h4>
+
+        <p>
+        After editing the <code>&lt;meta username&gt;</code> tag in <code>client/index.html</code> to contain your username, start by pressing the button to create your very own MySQL database: <button id="createsql">One MySQL DB, please</button>
+        <div id="createsqlfeedback"></div>
+        </p>
+
+        <p>
+        The database you created contains two tables (the things that store rows of data), <code>users</code> and <code>warmup</code>. The <em>schemas</em> of the tables are described below. A schema is essentially the layout of the data in the database. For a RDBMS like MySQL, the schema involves the data types of the columns and their relations.
+        </p>
+        <p>
+        <u>The <code>warmup</code> table:</u>
+        <table class="tabletable">
+          <thead>
+            <tr>
+              <th>token</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>VARCHAR(64)</td>
+            </tr>
+          </tbody>
+        </table>
+        The <code>warmup</code> table has a single column named &quot;token&quot; of type <code>VARCHAR</code>. <code>VARCHAR</code> just means a a non-fixed number of characters; the 64 gives the max length of 64 characters.
+        </p>
+        <p>
+        <u>The <code>users</code> table:</u>
+        <table class="tabletable">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>salt</th>
+              <th>hash</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>VARCHAR(64)</td>
+              <td>CHAR(8)</td>
+              <td>CHAR(40)</td>
+            </tr>
+          </tbody>
+        </table>
+        The <code>users</code> table has a three columns named &quot;name&quot;, &quot;salt&quot;, and &quot;hash&quot;. The new data type, <code>CHAR</code>, represents a fixed number of characters, in this case eight. <code>name</code> will contain the user&apos;name, <code>salt</code> will contain eight random characters, and <code>hash</code> will contain the SHA1 hash of the salt+password.
+        </p>
+        <question name="setup" pts="5">
+        Now, verify that you can connect to the database by filling out the <code>credentials</code> object in <code>server/main.js</code>. Take a look at how it is used in <code>server/user.js</code>. When you are successful, running <code>server/main.js</code> will yield a token that you should paste in the box below:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== uname + 'canconnecttosql' ) {
+          throw Error('Invalid token')
+        }
+        </script>
+         </question>
+
+         <h4>Creating Users</h4>
+
+         <question name="create" pts="5">
+         Build out user creation by implementing the <code>/user/create</code> <code>POST</code> endpoint in <code>server/user.js</code>.
+         <ol>
+           <li>Inject the <code>COOKIE_SECRET</code> dependency into <code>server/user.js</code> by pass it in as an option</li>
+           <li>Check to see if the required parameters <code>username</code> and <code>password</code> parameters were passed in. If not, send a <code>400 Bad Request</code> since the request can not be processed.</li>
+           <li>Insert the username, salt, and hash into the <code>users</code> table. Follow the example in the 2014 lecture notes. You may want to use the new <a href="https://www.npmjs.com/package/mysql#escaping-query-values" target="_blank"><code>?</code> escaping syntax</a>, however.</li>
+           <li>Only one user is allowed to have a particular username. The MySQL driver will return an <code>ER_DUP_ENTRY</code> if the same primary key (username) is re-inserted. Return an appropriate HTTP status code to signal this condition.</li>
+         </ol>
+         When you are satisfied with your code, navigate your browser to <a target="_blank" href="http://localhost:8888">http://localhost:8888</a> and run <code>checkCreateUser()</code> in your browser&apos;s terminal. Paste any tokens you get here:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'hascreateuserok' + uname ) {
+          throw Error('Invalid token')
+        }
+        </script>
+         </question>
+
+         <h4>Authenticating Users</h4>
+
+         <question name="authenticate" pts="5">
+         As you may have guessed, user logins will be handled by the <code>/user/login</code> <code>POST</code> endpoint.
+         Compared to creating a user, authenticating is easy:
+         <ol>
+           <li>Return a 400 Bad Request if a required param is missing (this is handled before routing the action, so you&apos;ve already done this)</li>
+           <li><code>SELECT</code> the row <code>WHERE</code> the <code>`name`</code> is equal to the provided username. If one does not exist (i.e. no rows are returned), respond with a <code>401 Unauthorized</code><br>
+             <span class="flavortext">Hint: Follow Example 4 from the 2014 lecture notes. You may want to use the new <a href="https://www.npmjs.com/package/mysql#escaping-query-values" target="_blank"><code>?</code> escaping syntax</a>.</span></li>
+           <li>Assuming a row was found, unpack the salt and compute the hash in the same way as when you created the user. Compare the resulting hash to what was stored. If they&apos;re the same, set a login cookie and return a <code>200 OK</code>. Otherwise, return a <code>401 Unauthorized</code>
+         </ol>
+         When you are satisfied with your code, navigate your browser to <a target="_blank" href="http://localhost:8888">http://localhost:8888</a> and run <code>checkCreateUser()</code> in your browser&apos;s terminal. Paste any tokens you get here:
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'hasuserloginok' + uname ) {
+          throw Error('Invalid token')
+        }
+        </script>
+        </question>
+
+        <h3>Authenticating WebSockets</h3>
+
+        <question name="authenticatesocket" pts="5">
+        Okay, now that you have users logging in with their credentials and receiving login cookies, you can now move on to authenticating WebSocket connections.
+        Start by checking out the docs for the <code>io.use</code> method. The example provided shows you a very basic authententication scheme. Since you have signed login cookies set, your app can be a bit more secure! Complete the <code>io.use</code> function in <code>server/chat.js</code> and run <code>checkWSAuth()</code> in your JSChat 2.0 page. You know what to do from there.
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== 'haswsauthokprobably' + uname ) {
+            throw Error('Invalid token')
+        }
+        </script>
+        </question>
+        <!--  -->
+        <!-- <h3>Storing Chat Logs</h3> -->
+        <!--  -->
+        <!-- <question name="chatlogs" pts="4"> -->
+        <!-- <p> -->
+        <!-- In this final task, which is probably the most exciting, you get to stuff chat messages into MongoDB for later retrieval! -->
+        <!-- Of course, you need a place to put those messages. Click <button id="createmongo">The drive&#45;thru MongoDB button</button> for a fresh MongoDB database, right off the presses. -->
+        <!-- <div id="createmongofeedback"></div> -->
+        <!-- </p> -->
+        <!-- Fantastic! Now all you have to do is complete the <code>logChatMessage</code> function in <code>server/chat.js</code>. According to the tradition handed down frome exercise to exercise, in your browser, run <code>checkMessageLogging()</code> to receive a character&#45;based relic that grants you points. -->
+        <!-- <textarea cm rows="1"></textarea> -->
+        <!-- <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>"> -->
+        <!-- eval( localStorage.registerlogin ) -->
+        <!-- var uname = myLogin.user -->
+        <!-- if ( atob( editorValue ) !== 'hasmsgloggingok' + uname ) { -->
+        <!--     throw Error('Invalid token') -->
+        <!-- } -->
+        <!-- </script> -->
+        <!-- </question> -->
+      </div>
+    </div>
+    <script type="application/javascript" src="bundle-serving.js"></script>
+  </body>
+</html>

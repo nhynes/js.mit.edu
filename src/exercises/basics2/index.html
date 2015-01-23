@@ -8,13 +8,15 @@
       .qlist li {
         margin-bottom: 8px;
       }
-      .flavortext {
-        color: #740;
-        font-size: 14px;
+      ol {
+        margin: 5px 0 25px 0;
+      }
+      h3 {
+        margin-top: 30px;
       }
     </style>
   </head>
-  <body class="exercise exercise-basics1">
+  <body class="exercise exercise-basics2">
     <header class="page-header">
       <h1 class="page-title">Syntax &amp; Semantics II</span></h1>
       <hr>
@@ -54,7 +56,7 @@
           </li>
         </ul>
         <p>
-        Below are implementations of the <code>map</code>, <code>filter</code>. You&apos;re recommended to read the docs first.
+        Below are implementations of <code>map</code> and <code>filter</code>. You&apos;re recommended to read the docs first.
         <h3><code>map</code></h3>
         <pc>// returns a new array that is the result of applying
 // a function to each element of the input array
@@ -84,7 +86,486 @@ function filter( fn, inputArray ) {
 </pc>
         </p>
       </div>
-      <script type="application/javascript" src="../basics1/bundle-basics1.js"></script>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        <h3>Arrays & Functions</h3>
+
+        <p class="blurb">
+        In each of the following subsections, the first task is something of a warmup and the second is more advanced. You might want to do all of the "simple" ones first just to get a hang of the basic idea of using functions on array elements.
+        </p>
+
+        <script type="feedback-helper" name="stringifyArr">
+          function( arr ) {
+            if ( !arr || !arr.length ) { return '[]' }
+            return arr.reduce( function( str, val, i ) {
+                str += val
+
+              if ( i !== arr.length - 1 ) {
+                str += ', '
+              } else {
+                str += ']'
+              }
+              return str
+            }, '[' )
+          }
+        </script>
+
+        <script type="feedback-helper" name="noLoops">
+        function( ev ) {
+          if ( /for\s*\(\s*/.test( ev ) || /while\s*\(\s*/.test( ev ) ) {
+            throw Error('Hey! No loops allowed!')
+          }
+        }
+        </script>
+
+        <script type="feedback-helper" name="randMovies">
+        function( numMovies ) {
+            var i, movies = [], numMovies = numMovies || 3
+            for ( i = 0; i < numMovies; i++ ) {
+                movies.push({
+                  title: 'a random movie ' + Math.floor( Math.random() * 42 + 1 ),
+                  rating: Math.round( Math.random() * 100 ) / 10
+                })
+            }
+            return movies
+        }
+        </script>
+
+        <h4><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank"><code>map</code></a></h4>
+
+        <p><code>map</code> turns an array of some objects into an array of other objects.</p><br>
+
+        <question name="movietitles" pts="1">
+        Complete the following code to transform an array of Movie objects of the form
+        <pc>{ title: String, rating: Number }</pc>
+        into an array of titles:
+        <textarea cm="lineno" rows="5">
+function getMovieTitles( movies ) {
+    return movies.map( function( movie ) {
+        return // your code here
+    })
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        var mapper = eval( '(' + editorValue + ')' ),
+            movies = this.randMovies(),
+            expected = this._.pluck( movies, 'title' )
+            actual = mapper( movies )
+
+        this._.zip( actual, expected ).forEach( function( titles ) {
+            if ( titles[0] !== titles[1] ) {
+                throw Error('Expected\n' + this.stringify( expected ) + '\nbut was\n' + this.stringify( actual ) )
+            }
+        }, this )
+        </script>
+        </question>
+
+        <p style="text-align: center">&bull;&nbsp;&bull;&nbsp;&bull;</p>
+
+        <question name="capitalizewords" pts="3">
+        You've been given a string of words to show on a webpage. It's a heading so you want it to be in Title Case With Each Word Capitalized.<br>
+        For instance, "a man, a plan, a canal: Panama" becomes "A Man, A Plan, A Canal: Panama".<br>
+        Thus, you should do the following:
+        <ol>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split" target="_blank"><code>split</code></a> the string into an array of words</li>
+          <li>transform each word into a capitalized word<br>
+            <span class="flavortext">Hint: use a single <code>map</code> and the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring" target="_blank">substring</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toUpperCase" target="_blank">toUpperCase</a> methods of Strings</span>
+          </li>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join" target="_blank"><code>join</code></a> the words array back into a space-delimited string</li>
+        </ol>
+        <textarea cm="lineno" rows="10">
+function titleCase( str ) {
+    // your code here
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        var titlizer = eval( '(' + editorValue + ')' ),
+            str1 = 'a man, a plan, a canal: Panama',
+            str2 = 'syntax & semantics',
+            str3 = '42',
+            str4 = 'master of the browser and the server',
+            strs = this._.shuffle([ str1, str2, str3, str4 ]),
+            solution = function( str ) {
+                return str.split(' ').map( function( word ) {
+                    return word[0].toUpperCase() + word.substring(1)
+                }).join(' ')
+            },
+            expected = strs.map( solution ),
+            actual = strs.map( titlizer )
+
+        this._.zip( actual, expected, strs ).forEach( function( inps ) {
+            if ( inps[0] !== inps[1] ) {
+                throw Error('For input: "' + inps[2] + '",\nexpected "' + inps[1] + '",\nbut was "' + inps[0] + '"' )
+            }
+        })
+        </script>
+        </question>
+
+
+        <h4><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach" target="_blank"><code>forEach</code></a></h4>
+
+        <p><code>forEach</code> is a bit like <code>map</code> except it doesn't return anything. Useful when you want to iterate over an array, but the operation you're doing doesn't return anything (like updating the UI)</p>
+
+        <question name="disponpage" pts="1">
+        Complete the following function to display the movie titles on screen by calling the <code>displayOnScreen</code> function with each title:
+        <textarea cm="lineno" rows="5">
+function showTitles( titles ) {
+    titles.forEach( function( title ) {
+        // your code here
+    })
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        var displaying = []
+            displayOnScreen = function( item ) {
+              displaying.push( item )
+            },
+            mapper = eval( '(' + editorValue + ')' ),
+            titles = this._.pluck( this.randMovies(), 'title' ),
+            $display = $('#displayhere').html('')
+
+        if ( mapper( titles ) !== undefined ) {
+          throw Error('Must use forEach')
+        }
+
+        $display.html( 'Available movies: ' + displaying.join(', ') ).css( 'color', 'green' )
+
+        if ( !this._.isEqual( displaying, titles ) ) {
+          $display.css( 'color', 'red' )
+          throw Error('Expected\n' + this.stringify( titles ) + '\nto be shown but was\n' + this.stringify( displaying ) )
+        }
+        </script>
+        <p id="displayhere"></p>
+        </question>
+
+        <h4><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target="_blank"><code>filter</code></a></h4>
+
+        <p><code>filter</code> is used when you want to remove certain elements from an array</p>
+
+        <question name="filtermovies" pts="1">
+        Of course, the discerning user only wants to watch highly rated movies. Complete the following function that, given an array of movie objects, returns only movies rated higher than a provided value. Recall than a Movie object takes the form:
+        <pc>{ title: String, rating: Number }</pc>
+        <textarea cm="lineno" rows="5">function filterByRating( movies, ratingPref ) {
+    return movies.filter( function( movie ) {
+        return // your code here
+    })
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        var filterer = eval( '(' + editorValue + ')' ),
+            movies1 = this.randMovies(),
+            movies2 = this.randMovies(),
+            minRating = Math.round( Math.random() * 100 ) / 10,
+            sol = function( movie ) { return movie.rating > minRating },
+            err = function( actual, expected ) {
+                if ( !this._.isEqual( actual, expected ) )
+                throw Error('With ratingPref = ' + minRating + ', expected\n' + this.stringify( expected ) + '\n but was\n' + this.stringify( actual ) )
+            }.bind( this ),
+            expected1, expected2, actual1, actual2
+
+            movies1[ this._.random( movies1.length - 1 ) ].rating = minRating // very sneaky
+            movies2[ this._.random( movies2.length - 1 ) ].rating = minRating // very sneaky
+
+            expected1 = movies1.filter( sol )
+            expected2 = movies2.filter( sol )
+            actual1 = filterer( movies1, minRating )
+            actual2 = filterer( movies2, minRating )
+
+            err( actual1, expected1 )
+            err( actual2, expected2 )
+        </script>
+        </question>
+
+
+        <h4><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target="_blank"><code>reduce</code></a></h4>
+
+        <p><code>reduce</code> is used when you have an array and want to return something<br></p>
+
+        <question name="maxmovie"  pts="2">
+        Complete the following code to return the movie with the maximum rating:<br>
+        <span class="flavortext">Hint: the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max" target="_blank">Math.max</a> may come in handy.
+          <br>Note that when <code>reduce</code> is given no initial value, the accumulator (maxMovie, in this case) is set to the first element of the input array, so no more <code>Number.NEGATIVE_INFINITY</code>!
+        </span>
+        <textarea cm="lineno" rows="11">
+// returns the movie with the maximum rating
+function maxRatedMovie( movies ) {
+    return movies.reduce( function( maxMovie, movie ) {
+        return // your code here
+    })
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        var maximizer = eval( '(' + editorValue + ')' ),
+            movies = this.randMovies(),
+            expected = _.max( movies, function( movie ) { return movie.rating } ),
+            actual = maximizer( movies )
+
+            if ( !this._.isEqual( actual, expected ) ) {
+                throw Error('Expected\n' + this.stringify( expected ) + '\n but was\n' + this.stringify( actual ) )
+            }
+        </script>
+        </question>
+
+        <question name="strlen"  pts="2">
+        Write a function that returns the total length of an array of strings.
+        <span class="flavortext">Hint: use the initial value argument to <code>reduce</code></span>
+        <textarea cm="lineno" rows="11">
+function totalStrLen( strs ) {
+    // your code here
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        var counter = eval( '(' + editorValue + ')' ),
+            strlen = function( l, s ) { return l + s.length },
+            strs = this._.shuffle( [ 'a', 'man', 'a', 'plan', 'a', 'canal', 'Panama' ] ).slice(1),
+            actualStrLen = counter( strlen, strs, 0 ),
+            expectedStrLen = strs.reduce( strlen, 0 )
+
+        if ( actualStrLen !== expectedStrLen) {
+           throw Error('Expected sum of lengths of ' + this.stringify( strs ) + ' to be ' + expectedStrLen + ' but was ' + actualStrLen )
+        }
+        </script>
+        </question>
+        <h3>Composition, Abstraction, and Higher-Order Functions</h3>
+
+        <h4>Composition: Putting things together</h4>
+
+        <p>
+        You just wrote a bunch of functionality for working with and displaying movies. Now it's time to put those those modular components together into a larger, more useful method.
+        </pc>
+
+        <question name="compose"  pts="3">
+        Display on screen, in Title Case, the titles of movies with a rating higher than the one specified.<br>
+        <span class="flavortext">Hint: use the <code>filterByRating</code>, <code>getMovieTitles</code>, <code>titleCase</code>, and <code>showTitles</code> functions which have been provided for you<br>
+          Another hint: <code>titleCase</code> operates on a string, not an array of strings</span>
+        <textarea cm="lineno" rows="7">
+function showMovieSuggestions( movies, ratingPref ) {
+    // your code here
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        var displaying = [],
+            filterByRating = function( movies, ratingPref ) {
+                return movies.filter( function( movie ) { return movie.rating > ratingPref } )
+            },
+            getMovieTitles = function( movies ) {
+                return this._.pluck( movies, 'title' )
+            }.bind( this ),
+            titleCase = function( title ) {
+                return title.split(' ').map( function( word ) {
+                    return word[0].toUpperCase() + word.substring(1)
+                }).join(' ')
+            },
+            showTitles = function( titles ) {
+              displaying = titles
+            },
+composer = eval( '(' + editorValue + ')' ),
+            movies = this.randMovies(3),
+            randRating = this._.random( this._.max( this._.pluck( movies, 'rating' ) ) ),
+            a = console.log( movies, randRating )
+            $display = $('#displayherefinal').html('').css( 'font-weight', 'bold' ),
+            expected = getMovieTitles( filterByRating( movies, randRating ) ).map( titleCase ),
+
+        composer( movies, randRating )
+
+
+        $display.html( 'Your recommendations: ' + displaying.join(', ') ).css( 'color', 'green' )
+
+        if ( !this._.isEqual( displaying, expected ) ) {
+          $display.css( 'color', 'red' )
+          throw Error('Expected\n' + this.stringify( expected ) + '\nto be shown but was\n' + this.stringify( displaying ) )
+        }
+        </script>
+        <p id="displayherefinal"></p>
+        </question>
+
+        <h4>Abstraction: pulling things out</h4>
+
+        <p class="blurb">
+        When you find yourself writing the same thing over and over again, you should try to <em>abstract</em>, or pull out, the repeated code and make it into something more reusable, like a variable or a function.
+        </p>
+
+        <p class="blurb">
+        Often, when you're performing the same operation with minor variations each time, you can create a <em>higher-order function</em> that takes in the variations and returns a function tailored to the specific task.
+        </p>
+
+        <p style="text-align: center">&bull;&nbsp;&bull;&nbsp;&bull;</p>
+
+        <question name="pluck"  pts="2">
+        <p>
+        In a previous task, you wrote a function that took an array of movies and returned their titles.
+        What if you now you also needed to get an array of ratings? You <em>could</em> just copy and paste the original function and change the property name.
+        Of course, it would be much more reusable to capture the abstract idea of extracting an arbitrary property from each arbitrarily-typed object in an array.
+        </p>
+        Write a function that takes an array of objects (of any type) and returns an array of those objects' values for that property.
+        <textarea cm="lineno" rows="8">
+// gets the value at prop from each object in an array
+function extractProp( objs, propName ) {
+    // your code here
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        var plucker = eval( '(' + editorValue + ')' ),
+            movies = this.randMovies(2),
+            expectedRatings = _.pluck( movies, 'rating' ),
+            actualRatings = plucker( movies, 'rating' ),
+            expectedTitles = _.pluck( movies, 'title' ),
+            actualTitles = plucker( movies, 'title' ),
+            eq = function( actual, expected, prop ) {
+                if ( !this._.isEqual( actual, expected ) ) {
+                    throw Error('For prop \'' + prop + '\' and objects\n' + this.stringify( movies ) + ',\nexpected\n' + this.stringifyArr( expected ) + '\nbut was\n' + this.stringifyArr( actual ) )
+                }
+            }.bind( this )
+        eq( actualRatings, expectedRatings, 'rating' )
+        eq( actualTitles, expectedTitles, 'title' )
+        </script>
+        </question>
+
+        <h4>Higher-order functions</h4>
+
+        <question name="grader"  pts="3">
+        I need your help writing the autograder. In the exercise on Composition, you had to use the provided functions. For all I know, you rewrote the entire thing from scratch. Thus, I ask you to create a function that satisfies the following specification so that I can watch for calls to the provided functions.
+<pc>/**
+ * Returns a function that calls a callback function when
+ * the watched function has been called. The watched function should behave
+ * as it normally would.
+ * @param {Function} watched the one-argument function to watch
+ * @param {Function} callback the function to call with the one argument
+                              when `watch` is called
+ * @return {Function} a sneaky, Man-in-the-Middle function
+ */
+eavesdrop( watched, callback )
+</pc>
+Here's a sample use case:
+<pc>var titleCase = eavesdrop( realTitleCase, function( str ) {
+    calledTitleCase = str
+})</pc>
+<textarea cm="lineno" rows="7">
+function eavesdrop( watched, callback ) {
+    return function( arg ) {
+        // your code here
+    }
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        var nsa = eval( '(' + editorValue + ')' ),
+            recv, heard,
+            tapped = function( hi ) { recv = hi }
+
+        nsa( tapped, function( intercepted ) {
+            heard = intercepted
+        })('hello')
+
+        console.log( recv, heard )
+
+        if ( recv !== 'hello' ) {
+            throw Error('Watched function was not called correctly')
+        }
+        if ( heard !== 'hello' ) {
+            throw Error('Eavesdropping callback was not called correctly')
+        }
+        </script>
+        </question>
+
+        <h3>Prototypes</h3>
+
+        <p class="blurb">
+        JS inheritance is quite different from the class-based inheritance that you might be used to. In JS, inheritance is done using <em>prototypes</em>. In most cases, unless you're creating a library, the main thing that you need to know about prototypes is that when you try to access a key in an object, if the object itself doesn't contain a mapping for that key, the interpreter will check the <code>[[Prototype]]</code> of the object. Of course, the prototype is an object, too, so if the key isn't found in the prototype, <em>its</em> prototype gets checked, all the way up the chain until it gets to a prototype that is <code>null</code>.
+        </p>
+        <p class="blurb">
+        It'll be useful, however, to know how prototype chains are set up. An object can get its prototype in one of two ways. The first is by creation from a constructor function (like <code>Array</code>, <code>Number</code>, or <code>Object</code>). This is how all of the datatypes you've been using get their methods (think <code>push</code>, <code>split</code>, <code>reduce</code>). The second is by explicit setting using <code>Object.create</code>. Note that you can set the prototype of the assigned prototype object to get a chain of arbitrary length<br>
+        If this interests you, take a look at <a  href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain" target="_blank">some docs</a>!
+        </p>
+
+        <br>
+
+        <question name="proto"  pts="2">
+        After all of that talk of Movie objects, we haven't even seen how to create one! As Bill Nye would say, "consider the following:"<br>
+        <pc>
+function Movie( title, rating ) {
+    this.title = title
+    this.rating = rating
+}
+
+// the `new` keyword calls the constructor with an empty object as `this`
+// and copies the prototype of the function into the object
+var goodMovie = new Movie( 'Serenity', 8 ),
+    badMovie = new Movie( 'Movie24', 1 )
+</pc>
+        The exercise is to add a <code>compareTo</code> method to all Movies using the prototype of the constructor function. Here's the spec:
+        <pc>/**
+ * Compares this movie to another by rating
+ * @param {Movie} other the other movie
+ * @return {Number} -1 if this movie has a lower rating,
+ *                   0 if same rating, 1 if higher
+ */
+ compareTo( other )</pc>
+        For example, <pc i>goodMovie.compareTo( badMovie ) === 1</pc><br>
+        <span class="flavortext">Hint: Follow the template in Example 10 of the <a href="/2014/notes/lecture1_notes.pdf" target="_blank">2014 notes</a></span>
+        <textarea cm="lineno" rows="12"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        var Movie = function( title, rating ) {
+                this.title = title
+                this.rating = rating
+            },
+            resp = eval( '(' + editorValue + ')' ),
+            goodMovie = new Movie( 'Good Movie', 8 ),
+            goodMovie2 = new Movie( 'Good Movie 2', 8 ),
+            badMovie = new Movie( 'Bad Movie', 1 ),
+            compSame = goodMovie.compareTo( goodMovie2 ),
+            compGreater = goodMovie2.compareTo( badMovie ),
+            compLess = badMovie.compareTo( goodMovie )
+
+            if ( compSame !== 0 ) {
+                throw Error('Expected comparison of equally rated movies to be 0 but was ' + compSame )
+            }
+            if ( compGreater !== 1 ) {
+                throw Error('Expected comparison of higher to lower rated movie to be 1 but was ' + compGreater )
+            }
+            if ( compLess !== -1 ) {
+                throw Error('Expected comparison of lower to higher rated movie to be -1 but was ' + compLess )
+            }
+        </script>
+        </question>
+
+        <h3>Bonus (optional)</h3>
+
+        <question name="reduceimplfn"  pts="2">
+        Implement <code>reduce</code> without using loops or reduce.
+        <textarea cm="lineno" rows="13">
+function reduce( fn, arr, init ) {
+    // your code here
+}</textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.noLoops( editorValue )
+        if ( /\.\s*reduce\s*\(/.test( editorValue ) ) {
+            throw Error('Hey, no cheating!')
+        }
+        var reducer = eval( '(' + editorValue + ')' ),
+            max = function( m, v ) { return Math.max( m, v ) },
+            sum = function( s, v ) { return s + v },
+            strlen = function( l, s ) { return l + s.length },
+            nums = [ 1, 1, 2, 3, 5 ],
+            strs = [ 'a', 'man', 'a', 'plan', 'a', 'canal', 'Panama' ],
+
+            actualMax = reducer( max, nums ),
+            actualSum = reducer( sum, nums ),
+            actualStrLen = reducer( strlen, strs, 0 )
+
+        if ( actualMax !== 5 ) {
+           throw Error('Expected maximum of ' + this.stringifyArr( nums ) + ' to be 5 but was ' + this.stringify( actualMax ) )
+        }
+        if ( actualSum !== 12 ) {
+        console.log( actualSum )
+           throw Error('Expected sum of ' + this.stringifyArr( nums ) + ' to be 12 but was ' + this.stringify( actualSum ) )
+        }
+        if ( actualStrLen !== 21 ) {
+           throw Error('Expected sum of lengths of ' + this.stringify( strs ) + ' to be 21 but was ' + actualStrLen )
+        }
+        </script>
+        </question>
+      </div>
+      <script type="application/javascript" src="../exercise-bundle.js"></script>
     </div>
   </body>
 </html>

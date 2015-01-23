@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="index.css">
+  <title>JSdit</title>
+</head>
+<body>
+  <header class="main-header">
+    <h1 class="page-heading"><a href="/" class="main-link">JSdit</a></h1>
+  </header>
+  <div class="main-content">
+    <div class="new-post">
+      <button class="new-post-button">New post</button>
+      <form class="new-post-form hidden">
+        <input name="title" class="new-post-title" type="text" placeholder="Title" required>
+        <textarea rows="8" cols="70" class="new-post-message" name="message" required placeholder="Message"></textarea>
+        <div class="new-post-form-controls">
+        <span class="new-post-feedback"></span>
+        <input type="submit" value="Submit" class="new-post-submit">
+        </div>
+      </form>
+    </div>
+    <ol class="posts">
+    </ol>
+    <div class="post-detail hidden">
+    </div>
+    <div class="pager">
+      <button class="prev-page hidden">Prev</button>
+      <button class="next-page hidden">Next</button>
+    </div>
+  </div>
+  <script type="application/javascript" src="zepto.min.js"></script>
+  <script type="application/javascript" src="moment.min.js"></script>
+  <script type="application/javascript" src="index.js"></script>
+</body>
+</html>

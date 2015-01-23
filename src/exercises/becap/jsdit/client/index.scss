@@ -1,0 +1,206 @@
+%clearfix {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: sans-serif;
+    padding: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.main-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.page-heading {
+    margin: 0 0 10px 0;
+}
+
+.post {
+    .post-heading {
+        display: inline-block;
+        color: blue;
+        margin: 0;
+        font-size: 110%;
+        font-weight: normal;
+        &:hover{ cursor: pointer; }
+    }
+    .post-info, .comments-link {
+        font-size: 90%;
+        color: #777;
+    }
+    .comments-link {
+        font-weight: bold;
+
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
+}
+
+.post-detail {
+    .post-header {
+        margin: 20px 0;
+        display: table-row;
+
+        & > * {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    }
+
+    .sep {
+        width: 33%;
+        display: inline-block;
+    }
+
+    .comments-heading {
+        margin: 5px 0;
+    }
+
+    .comments-list {
+        list-style-type: none;
+        padding: 0;
+
+        .comment {
+            margin: 10px;
+        }
+
+        .timeposted {
+            color: #555;
+        }
+    }
+}
+
+.vote {
+    $arrow-size: 23px;
+    $arrow-default-color: #777;
+
+    float: left;
+    text-align: center;
+    margin: 6px 6px 0 0;
+
+    %vote-arrow {
+        width: 0;
+        height: 0;
+        border: $arrow-size / 2 solid transparent;
+        margin: auto;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .upvote {
+        @extend %vote-arrow;
+        border-top-width: 0;
+        border-bottom-color: $arrow-default-color;
+
+        &.active { border-bottom-color: #109cff; }
+    }
+
+    .downvote {
+        @extend %vote-arrow;
+        border-bottom-width: 0;
+        border-top-color: $arrow-default-color;
+        &.active { border-top-color: #ff642a; }
+    }
+
+    .score {
+        margin: 2px 0;
+        color: #555;
+        font-size: 90%;
+
+        &.nil {
+            $ball-size: 10px;
+            $ball-spacing: 5px;
+            width: $ball-size;
+            height: $ball-size;
+            background-color: $arrow-default-color;
+            border-radius: $ball-size;
+            margin: $ball-spacing 0 $ball-spacing $arrow-size / 2 - $ball-size / 2;
+        }
+    }
+}
+
+.posts {
+    list-style-type: none;
+    padding: 0;
+
+    .post {
+        margin: 10px 0;
+
+        &:first-of-type { margin-top: 0; }
+        &:last-of-type { margin-bottom: 0; }
+    }
+}
+
+.new-post {
+    margin-bottom: 20px;
+    .new-post-message {
+        display: block;
+    }
+    .new-post-form {
+        display: inline-block;
+    }
+    .new-post-submit {
+        margin-top: 3px;
+        float: right;
+    }
+    .new-post-heading {
+        margin: 0 0 5px 0;
+        font-size: 100%;
+    }
+    .new-post-feedback {
+        padding-left: 3px;
+        color: red;
+        font-weight: bold;
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .new-post-form-controls {
+        @extend %clearfix;
+        display: table;
+        width: 100%;
+    }
+}
+
+.comment-form {
+    .comment-message {
+        // display: block;
+    }
+    .comment-submit {
+        display: block;
+        margin-top: 3px;
+    }
+    .new-post-feedback {
+        padding-left: 3px;
+        color: red;
+        font-weight: bold;
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .new-post-form-controls {
+        @extend %clearfix;
+        display: table;
+        width: 100%;
+    }
+}

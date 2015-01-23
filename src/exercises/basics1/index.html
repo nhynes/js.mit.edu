@@ -8,10 +8,6 @@
       .qlist li {
         margin-bottom: 8px;
       }
-      .flavortext {
-        color: #740;
-        font-size: 14px;
-      }
     </style>
   </head>
   <body class="exercise exercise-basics1">
@@ -92,7 +88,7 @@
               <pc i>'Hello, world!'</pc><code>.<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length" target="_blank">length</a> === </code>
               <textarea cm="inline" rows="1" cols="2"></textarea>
               <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
-              this.expectValue( editorValue, 12 )
+              this.expectValue( editorValue, 13 )
               </script>
               </question>
           </li>
@@ -311,8 +307,8 @@ function generateUniqueId( len ) {
         <h3>Maximum in an array</h3>
 
         <question name="maxarray"  pts="3">
-        Complete the following function to find the maimum value in an array.<br>
-        <span class="flavortext">Hint: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max" target="_blank">Math.max</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NEGATIVE_INFINITY" target="_blank">Number.NEGATIVE_INFINITY</a> may come in handy.</span>
+        Complete the following function to find the maximum value in an array.<br>
+	<span class="flavortext">Hint: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/max" target="_blank">Math.max</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NEGATIVE_INFINITY" target="_blank">Number.NEGATIVE_INFINITY</a> may come in handy.</span>
         <textarea cm="lineno" rows="11">
 // finds the maximum value in an array of numbers
 function arrayMax( arr ) {

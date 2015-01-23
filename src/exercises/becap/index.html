@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Designing a Backend</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+      .a {
+        color: #555;
+      }
+      .tabletable {
+        border: 1px solid black;
+        margin: auto;
+      }
+      .tabletable td,th {
+        padding: 5px 10px;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body class="exercise exercise-becap">
+    <header class="page-header">
+      <h1 class="page-title">Designing a Backend</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        So far, you&apos;ve worked with a smattering of backend-y things like REST endpoints, reading from files, and storing data in databases. With a bit of creativity, you can put these building blocks together to create an <em>actually</em> useful web application (or a not-useful application, I won&apos;t judge)!
+        </p>
+        <p>
+        Starting from a blank file, though, it helps to have an idea of the overall design of your project so that you can, as with a frontend, tackle each high-level component separately (like user logins, for example).
+        </p>
+      </div>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        In the following steps, we&apos;ll design the backend for a system that allows people to make posts and vote on other peoples' posts (think Reddit). These steps obviously aren&apos;t the only way to go about designing an application. The idea is just to get an idea of what goes into making a web application.
+
+        <h3>Principles of Design</h3>
+
+        <h4>Step 1 - High-Level Design (same as last time)</h4>
+
+        Think about the application you want to build and imagine that it&apos;s already done and in users' hands. Next, determine the requirements by answering questions similar to the following:
+        <br>
+        <ul>
+          <li>
+            <span class="q">What is the basic functionality of the application?</span><br>
+            <span class="a">&gt; To allow users to make posts and vote on others' posts</span><br>
+          </li>
+          <li>
+            <span class="q">What kinds of other features should it have?</span><br>
+            <span class="a">&gt; user accounts (we won&apos;t add this in this exercise, but you already have a login system, so you could actually implement this!)</span><br>
+          </li>
+        </ul>
+
+        Your answers to these high-level design questions will guide your progress through writing the application. As you do this, think about how you would implement each chunk and roughly how they fit together.
+
+        <h4>Step 2 - Modeling the Data</h4>
+
+        <p>
+        Once you have the application requirements, the next step is to determine what kind of data you need to represent and how it must flow through your system. This is important for two main reasons. The first is so that you know how to store your data in a database (i.e. the schema) and the second is to determine the <em>interface</em> between the client and the server. Let&apos;s now take a moment to think about what types of data we need to model to make a <sout>Reddit clone</sout> peer-reviewed content hosting service:
+        <ul>
+          <li>Post
+            <ul>
+              <li><b>id</b> - this is the <a href="https://en.wikipedia.org/wiki/Unique_key" target="_blank">primary key/unique id</a> of the Post</li>
+              <li>timestamp</li>
+              <li>title</li>
+              <li>message</li>
+              <li>score</li>
+            </ul>
+          </li>
+          <li>Comment - one Post has many Comments (one-to-many relationship)
+            <ul>
+              <li><b>id</b></li>
+              <li><u>postId</u> - this is a <a href="https://en.wikipedia.org/wiki/Foreign_key" target="_blank">foreign key</a> that references a specific Post by its unique ID</li>
+              <li>timestamp</li>
+              <li>message</li>
+            </ul>
+          </li>
+        </ul>
+        </p>
+
+        <p>
+        Although I can&apos;t iterative process of filling these out on a static page, I generally started with the obvious things (like message and timestamp in Post) and added things as necessary. For instance, we need to know to which Post a Comment belongs, so now Comment requires the <code>postId</code> field. It would also be nice to know when a Comment was made, so it naturally needs a timestamp, too.
+        </p>
+        <p>
+        One very important point to notice is the x-to-y relationship designations. These define the setup of relational database. For instance, the one-to-many relationship of Posts to Comments requires a Comment to keep track of the primary key of its associated Post (foreign key).
+        </p>
+        <p class="flavortext">
+        If you were going to add Users, you might consider using the same model from the last exercise and adding a <code>author</code> foreign key to Post and Comment.
+        </p>
+
+        <h4>Step 3 - Presenting the Data to the Client</h4>
+
+        <p>
+        Having a coherent data model that can be easily stored in a database is all well and good, but it&apos;s not very useful if clients can&apos;t access it! This is when you come up with the API. In this case, we&apos;re fortunate enough to not have any real-time or stateful data, so we can use a nice, simple REST API.
+        </p>
+        <p>
+        The first step in creating a REST API is determining the endpoints. What kind of resources does this application need to expose? An obvious one is the list of Posts, so let&apos;s build a <code>/posts</code> endpoint.<br>
+        What kinds of operations should be allowed on this resource? We certainly want to be able to <code>GET</code> some number of the highest-scoring Posts and <code>POST</code> new posts. It would also be helpful if we could PATCH a Post to update its score.
+        <span class="flavortext">The latter operation could also be done as a POST, but a <a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods">PATCH</a> is more semantically correct.</span><br>
+        Now we must ask ourselves whether there are any sub-resources that need to be considered. Certainly! For one, each Post has Comments, but sending the Comments for each Post in the list when we just want the titles and timestamp would needlessly increase response latency. Therefore, we should expose the individual Post and its Comments as a sub-resource: <code>/posts/:postId</code>.<br>
+        We could also include another sub-resource <code>/posts/:postId/comments</code> to get just the comments, but we also don&apos;t want to spend all day writing endpoints for unlikely use cases.
+        </p>
+        <p>
+        The last and most important step in designing your endpoints is determining the inputs and outputs. The highest-level, and probably easiest, decision is of which serialization scheme to use. JSON is convenient, so we&apos;ll stick with that. Depending on your clients (which may not be JS-powered web browsers), XML might also be appropriate.<br>Below that is determining what inputs each endpoint should take and what each should return. For our <code>/posts</code> endpoint, we want to get a list (array) of the highest scoring Posts.
+        <span class="flavortext">At this point you should be thinking about the SQL statement that would allow this.</span>
+        We only want to display the Post metadata, initially, so the returned array should contain objects that have the <code>title</code> and <code>score</code> properties; <code>id</code> should also be included so that the full Post can be looked up later.
+        <br>
+        On that note, when a single Post is queried, all of the fields should be returned. The Comments, with all of their info, should be included as an array in the <code>comments</code> property, too.
+        <br>
+        Of course, there will be thousands of Posts, so we want to limit the number returned on each request so to save bandwidth. The pagination you implemented in the APIs exercise is a good model for how this could be exposed to the client: just offer a page number (and, optionally, a results per page) parameter! As an extra convenience, the endpoint will offer the <code>nextPage</code> and <code>prevPage</code> properties so that the client can know when to add next/prev buttons.
+        <br>
+        When POSTing a new POST, all that must be included are the title and message.
+        <br>
+        In the same way as POSTing a post, POSTing a Comment can just be a POST request to the <code>/post/:postId</code> endpoint with a message since a Comment is a sub-resource of a post.
+        </p>
+        <p>
+        Before we go on to implementation, it&apos;ll help to write all of these down as a concise API specification:
+        <ul>
+          <li><pc i>GET /posts</pc>
+        <pc>/**
+ * Returns an array containing 25 Posts, sorted by score.
+ * {
+ *     posts: array of the metadata of 25 Posts, sorted by score,
+ *     nextPage: pageNumber++ or undefined if on last page,
+ *     prevPage: pageNumber-- or undefined if on first page
+ * }
+ *
+ * Post metadata takes the format:
+ * {
+ *     id: Number,
+ *     timestamp: String (ISO 8601 date string),
+ *     title: String,
+ *     score: Number,
+ *     numComments: Number
+ * }
+ *
+ * @param {Number} pageNumber - the page to retrieve. Default 1.
+ */</pc>
+          </li>
+          <li><pc i>GET /posts/:postId</pc>
+        <pc>/**
+ * Returns a specified Post and all of its Comments
+ *
+ * Each Post has the format:
+ * {
+ *     id: Number,
+ *     timestamp: String,
+ *     title: String,
+ *     score: Number,
+ *     message: String,
+ *     comments: [ Comment ]
+ * }
+ *
+ * where a Comment is defined as:
+ *
+ * {
+ *     id: Number,
+ *     timestamp: Number,
+ *     message: String
+ * }
+ *
+ * @param {Number} postId - the ID of the post
+ */</pc>
+        Notice how the <code>postId</code> field that exists in our model was not exposed to the client since it would be redundant, given that the response already contains the Post ID.
+        </li>
+        <li><pc i>POST /posts</pc>
+        <pc>/**
+ * Creates a new Post. Parameters should be urlencoded or JSON.
+ *
+ * @param {String} title - the title
+ * @param {String} message - the message
+ * @return {Object} { id: Number - the ID of the newly-created post }
+ */</pc>
+        </li>
+        <li><pc i>POST /posts/:postId</pc>
+        <pc>/**
+ * Creates a Comment on a specified Post
+ *
+ * @param {Number} postId - the ID of the Post the Comment is on
+ * @param {String} message - the message
+ */</pc>
+        </li>
+        <li><pc i>PATCH /posts/:postId</pc>
+        <pc>/**
+ * Updates the score of a particular Post
+ *
+ * @param {Number} postId - the ID of the Post
+ * @param {Boolean} increment - true to ++ score, false to --
+ */</pc>
+        </li>
+        </ul>
+        </p>
+        <p class="flavortext">
+        Remember that REST APIs are just functions that you call over the network. That means that, just like the JS functions you&apos;ve seen and implemented, you define inputs, return values, and their types. It also means that you should <u>always</u> start by writing down the specification! Implementation will be much, much easier when you have concrete goals to work towards.
+        </p>
+
+        <ul>
+
+        </ul>
+        </p>
+
+
+        <h3>Principles to Practice</h3>
+
+        <p>
+        Wow! That was a spec-and-a-half! Don&apos;t worry, though. We (you) will tackle it bit by bit. Another nice part about speccing out the server early is that you can already farm out the client to someone else (in this case me).
+        </p>
+
+
+        <h4>Setup</h4>
+
+        Start by downloading the <a href="jsdit.zip" target="_blank" download>starter code</a>. Then, click on the drive-thru database button to make yourself the <code>posts</code> and <code>comments</code> tables that are described below.<br>
+        <input type="button" value="(╯'□')╯︵ ┻━┻" id="maketables">&nbsp;<span id="tablesfeedback"></span>
+        <p>
+        <b>posts:</b>
+        <table class="tabletable">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>timestamp</th>
+              <th>title</th>
+              <th>message</th>
+              <th>score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SERIAL</td>
+              <td>TIMESTAMP</td>
+              <td>VARCHAR(255)</td>
+              <td>LONGTEXT</td>
+              <td>MEDIUMINT</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <b>comments:</b>
+        <table class="tabletable">
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>postId</th>
+              <th>timestamp</th>
+              <th>message</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SERIAL</td>
+              <td>BIGINT UNSIGNED</td>
+              <td>TIMESTAMP</td>
+              <td>LONGTEXT</td>
+            </tr>
+          </tbody>
+        </table>
+        </p>
+
+        Once you&apos;ve entered your username and password into the <code>credentials</code> object, you&apos;re ready to plough onward into implementing the endpoints!
+
+        <h4>POSTing a Post</h4>
+
+        <question name="postpost" pts="8">
+        Let&apos;s start with the most straightforward endpoint: the <code>POST /posts</code> endpoint. It&apos;s almost exactly like in the last exercise in which you inserted a new User.<br>
+        Complete the <code>/posts</code> <code>POST</code> endpoint as specified above and then click on the checker button.<br>
+        <span class="flavortext">Hint: use <a href="https://github.com/felixge/node-mysql#getting-the-id-of-an-inserted-row" target="_blank">this syntax</a> for inserting the incoming values. Note that the keys of the object should be the names of the columns and that the values should be... well, the values</span>
+        <p>
+        <button class="feedbutton">POST Post /post!</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888, '/posts' )
+            connectTimeout = setTimeout( function() {
+                post.abort()
+                done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+            }, 2000 ),
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            thePost = { title: 'hello!', message: 'world' },
+            post = $.post( addr, thePost )
+              .always( function() {
+                  clearTimeout( connectTimeout )
+              })
+              .done( function( data1 ) {
+                if ( !data1 && !data1.id ) {
+                  return done('Error: Post not inserted')
+                }
+                $.post( addr, thePost )
+                .done( function( data2 ) {
+                    if ( data2.id !== data1.id + 1 ) {
+                      done('Error: Post not inserted')
+                    } else {
+                      done( null )
+                    }
+                })
+                .fail( function( res ) {
+                  if ( res.status === 0 ) {
+                    done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                  } else {
+                    done('Error: Unable to post Post (' + res.status + ' ' + res.statusText + ')')
+                  }
+                })
+              })
+              .fail( function( res ) {
+                if ( res.status === 0 ) {
+                  done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                } else {
+                  done('Error: Unable to post Post (' + res.status + ' ' + res.statusText + ')')
+                }
+              })
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+        </script>
+        </question>
+
+        <h4>GETting a list of Posts</h4>
+
+        This one has actually been done for you because the SELECT statement is a real grizzly bear. If you&apos;re curious, though, you&apos;re welcome to have a look.
+
+        <h4>POSTing a Comment</h4>
+
+        <question name="postcomment" pts="8">
+        POSTing a comment is no more difficult than POSTing a Post; all you have to do differently is obtain the passed-in Post ID.<br>
+        <span class="flavortext">Hint: check out the <a target="_blank" href="http://expressjs.com/4x/api.html#req.params">Express req.params docs</a>.</span><br>
+        Implement the <code>/posts/:postId</code> <code>POST</code> endpoint as described above and then click on the checker button.<br>
+        <p>
+        <button class="feedbutton">&lt;insert witty remark&gt;</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888, '/posts' )
+            connectTimeout = setTimeout( function() {
+                getList.abort()
+                done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+            }, 2000 ),
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            thePost = { title: 'hello!', message: 'world' },
+            theComment = { message: 'OP is a gentleperson and a scholar' }
+            postComment = function( postId, cb ) {
+              $.post( addr, thePost )
+              .always( function() {
+                  clearTimeout( connectTimeout )
+              })
+              .done( function( post ) {
+                if ( !post && !post.id ) {
+                  return done('Error: Post not inserted')
+                }
+                $.post( addr + '/postdoestexist', theComment )
+                .done( function() {
+                  done('Error: posting Comment to nonexistent Post should not return a 200 OK')
+                })
+                .fail( function( res ) {
+                  if ( res.status === 500 ) {
+                    done('Error: posting Comment to nonexistent Post caused server error\nShould be rejected, instead (with a 404, perhaps).\nHint: try adding a handler for the specific error')
+                  } else {
+                    $.post( addr + '/' + postId, theComment )
+                    .done( function( results ) {
+                      cb( results )
+                    })
+                    .fail( function( res ) {
+                      if ( res.status === 0 ) {
+                        done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                      } else if ( res.status === 200 ) {
+                        done('Error: tried to parse data as JSON, but wasn\'t:\n' + res.responseText + '\nHint: you can return an empty object')
+                      } else {
+                        done('Error: Unable to post Comment (' + res.status + ' ' + res.statusText + ')')
+                      }
+                    })
+                  }
+                })
+              })
+              .fail( function( res ) {
+                if ( res.status === 0 ) {
+                  done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                } else {
+                  done('Error: Unable to post Post (' + res.status + ' ' + res.statusText + ')')
+                }
+              })
+            },
+            getList = $.get( addr )
+            .always( clearTimeout.bind( null, connectTimeout ) )
+            .done( function( results ) {
+              var posts = results.posts,
+                  firstPost = posts.length === 0 ? 1 : posts[0].id,
+                  numCommentsInFirstPost = posts.length === 0 ? 0 : posts[0].numComments
+              postComment( firstPost, function() {
+                $.get( addr )
+                .done( function( results ) {
+                  if ( results.posts[0].numComments !== numCommentsInFirstPost + 1 ) {
+                    done('Error: Comment was not posted')
+                  } else {
+                    done( null)
+                  }
+                })
+                .fail( function( res ) {
+                  if ( res.status === 0 ) {
+                    done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                  } else {
+                    done('Error: Unable to get Post list (' + res.status + ' ' + res.statusText + ')')
+                  }
+                })
+              })
+            })
+            .fail( function( res ) {
+              if ( res.status === 0 ) {
+                done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+              } else {
+                done('Error: Unable to get Post list (' + res.status + ' ' + res.statusText + ')')
+              }
+            })
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+        </script>
+        </question>
+
+        <h4>GETting a Post and its Comments</h4>
+
+        <question name="getpost" pts="8">
+        Great work so far! Three endpoints down and two to go!<br>
+        Implement the <code>GET /posts/:postId</code> endpoint as designed above and then click on the checker button.<br>
+        <span class="flavortext">Hint: start by SELECTing the specified Post from the <code>posts</code> table and then SELECTing all of the comments from the <code>comments</code> table <a href="http://www.mysqltutorial.org/mysql-where/" target="_blank">WHERE</a> the <code>postId</code> equals the specified Post ID. Merge the data into an object and send it back to the client (see the spec, above, for the correct format).</span>
+        <p>
+        <button class="feedbutton">We need to go deeper!</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888, '/posts' ),
+            idAddr,
+            connectTimeout = setTimeout( function() {
+                post.abort()
+                done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+            }, 2000 ),
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            thePost = { title: 'hello!', message: 'world' }
+            post = $.post( addr, thePost )
+              .always( function() {
+                  clearTimeout( connectTimeout )
+              })
+              .done( function( result ) {
+                var numCommentsPosted = 0,
+                    i,
+                    postId = result.id
+
+                idAddr = addr + '/' + postId
+
+                for ( i = 0; i < 2; i++ ) {
+                  $.post( idAddr, { message: 'comment' + i } )
+                  .done( function( result ) {
+                      var theGet,
+                          getTimeout = setTimeout( function() {
+                            post.abort()
+                            done('Error: No response from the server. Are you sending one?')
+                          }, 2000 )
+                      numCommentsPosted += 1
+                      if ( numCommentsPosted === 2 ) {
+                        theGet = $.get( idAddr )
+                        .always( function() {
+                          clearTimeout( getTimeout )
+                        })
+                        .done( function( result ) {
+                          if ( typeof result !== 'object' ) {
+                            done('Error: Expected an object to be returned but was ' + typeof result)
+                          } else if ( !result || result.id !== postId ) {
+                            done('Error: Wrong Post was returned')
+                          } else if ( result.title !== thePost.title ) {
+                            done('Error: Post was inserted with wrong title.\nCheck your Post POST code.')
+                          } else if ( result.message !== thePost.message ) {
+                            done('Error: Post was inserted with wrong message.\nCheck your Post POST code.')
+                          } else if ( result.comments === undefined ) {
+                            done('Error: Comments were not included in the returned data')
+                          } else if ( result.comments.length !== 2 ) {
+                            done('Error: Too ' + ( result.comments.length > 2 ? 'many': 'few' ) + ' comments returned')
+                          } else if ( result.comments[0].message !== 'comment0' ) {
+                            done('Error: Comment posted with wrong message. Expected comment0 but was "' + + result.comments[0].message + '"')
+                          } else if ( result.comments[0].postId ) {
+                            done('Error: postId should not be returned with comment')
+                          } else {
+                            $.get( addr + '/thispostdoesnotexist' )
+                            .done( function() {
+                              done('Error: getting nonexistent Post should fail with status 404')
+                            })
+                            .fail( function( res ) {
+                              if ( res.status === 404 ) {
+                                done( null )
+                              } else {
+                                done('Error: getting nonexistent Post should fail with status 404')
+                              }
+                            })
+                          }
+                        })
+                        .fail( function( res ) {
+                          if ( res.status === 0 ) {
+                            done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                          } else {
+                            done('Error: Unable to get Post detail (' + res.status + ' ' + res.statusText + ')')
+                          }
+                        })
+                      }
+                  })
+                  .fail( function( res ) {
+                    if ( res.status === 0 ) {
+                      done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                    } else {
+                      done('Error: Unable to post Comment (' + res.status + ' ' + res.statusText + ')')
+                    }
+                  })
+                }
+              })
+              .fail( function( res ) {
+                if ( res.status === 0 ) {
+                  done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                } else {
+                  done('Error: Unable to post Post (' + res.status + ' ' + res.statusText + ')')
+                }
+              })
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+        </script>
+        </question>
+
+        <h4>Are you not satisfied?!</h4>
+
+        <question name="patchvote" pts="8">
+        This is the final question in Introduction to JavaScript! I bet you&apos;re just delighted to have completed the course! Well, you haven&apos;t yet, so get back to work! &gt;:(
+        When you have finished completing the <code>PATCH /posts/:postId</code> endpoint used for voting, as specified above, click on the checker button and go on your way.<br>
+        <span class="flavortext">Hint: try <a href="http://www.tech-recipes.com/rx/2139/mysql_increment_an_exisitng_value/" target="_blank">this</a> if you get stuck. Spoiler alert, though.</span>
+        <p>
+        <button class="feedbutton">Up and to the left</button>
+        </p>
+        <script type="feedback async" trigger="button" format="<pre class='pc'><code>%s</code></pre>">
+        var addr = this.getURL( 8888, '/posts' )
+            connectTimeout = setTimeout( function() {
+                post.abort()
+                done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+            }, 2000 ),
+            $fb = $q.find('.feedbutton').css('color', 'inherit'),
+            thePost = { title: 'hello!', message: 'world' },
+            vote = function( postId, inc, cb ) {
+              return $.ajax({
+                type: 'PATCH',
+                url: addr + '/' + postId,
+                data: { increment: inc },
+                success: cb,
+                error: function( res ) {
+                  if ( res.status === 0 ) {
+                    done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                  } else {
+                    done('Error: Unable to vote on Post (' + res.status + ' ' + res.statusText + ')')
+                  }
+                }
+              })
+            },
+            getPost = function( postId, cb ) {
+                $.get( addr + '/' + postId )
+                .done( function( result ) {
+                  cb( result )
+                })
+                .fail( function( res ) {
+                  if ( res.status === 0 ) {
+                    done('Error: Unable to connect to server. Make sure that you\'ve started it!')
+                  } else {
+                    done('Error: Unable to get Post (' + res.status + ' ' + res.statusText + ')')
+                  }
+                })
+            },
+            post = $.post( addr, thePost )
+              .always( function() {
+                  clearTimeout( connectTimeout )
+              })
+              .done( function( result ) {
+                var postId = result.id,
+                  voteReq,
+                  voteTimeout = setTimeout( function() {
+                    voteReq.abort()
+                    done('Error: No response from the server. Are you sending one?')
+                  }, 2000 )
+
+                voteReq = vote( postId, true, function() {
+                  getPost( postId, function( result ) {
+                    if ( result.score !== 1 ) {
+                      done('Error: Upvoting did not work')
+                    } else {
+                      vote( postId, false, function() {
+                        getPost( postId, function( result ) {
+                          if ( result.score !== 0 ) {
+                            done('Error: Downvoting did not work')
+                          } else {
+                            $.ajax({
+                              type: 'PATCH',
+                              url: addr + '/postdoesnotexist',
+                              data: { increment: true },
+                              success: function() {
+                                done('Error: voting on a nonexistent post should fail with status 404\nHint: no err is returned, but result contains some useful information')
+                              },
+                              error: function( res ) {
+                                if ( res.status === 404 ) {
+                                  done( null )
+                                } else {
+                                  done('Error: voting on a nonexistent post should fail with status 404\nHint: no err is returned, but result contains some useful information')
+                                }
+                              }
+                            })
+                          }
+                        })
+                      })
+                    }
+                  })
+                })
+                .always( function() {
+                    clearTimeout( voteTimeout )
+                })
+              })
+        $fb.html( $fb.html().replace('&nbsp;✔', '') )
+        </script>
+        </question>
+
+        <h3>One last question...</h3>
+
+        <question name="feedback" pts="3">
+        Did you have a great time taking Introduction to JavaScript? (be honest!)
+        <br>
+        <textarea cm="inline" rows="1" cols="5"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        this.expectType( editorValue, 'boolean' )
+        if ( !eval(editorValue ) ) {
+          throw Error('The var keyword is required to prevent accidentally creating globals')
+        }
+        </script>
+        </question>
+
+        <h1 style="margin-top:50px;"><blink>Congratulations you did it!</blink></h1>
+        <p>
+        You got to the end of Introduction to JavaScript! Test drive your backend using the <a href="http://localhost:8888" target="_blank">frontend</a> I whipped up, just for this purpose. Show your friends how cool you are for making a Reddit clone :)
+        </p>
+        <p>
+        Just FYI, there will be one more class on Monday in which all you have to do is observe tools and techniques that come in handy when writing real-life web applications like HTML templating systems, JS frameworks, and JS task runners.
+        </p>
+        <p>
+        Also, don&apos;t forget that if you are taking the class for credit, you need 70% of total points (140 points) to pass. Please have these in by January 30. Please let me know if you have any lingering questions!
+        </p>
+        <p>
+        Thanks again for coming. Your dedication to learning JS is what makes this all worthwhile. I hope that you go on to build some really neat web apps! In any case, though, you should be really proud of yourself from coming all the way from toying around with <pc i>var</pc>s to implementing full-blown REST APIs backed by SQL databases!
+        </p>
+      </div>
+      <script type="feedback-helper" name="expectType">
+      function( editorValue, expectedType ) {
+        var actualType = typeof eval( editorValue )
+
+        if ( actualType !== expectedType ) {
+          throw Error('Expected type \'' + expectedType + '\' but was \'' + actualType + '\'')
+        }
+      }
+      </script>
+      <script type="feedback-helper" name="getURL">
+      function( port, endpoint ) {
+        return 'http://localhost:' + port + endpoint
+      }
+      </script>
+      <script type="application/javascript" src="bundle-becap.js"></script>
+    </div>
+  </body>
+</html>

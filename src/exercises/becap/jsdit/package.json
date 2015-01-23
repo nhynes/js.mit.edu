@@ -1,0 +1,17 @@
+{
+  "name": "jsdit",
+  "version": "1.0.0",
+  "description": "Totally not a Reddit clone",
+  "main": "server/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.10.2",
+    "express": "^4.11.1",
+    "mysql": "^2.5.4",
+    "serve-static": "^1.8.1"
+  }
+}

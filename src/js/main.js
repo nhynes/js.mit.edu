@@ -58,7 +58,7 @@ $(window).resize( function() {
         name: 'Frontend',
         tiles: [
             { ex: 'htmlcss', title: 'The Web GUI: HTML & CSS', maxpts: 20 },
-            { ex: 'apis', title: 'Hello World AJAX & APIs', maxpts: 20 },
+            { ex: 'apis', title: 'AJAX & APIs', maxpts: 20 },
             { ex: 'fecap', title: 'Designing a Frontend', maxpts: 35 }
         ]
     }, {
@@ -74,6 +74,10 @@ $(window).resize( function() {
 window.fetchUserData = function fetchUserData( callback ) {
     if ( !localStorage.login ) {
         $( $('.tile-group').slice(1) ).addClass('sunken');
+        if ( localStorage.registerlogin ) {
+            localStorage.clear()
+            window.location = window.location
+        }
     } else {
         $('.tile-group .group-name')[0].innerHTML = 'Register';
         $('.tile-group').removeClass('sunken');
@@ -140,6 +144,11 @@ window.fetchUserData();
 (function eventTiles() {
     $('.tile').each( function() {
         var $tile = $( this );
+        $tile.mouseover( function() {
+            var $content = $tile.find('.content')
+            $content.attr('src', $content.attr('data-src'))
+            $tile.off('mouseover')
+        })
         $tile.find('.front')
         .click( function() {
             window.location.hash = $tile.attr('data-exercise');
@@ -287,7 +296,8 @@ function openTile( name ) {
     leftOffset = rect.left - borderWidth,
     topOffset = rect.top + borderWidth,
     ratioWidth = tileSize / window.innerWidth,
-    ratioHeight = tileSize / window.innerHeight;
+    ratioHeight = tileSize / window.innerHeight,
+    $content = $tile.find('.content');
 
     $tile.find('.content').css({
         transform: 'scale(' + ratioWidth + ',' + ratioHeight + ')',
@@ -313,8 +323,16 @@ function openTile( name ) {
 }
 
 (function openLinkedExercise() {
+    var tileName = window.location.hash.substring( 1 ),
+        $tile = $('[data-exercise="' + tileName + '"]'),
+        $content = $tile.find('.content')
+    if ( !$content.attr('src') ) {
+        $content.attr('src', $content.attr('data-src'))
+        $tile.off('mouseover')
+    }
+
     setTimeout( function() {
-        openTile( window.location.hash.substring( 1 ) );
+        openTile( tileName );
     }, 1000 );
 })();
 

@@ -1,5 +1,5 @@
 var server = require('http').createServer(),
-	io = require('socket.io')( server )
+    io = require('socket.io')( server )
 
 io.on( 'connection', function( socket ) {
     var username,
@@ -13,9 +13,8 @@ io.on( 'connection', function( socket ) {
     })
 
     socket.on( 'join', function( roomToJoin ) {
-        if ( !username ) {
-			return // ignore spurious joins
-		}
+        if ( !username ) { return } // ignore spurious joins
+
         if ( room ) {
             socket.leave( room ) // only join most recent room
         }

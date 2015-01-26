@@ -18,11 +18,11 @@ window.$ = $;
             classEnd = moment( isoDate );
         if ( now.isBefore( classEnd ) ) {
             return classEnd.format('dddd M/D') +
-                '&nbsp;in&nbsp;<a class="modal-trigger" data-modal="roomnumber">4-231</a>';
+                '&nbsp;in&nbsp;<a class="modal-trigger" data-modal="roomnumber">4-231</a>' +
+                ' from 11:00 - 12:30 pm';
         } else {
             return dispDate;
         }
-        return now.isBefore( classEnd ) ? classEnd.format('dddd M/D') + ' in 4-231' : dispDate;
     }, 'IAP 2016!' ) );
 })();
 

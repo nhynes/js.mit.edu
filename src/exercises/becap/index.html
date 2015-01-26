@@ -443,12 +443,13 @@
                   $.post( idAddr, { message: 'comment' + i } )
                   .done( function( result ) {
                       var theGet,
-                          getTimeout = setTimeout( function() {
+                          getTimeout
+                      numCommentsPosted += 1
+                      if ( numCommentsPosted === 2 ) {
+                        getTimeout = setTimeout( function() {
                             post.abort()
                             done('Error: No response from the server. Are you sending one?')
                           }, 2000 )
-                      numCommentsPosted += 1
-                      if ( numCommentsPosted === 2 ) {
                         theGet = $.get( idAddr )
                         .always( function() {
                           clearTimeout( getTimeout )

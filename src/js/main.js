@@ -68,6 +68,11 @@ $(window).resize( function() {
             { ex: 'serving', title: 'Clients, the Cloud, & You', maxpts: 20 },
             { ex: 'becap', title: 'Designing a Backend', maxpts: 35 }
         ]
+    }, {
+        name: 'Beyond',
+        tiles: [
+            { ex: 'beyond', title: 'Advanced<br>Topics', maxpts: 0 },
+        ]
     }
 ] });
 

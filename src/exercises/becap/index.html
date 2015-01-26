@@ -59,7 +59,7 @@
         <h4>Step 2 - Modeling the Data</h4>
 
         <p>
-        Once you have the application requirements, the next step is to determine what kind of data you need to represent and how it must flow through your system. This is important for two main reasons. The first is so that you know how to store your data in a database (i.e. the schema) and the second is to determine the <em>interface</em> between the client and the server. Let&apos;s now take a moment to think about what types of data we need to model to make a <sout>Reddit clone</sout> peer-reviewed content hosting service:
+        Once you have the application requirements, the next step is to determine what kind of data you need to represent and how it must flow through your system. This is important for two main reasons. The first is so that you know how to store your data in a database (i.e. the schema) and the second is to determine the <em>interface</em> between the client and the server. Let&apos;s now take a moment to think about what types of data we need to model to make a <s>Reddit clone</s> peer-reviewed content hosting service:
         <ul>
           <li>Post
             <ul>
@@ -82,13 +82,13 @@
         </p>
 
         <p>
-        Although I can&apos;t iterative process of filling these out on a static page, I generally started with the obvious things (like message and timestamp in Post) and added things as necessary. For instance, we need to know to which Post a Comment belongs, so now Comment requires the <code>postId</code> field. It would also be nice to know when a Comment was made, so it naturally needs a timestamp, too.
+        Although I can&apos;t show the iterative process of filling these out on a static page, I generally started with the obvious things (like message and timestamp in Post) and added things as necessary. For instance, we need to know to which Post a Comment belongs, so now Comment requires the <code>postId</code> field. It would also be nice to know when a Comment was made, so it naturally needs a timestamp, too.
         </p>
         <p>
         One very important point to notice is the x-to-y relationship designations. These define the setup of relational database. For instance, the one-to-many relationship of Posts to Comments requires a Comment to keep track of the primary key of its associated Post (foreign key).
         </p>
         <p class="flavortext">
-        If you were going to add Users, you might consider using the same model from the last exercise and adding a <code>author</code> foreign key to Post and Comment.
+        If you were going to add Users, you might consider using the same model from the last exercise and adding an <code>author</code> foreign key to Post and Comment.
         </p>
 
         <h4>Step 3 - Presenting the Data to the Client</h4>

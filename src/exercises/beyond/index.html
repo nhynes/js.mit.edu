@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Advanced Topics</title>
+    <link rel="stylesheet" type="text/css" href="../exercise.css">
+    <style type="text/css">
+    </style>
+  </head>
+  <body class="exercise exercise-beyond">
+    <header class="page-header">
+      <h1 class="page-title">Advanced Topics</span></h1>
+      <hr>
+    </header>
+    <div class="main-content">
+      <div class="blurb">
+        <p>
+        Now that you have a grasp of the fundamentals of the JavaScript language, you are ready to go out into the world and make web applications!
+        Of course, as with any programming language, there are certain pragmatics that must be learned, too.
+        Ordinarily these are picked up from other developers as you use the tool more and more.
+        This process, however, takes time&mdash;especially when you don&apos;t know what you don&apos;t know.
+        Thus, in order to jump-start the process, this exercise gives an overview of some tools and concepts that you may find useful.
+        </p>
+      </div>
+      <div class="exercise">
+        <h2>Exercise</h2>
+
+        <h3>Templating</h3>
+
+        <p>
+        Remember all of those templating functions you wrote that took JS objects (usually results of AJAX calls) and turned them into HTML?
+        I&apos;m going to take a wild guess and say that you found them to be very tedious to write.
+        Perhaps unsurprisingly, the rest of the JS community agrees <sup>[citation needed]</sup>.
+        </p>
+        <p>
+        Fortunately, some developers took it upon themselves to create templating engines that turn HTML with special placeholder syntax into a JS function that can be called to produce the fully-rendered HTML.
+        Below are some of the most prominent ones, but the list is by no means complete.
+        </p>
+        <ul>
+          <li>
+            <a href="http://underscorejs.org/#template" target="_blank">Underscore <code>template</code></a> - Great when you are already using Underscore and you want to whip up a quick, simple template.
+          </li>
+          <li><a href="https://github.com/janl/mustache.js">Mustache</a> - Helpful when you want to do large-scale templating</li>
+          <li><a href="http://handlebarsjs.com/">Handlebars</a> - Very similar to Mustache, but includes the ability to include logic like producing output that depends on the index of the item in an array (e.g. numbering items in a list).
+            Note that logic in templates , while useful, makes it harder to understand how and where the output is created.</li>
+        </ul>
+
+        You will likely use Handlebars most often due to its greater flexibility, but we&apos;ll keep things simple for now and work with an easy-to-understand Mustache template.
+
+        <question name="setup" pts="1">
+        Writing the template function for chat messages was a small heap of jQuery that wasn&apos;t very easy to understand and definitely wasn&apos;t easy to change. Let&apos;s try that again, except this time using a Mustache template.<br>
+        Start by downloading the <a href="easymode.zip" target="_blank" download>starter code</a> and filling out the <pc i html>&lt;meta username&gt;</pc> tag.
+        Next, recall the format for a message entry:
+        <pc html>&lt;li class="message"&gt;
+  &lt;span class="user"&gt;The username&lt;/span&gt;
+  &lt;p class="body"&gt;The message&lt;/p&gt;
+&lt;/li&gt;</pc>
+        Add the template in <code>index.html</code> using syntax similar to <a href="https://github.com/janl/mustache.js#variables" target="_blank">this</a> that turns an object of the following format into the HTML above.
+        <pc>{
+    username: String,
+    message: String
+}</pc>
+        and then complete the code to <a href="https://github.com/janl/mustache.js#include-templates" target="_blank">render</a> an incoming message and append it to the messages list
+        <br>
+        Run <code>checkMsgTmp()</code> to get a token that you should paste in the box for sweet, sweet bonus points.
+        <textarea cm rows="1"></textarea>
+        <script type="feedback" trigger="blur" format="<pre class='pc'><code>%s</code></pre>">
+        eval( localStorage.registerlogin )
+        var uname = myLogin.user
+        if ( atob( editorValue ) !== uname + 'hastemplateok' ) {
+          throw Error('Invalid token')
+        }
+        </script>
+         </question>
+
+        <h3>Libraries</h3>
+
+        <p>
+        One of the nicest things about the JavaScript ecosystem is that there exists a library (module) for almost everything you want.
+        If you were there for the blackjack game demo, you saw how, instead of implementing a deck of cards, we just pulled one off of <a href="https://www.npmjs.com/" target="_blank">NPM</a>.
+        The moral of the story is to always do a quick internet search for what you want using a query like &quot;js &lt;what you&apos;re trying to do&gt;&quot;.
+        If you want a package specifically for Node.js (i.e. not the browser), then replace &quot;js&quot; with &quot;node&quot;.
+        <br>
+        If you were reading this very closely, you might have noticed that I implied that you could use modules in the browser.
+        Yep! Instead of hunting down a URL to put in your &lt;script&gt; tag, you can <code>npm install</code> a module and have a special program package it into your application!
+        </p>
+        <p>
+        Some useful libraries that you didn&apos;t use in this class were:
+        </p>
+        <ul>
+          <li><a href="http://underscorejs.org" target="_blank">Underscore</a> - A collection of helper functions</li>
+          <li><a href="http://documentup.com/kriskowal/q/" target="_blank">q</a> - A <em>promises</em> library that cleans up your callbacks (highly recommended)</li>
+          <li><a href="https://github.com/senchalabs/connect" target="_blank">Connect</a> - A lighter but less fully-featured alternative to Express</li>
+          <li><a href="https://github.com/substack/shoe" target="_blank">Shoe</a> - A streaming WebSockets library</li>
+        </ul>
+
+        <h3>Frontend Frameworks</h3>
+
+        <p>
+        While fairly authentic, the frontends you wrote in class were tiny in comparison to many of the web apps you use on a daily basis.
+        </p>
+        <p class="flavortext">
+        Assume, from this point on, that when I say &quot;application&quot;, I mean single-page, richly interactive web app.
+        </p>
+        <p>
+        As the applications you write become ever larger, you will reach a point at which you can&apos;t effectively keep the entire codebase in your head at once and you start losing track of how the myraid AJAX calls provide data to the various template functions that create your numerous widgets.
+        Sometimes, for small, simple applications, you can keep this problem at bay by using a module loader (coming up in just a bit) and carefully segmenting your files.
+        For large or complex apps, you will find it helpful to impose structure (a framework) that provides conveniences like separation of data from presentation (<a href="https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller" target="_blank">MVC</a>), updating the UI when data changes (data binding), and page routing (changing &quot;pages&quot; using the data after the # in the URL or by <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/API/DOM/Manipulating_the_browser_history" target="_blank">directly modifying the history</a>.
+        </p>
+        <p>
+        Learning a new framework is much like learning a new programming language: although the syntax is the same, you have to learn the semantics and pragmatics of the framework!
+        The degree to which the framework requires you to do things in a certain way is known as how <em>opinionated</em> it is.
+        While a highly opinionated framework makes it hard to diverge from the provided &quot;golden path&quot;, if you follow said path and use the framework as its designers intended, you can take advantage of many built-in conveniences.
+        Similarly, an less opinionated framework gives you more flexibility at the cost of a fast-track to a fully-functional application.
+        </p>
+        <p class="flavortext">
+        To bring back the car analogy, an opinionated framework is like an SUV whereas a relatively unopinionated framework is a collection of big components that go well together.
+        The SUV will get you up and running (driving?) quickly and may even do a few crazy things like pulling a light trailer, but if you try to do any off-roading, you might start to find that you wish there were a four-wheel-drive option.
+        The unopinionated framework, in contrast, while requiring time to build even a go-kart, allows you to put together a off-roading vehicle more quickly and safely than if you had started from raw materials.
+        </p>
+        <p>
+        Some of the most popular MV* frameworks are <a href="http://backbonejs.org/" target="_blank">Backbone</a> plus <a href="http://marionettejs.com/" target="_blank">Backbone.Marionette</a> which adds a variety of userful, higher-level features (mostly unopinionated), <a target="_blank" href="http://angularjs.org/">AngularJS</a> which offers rich data binding (somewhat opinionated), and <a target="_blank" href="http://emberjs.com/">Ember.js</a> which makes templating easy with built-in Handlebars (opinionated).
+        There are plenty more, which you can find <a href="http://www.infoq.com/research/top-javascript-mvc-frameworks" target="_blank">here</a>.
+        <a href="http://todomvc.com/" target="_blank">TodoMVC.com</a> is a helpful resource that shows you an example Todo app built using a variety of frameworks.
+        Skim the source code of each to get an idea of how it works!
+        </p>
+        <p>
+        If you&apos;re making an application that involves pushing data to users in real-time, you might want to consider <a href="https://www.meteor.com/">Meteor</a>, which provides many conveniences for managing users, data flows, and the UI.
+        It is, however, highly opinionated.
+        </p>
+
+
+        <h3>CSS Preprocessors</h3>
+
+        <p>
+        Since this is a class on JavaScript, you were spared the pain of styling the applications using CSS.
+        If (when) you end up writing CSS, you will definitely want to use a CSS preprocessor.
+        Writing vanilla CSS is <a href="http://www.cybergrain.com/archives/2004/12/css_considered.html" target="_blank">quite tedious</a>.
+        Not a small part of the problem is that HTML is hierarchical but CSS is not, which requires repeating selectors over and over.
+        Another big issue is that CSS does not have variables, which makes your styles hard to change.
+        Fortunately, there exist languages that compile to CSS using a preprocessor program.
+        The two most popular CSS preprocessors are <a href="http://sass-lang.com/" target="_blank">Sass</a> and <a href="http://lesscss.org/" target="_blank">Less</a>.
+        I, myself, use Sass (after switching from Less).
+        If you want to make your own informed decision, you can start by reading <a href="http://css-tricks.com/sass-vs-less/" target="_blank">this article</a> by CSS Tricks (an excellent resource for learning how to do some random CSS thing).
+        Note that Sass has a framework known as <a href="http://compass-style.org/" target="_blank">Compass</a> that contains ready-made includes that do a variety of <a href="http://compass-style.org/examples/" target="_blank">useful things</a>.
+        </p>
+
+        <h3>Frontend Module Loaders</h3>
+
+        <p class="flavortext">
+        This part is probably the coolest.
+        </p>
+        <p>
+        You may have already encountered the problem of trying to load a script before its dependencies (e.g. putting the checker before jQuery).
+        That was with only two scripts and one dependency.
+        Imagine how tricky things would be with multiple scripts that have multiple dependencies.
+        Things would only be complicated further by different scripts depending on different versions of the same library!
+        Furthermore, how would you even go about finding the libraries and keeping them up to date??
+        </p>
+        <p>
+        Luckily for us, some developers came up with the excellent idea of <em>module loaders</em> that <a href="https://en.wikipedia.org/wiki/Topological_sorting" target="_blank">automatically load your scripts in the right order</a>.
+        For instance, I could somehow get jQuery and the checker script, specify their locations in a file, tell the loader that the checker depends on jQuery, and then receive a file that loads jQuery before the checker.
+        </p>
+        <p>
+        Before we dive any further into module loaders, it&apos;ll help to understand a structure known as an <i>Immediately-Invoked Function Expression (IIFE)</i>.
+        Keeping in mind that variables are scoped to the top of the containing function, an IIFE looks like this:
+        </p>
+        <pc>(function() {
+    var theseVars = 42,
+        areFully = 'contained',
+        within = this.function // this refers to enclosing scope
+})()</pc>
+
+        <p>
+        Very simply, what this does is prevents variables from leaking outside of the created scope (and into the global, window object).
+        Now, if we were to have one of these IIFEs that loaded the dependencies in the right order and created and called other IIFEs like this
+        <pc>(function( $, q ) {
+        // $ and q are (somehow) listed as dependencies
+})( $, q ) // these are the loaded scripts</pc>
+        we would have something starting to look like a module loader.
+        </p>
+
+        <p>
+        The two most popular module loaders are <a href="http://www.requirejs.org/" target="_blank">Require.js</a> and <a href="http://browserify.org/">Browserify</a>.
+        </p>
+
+        <h4>Require.js</h4>
+
+        Allows you to load files using <a href="http://www.requirejs.org/docs/api.html#jsfiles" target="_blank">this syntax</a>.
+        The nice part about Require.js is that, by default, it only loads you dependencies as they&apos;re needed (as in, it injects a new &lt;script&gt; tag into the page when a function wrapped by <code>require</code> is required+called).
+        This is nice when your application is highly modular and there are many components that will likely not be used during a single session.
+
+        <h4>Browserify</h4>
+
+        I, personally, find Require.js to be very confusing.
+        The syntax is less-than beautiful (IMHO) and it can be hard to intuit when a dependency will be loaded (asynchronous code can be difficult to debug).
+        Check out the <a href="http://browserify.org/#middle-section">Hello Word</a> example!
+        Probably the nicest part about Browserify is that you can <code>npm install</code> dependencies, just like you would for server-side modules.
+        Another neat feature is that it turns your files into one &quot;bundle&quot; in which the dependences are appropriately sorted.
+        The entire bundle is then sent to the client with the initial page load.
+        In most cases, your single-page app will need most of its files during every session&mdash;a slower initial page load and then no subsequent script-loading delays (again, IMHO) feels more responsive.
+        It&apos;s much easier to debug your code when you can be assured that it already exists on the client!
+
+        <h3>Task Runners</h3>
+
+        At this point, you are certainly wondering how you actually are to go about <em>using</em> all of these tools.
+        Should you figure that out on your own, you will, after a short while, grow tired of constantly running build tasks like compiling your Sass or bundling your JS.
+        If you&apos;re so inclined, you may even take to writing shell scripts that automaticall perform these tasks when the files change.
+        Rest assured that you don&apos;t need to do that since there are quite a few options that are designed specifically for handling webapp-related build steps.
+        </p>
+        <p>
+        Known as <i>task runners</i> (search this term for a full list), the most popular choices are <a href="http://gruntjs.com/" target="_blank">Grunt</a> and <a href="http://gulpjs.com/" target="_blank">Gulp</a>.
+        While Grunt is the more mature program, Gulp is much faster because it uses Node.js streams to keep processed files in memory instead of writing to disk.
+        Grunt tasks are specified using config files whereas Gulp tasks are defined by piping file streams through various transformers.
+        There are plenty of plugins available for each (via NPM)
+        </p>
+
+        <h3>All together now...</h3>
+        <p>
+        This entire &quot;exercise&quot; has been very abstract so far, but now, it&apos;s the moment for which you&apos;ve been waiting!
+        I present to you..... <a href="buildex.zip" target="_blank" download>a template project directory</a> complete with a Gulp config containing tasks for Browserifying + Handlebars compiling, and Sass compiling! Everything gets updated on file change, too!
+        Let me show you how to use it so that you can take it for a spin.
+        </p>
+        <p class="flavortext">
+        Please experiment with other build systems! This one, while very functional, should serve as a launching pad for your own, personalized builds.
+        </p>
+
+        <h4>Setup</h4>
+
+        Start by opening your terminal and installing Gulp globally using <code>npm -g install gulp</code>.
+        You may have to run this as root if you&apos;re on linux.
+        While that&apos;s running, install the LiveReload browser plugin (<a href="https://addons.mozilla.org/en-US/firefox/addon/livereload/" target="_blank">for Firefox</a> and <a href="https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei" target="_blank">for Chrom*</a>), which will allow you to connect to the Gulp task&apos;s LiveReload server that will cause your browser to automatically refresh when you change a file.
+        Next, navigate to the <code>buildex</code> directory and run <code>npm install</code>.
+        Finally, run <code>gulp</code> to start the default Gulp task.
+
+        <h4>Directory Structure</h4>
+
+        While Gulp is starting its <code>default</code> task (defined as build and watch), take a look at this description of the where everything goes:
+
+        <ul>
+          <li><code>package.json</code> - contains metadata about your project and a list of dependencies, most of which are installed using the Node Package Manager</li>
+          <li><code>gulpfile.js</code> - a config file for Gulp, a JS task runner that does things like codestyle checking and file compilation (take a look at the comments within)</li>
+          <li><code>.jscsrc</code> - config for <a href="http://jscs.info/rules.html" target="_blank">JS Code Style</a> checker</li>
+          <li><code>src/</code> - where the source code lives
+            <ul>
+              <li><code>client/</code> - where the client source code lives
+                <ul>
+                  <li><code>index.html</code> - the main HTML page that your browser will load</li>
+                  <li><code>.jshintrc</code> - config for <a href="http://jshint.com/docs/options/" target="_blank">JSHint</a> style checker</li>
+                  <li><code>js/</code> - where the client JavaScript lives
+                    <ul>
+                      <li><code>main.js</code> - the entry point of your JS application
+                    </ul>
+                  </li>
+                  <li><code>scss/</code> - where the <a href="http://sass-lang.com/">SCSS</a> files live
+                    <ul>
+                      <li><code>main.scss</code> - the main SCSS file to be compiled to CSS
+                    </ul>
+                  </li>
+                  <li><code>templates/</code> - put Handlebars (<code>.hbs</code>) files here</li>
+                </ul>
+              </li>
+              <li><code>server/</code> - where the server code lives
+                <ul>
+                  <li><code>.jshintrc</code> - config for <a href="http://jshint.com/docs/options/" target="_blank">JSHint</a> style checker</li>
+                  <li><code>main.js</code> - the file that you will run to start your server</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><code>dist/</code> - where the Gulp task puts all of the built files
+            <ul>
+              <li><code>client/</code> - where the client code for distribution
+                <ul>
+                  <li><code>index.html</code> - the main HTML page that your browser will load</li>
+                  <li><code>bundle.js</code> - all of the required JS (incl. libraries) packaged into one convenient file</li>
+                  <li><code>bundle.css</code> - the SCSS compiled to CSS, packaged into one convenient file</li>
+                </ul>
+              </li>
+              <li><code>server/</code> - where the server code lives (copied directly from src/server/)</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Try it out!</h4>
+
+        <p>
+        Start by opening up your browser to <code>/dist/client/index.html</code> and enabling the LiveReload plugin.
+        Then, with the Gulp watch task running, add the following to <code>/src/client/scss</code>:
+        <pc>body { background-color: blue; }</pc>
+        You should see the page automatically turn blue! Pretty cool, eh?
+        </p>
+        <p>
+        Okay, how about we try something a bit more adventurous and write some client-side JS?
+        Run <code>npm install --save jquery</code> and then using Browserify, add <pc i>var $ = require('jquery')</pc> to <code>/src/client/main.js</code>.
+        Add <pc i>$('body').append('&lt;h1&gt;It works!&lt;/h1&gt;')</pc> and save to see your browser reload and display the text &quot;It works!&quot;
+        <br>
+        If you want to do templates, put your Handlebars files in <code>/src/client/templates</code> with the extension <code>.hbs</code> (very important!) and then <code>require('../templates/myTemplate.hbs')</code> them.
+        </p>
+        <p>
+        The server works in the same way. To run it, just do <code>node dist/server/main.js</code>.
+        </p>
+        Hopefully this equips you well to begin your journey into the wide world of webapps!
+      </div>
+      <script type="application/javascript" src="../exercise-bundle.js"></script>
+    </div>
+  </body>
+</html>

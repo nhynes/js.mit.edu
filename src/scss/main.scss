@@ -1,15 +1,14 @@
 @import 'base';
 
-$bodyPaddingSides: 20px;
-$bodyPaddingTop: 10px;
 $tileColor: white;
 
 body {
-    min-height: calc(100% - #{2*$bodyPaddingTop});
-    padding: $bodyPaddingTop $bodyPaddingSides;
+    min-height: 100%;
     position: absolute;
-    width: calc(100% - #{2*$bodyPaddingSides});
+    width: 100%;
     background: url(/light_wool.png);
+    overflow-x: hidden;
+    padding: 0 !important;
 }
 
 .next-class {
@@ -21,7 +20,7 @@ body {
     font-size: 90%;
     position: absolute;
     text-align: center;
-    width: calc(100% - #{2*$bodyPaddingSides};
+    width: 100%;
     color: gray;
 
     a {
@@ -58,8 +57,19 @@ body {
 
 $tileSize: 150px;
 $tileBorderWidth: 2px;
+$tileXMargin: 10px;
+$oneColWidth: 1.25 * ( $tileSize*2 + $tileXMargin*4 + 7px );
+// 1.25 = 1/.main-content(width), 7px for scrollbar
+$twoColWidth: $oneColWidth + 1.25 * ( $tileSize + $tileXMargin*2 );
 .tiles {
     @include clearfix;
+
+    @media all and (max-width: $twoColWidth ) {
+        width: $tileSize * 2 + $tileXMargin * 4;
+    }
+    @media all and (max-width: $oneColWidth ) {
+        width: $tileSize;
+    }
     list-style-type: none;
     padding: 0;
     text-align: center;
@@ -69,7 +79,7 @@ $tileBorderWidth: 2px;
     float: left;
     width: $tileSize;
     height: $tileSize;
-    margin: 5px 10px;
+    margin: 10px $tileXMargin;
 }
 %tile-side {
     position: absolute;

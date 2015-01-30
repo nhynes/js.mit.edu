@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Intro to JavaScript P-Set 1</title>
+  <meta charset="utf-8" />
+  <meta name="description" content="Intro to JavaScript P-Set 1" />
+  <link rel="icon" type="image/png" href="../resources/js.png" />
+  <link rel="stylesheet" type="text/css" href="../resources/assignment.css" />
+  <script type="application/javascript" src="../js/jquery.min.js"></script>
+  <script type="application/javascript" src="../js/jquery.cookie.js"></script>
+  <script type="application/javascript" src="../js/assignment1.js"></script>
+  <script type="application/javascript">
+    document.addEventListener("DOMContentLoaded",onload);
+  </script>
+</head>
+<body>
+	<header>
+		<h1>Introduction to JavaScript - Problem Set 1</h1>
+	</header>
+  <div class="content">
+    <p class="flavor-text">
+      Hi! Congratulations on making it to the first assignment of Introduction to JavaScript. If you're wondering how to actually get your code to run, <span style="font-size:1.15em">DON'T PANIC</span>. Here's a quick tutorial:</p>
+    <ul>
+      <li>If you are using Firefox: right click on this page, select "Inspect Element," and then navigate to the "Console" tab (on the left)</li>
+      <li>If you are using Chrome: right click on this page, select "Inspect Element," and then navigate to the "Console" tab (on the right)</li>
+      <li>If you are using Internet Explorer: right click on the window, select "Close," and <span style="text-decoration:line-through">promptly leave the class</span> try to use a more developer-friendly browser</li>
+    </ul>
+    <p class="flavor-text">
+      From the console, you can enter commands that will be executed by the JavaScript interpreter. If you get stuck, try typing in an object followed by a dot to see its properties, and then pick one that looks like it does what you want to do. Also, any console.log()'s that you run will also be printed here. Go ahead, try it out!
+    </p>
+    <p class="flavor-text">
+      I realize that this is a bit tedious. If you'd like to use a more "full-featured" "editor," you can try <a target="_blank" href="http://jsfiddle.net">JSFiddle</a> or just copy and paste in from your favorite text editor. Fortunately, we'll be covering loading JS from files in the next lecture.
+    </p>
+    <p class="flavor-text">Also, the height of the text box indicates the approximate number of lines it should take you to answer the question. Don't worry about conciseness, though; focus on correctness.</p>
+    <h2>Warm Up</h2>
+  	<ol class="assignment">
+      <span class="topic">[Data types]</span>
+      <li class="question">Which would be the best type to use for storing a list of connected users?
+        <br />
+        <form type="multiple-choice">
+          <div class="radio-group">
+           <input type="radio" name="option" value="object" /><span>Object</span><br />
+           <input type="radio" name="option" value="number" /><span>Number</span><br />
+           <input type="radio" name="option" value="array" /><span>Array</span><br />
+           <input type="radio" name="option" value="boolean" /><span>Boolean</span><br />
+          </div>
+         <input type="button" value="Check" />
+        </form>
+      </li>
+
+
+      <span class="topic">[Variables and assignment]</span>
+      <li class="question">Complete the following code:
+        <br />
+        <form type="compare-code">
+          <textarea spellcheck="false" rows="3">
+//your code here
+
+console.log(six*seven);</textarea><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+
+
+      <span class="topic">[Conditionals]</span>
+      <li class="question">Translate the following phrases into if-statements:
+        <br />
+        <form type="multiple run-code">
+          <span spacedText>If <pre inline>a</pre> and <pre inline>b</pre>:</span><br />
+          <input type="text" value="if(a && b)" /><br />
+          <span spacedText>If <pre inline>a</pre> or <pre inline>b</pre>:</span><br />
+          <input type="text" /><br />
+          <span spacedText>If not <pre inline>a</pre>:</span><br />
+          <input type="text" /><br />
+          <span spacedText>If both <pre inline>a</pre> and <pre inline>b</pre> or not <pre inline>c</pre>:</span><br />
+          <input type="text" /><br />
+          <span spacedText>If <pre inline>a</pre> is greater than <pre inline>b</pre>, but less than or equal to <pre inline>c</pre>:</span><br />
+          <input type="text" /><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+
+
+      <span class="topic">[Loops, Numbers]</span>
+      <li class="question">Complete the following code that generates random numbers until it encounters one that is less than .1:<br />
+      <pre>var randomNumber = Number.MAX_VALUE;</pre>
+
+        <form type="compare-code">
+          <textarea spellcheck="false" rows="4">
+while(/*your code here*/) {
+  randomNumber = Math.random();
+}
+console.log(randomNumber); //should be less than .1
+</textarea><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+  	</ol>
+
+    <h2>Practice problems</h2>
+    <ol class="assignment">
+      <span class="topic">[Strings]</span>
+      <li class="question">Enter the result of the following statements (try not to cheat!):
+        <br />
+        <form type="multiple check-answer">
+          <pre spaced>console.log("This is a String");</pre><br />
+          <input type="text" value='"This is a String"' /><br />
+          <pre spaced>("There are " + 2).<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/concat">concat</a>(" ways to join Strings")</pre><br />
+          <input type="text" /><br />
+          <pre spaced>"aerate pet area".<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split">split</a>(' ');</pre><br />
+          <input type="text" /><br />
+          <pre spaced>"Bookkeeper".<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/indexOf">indexOf</a>("e");</pre><br />
+          <input type="text" /><br />
+          <pre spaced>"Thelonious Monk".<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring">substring</a>(6, 9);</pre><br />
+          <input type="text" /><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+
+
+      <span class="topic">[Conditionals]</span>
+      <li class="question">I have an object that is value-equal (==) to the Number 11. Write a function that returns a String representing the object's type ("string", "number", or "object"). (Hint: try different combinations using === in the console.)<br />(Bonus points for a general solution, but don't try too hard to get them)
+        <br />
+        <form type="run-code">
+          <textarea spellcheck="false" rows="10">
+function demystifyVar(mysteryVar) {
+  if(mysteryVar === 11) { //as an example
+    return "number"; //so it's clearly not going to be this
+  }
+  //your code here
+}
+</textarea><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+
+
+      <span class="topic">[Functions]</span>
+      <li class="question">Write a function named <pre inline>mostlyHarmless</pre> that, when called with zero or one argument, returns the String "Nothing to see here", but when called with two or more arguments, calls the function <pre inline>launchTheMissiles</pre>.<br />(Hint: in the console, try making and calling functions with various numbers of arguments and observing the arguments' values)
+        <br />
+        <form type="run-code">
+          <textarea spellcheck="false" rows="8">
+</textarea><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+
+
+      <span class="topic">[Prototypes, Arrays, loops, conditionals, this]</span>
+      <li class="question">Add a function named <pre inline>max</pre> to all objects of type Array that returns the maximum value in the Array or null if there are no elements. This only has to work on arrays of Numbers. (Ex. [1, 2, 3].max() === 3)<br />(Bonus points for finding the maximum value of String Arrays, too.)
+        <br />
+        <form type="run-code">
+          <textarea spellcheck="false" rows="12">
+</textarea><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+    </ol>
+
+    <h2>Challenge problems</h2>
+    <ol class="assignment">
+      <span class="topic">[Functions, loops]</span>
+      <li class="question">Implement a function with the following specification:
+        <br />
+        <form type="run-code">
+          <pre>
+/**
+ * Applies a function to every element of an array
+ * Ex: map([1, 2, 3], function(elem) { return elem*2; })
+ *        returns: [2, 4, 6]
+ *
+ * @param array the Array to which the function
+ *              is applied
+ * @param function the unary (single-argument) function
+ *                 that operates on each element of array
+ *
+ * @return a new Array representing array with function
+ *         applied to each element
+ *
+ * Note: the original array is not modified
+ */
+</pre>
+          <textarea spellcheck="false" rows="7">
+function map(theArray, theFunction) {
+
+}</textarea><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+
+
+      <span class="topic">["Classes"]</span>
+      <li class="question">Create a class named <pre inline>Person</pre> that has the following properties:
+        <ul>
+          <li><pre inline>firstName</pre> - the Person's first name</li>
+          <li><pre inline>lastName</pre> - the Person's last name</li>
+          <li><pre inline>friends</pre> - a list of Person objects that are friends with this Person (each friend also has Person as a friend)</li>
+          <li><pre inline>getFullName()</pre> - returns the Person's full name (first name *space* last name)</li>
+          <li><pre inline>friend(newFriend)</pre> - makes the Persons friends (adds each other to their friend lists) if they previously were not</li>
+          <li><pre inline>defriend(noLongerFriend)</pre> - makes the Persons not friends (removes each other from their friend lists) if they were previously (hint: use the <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">splice()</a> function of the Array object)</li>
+          <li><pre inline>isFriendsWith(person)</pre> - returns true if the Persons are friends, false otherwise (hint: use the <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf">indexOf()</a> function of the Array object)</li>
+          <li><pre inline>toString()</pre> - returns a String representing the Person in the following format: first name *space* last name *space* has N friends, where N is the number of friends the Person has. If N is equal to 1, 'friends' should become 'friend'</li>
+        </ul>
+        <br />
+        <form type="run-code">
+          <textarea spellcheck="false" rows="38">
+function Person(firstName, lastName) {
+  
+}
+</textarea><br />
+          <input type="button" value="Check" />
+        </form>
+      </li>
+
+
+      <span class="topic">[Console]</span>
+      <li style="font-size: 1.2em">Play the <a href="http://orteil.dashnet.org/cookieclicker/" target="_blank">CookieClicker</a> game and see how many cookies and achievements you can get without clicking on the big cookie (too many times)! Take a screenshot and email it to me if you think that you did a particularly good job!<br />(Hint: open up the console and type <pre inline>Game.</pre> to see what kinds of fun/devious things you can do)
+    </ol>
+  </div>
+</body>
+</html>

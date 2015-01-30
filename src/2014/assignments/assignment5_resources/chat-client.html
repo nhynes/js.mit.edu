@@ -1,0 +1,38 @@
+<html>
+<head>
+	<title>The beginnings of the new Facebook</title>
+	<script type="application/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js">
+	</script>
+	<script type="application/javascript" src="/socket.io/socket.io.js">
+		//This is automatically served by socket.io when you start the server
+	</script>
+</head>
+<body>
+	<!-- make an input for username and a "Connect" button that connects to the server-->
+
+	<!-- make a display and an input for messages. it's not quite tabular data, so you shouldn't use a table -->
+	<!-- the input should be disabled until the ACK is received (hint: use the "disabled" attribute to "disabled")-->
+	<script type="application/javascript">
+		var socket = io.connect('http://localhost');
+
+		var username = "";
+
+		socket.emit('join', username);
+
+		socket.on('ACK', function() {
+			//enable the message input
+			//let the games begin
+		});
+
+		socket.on('message', function(message) {
+			//add the message to the display
+		});
+
+		function postMessage() {
+			var message = "";
+
+			socket.emit(message);
+		}
+	</script>
+</body>
+</html>

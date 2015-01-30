@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Intro to JavaScript P-Set 5</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Intro to JavaScript P-Set 5">
+  <link rel="icon" type="image/png" href="../resources/js.png">
+  <link rel="stylesheet" type="text/css" href="../resources/assignment.css">
+  <script type="application/javascript" src="../js/jquery.min.js"></script>
+</head>
+<body>
+	<header>
+		<h1>Introduction to JavaScript - Problem Set 5</h1>
+	</header>
+  <div class="content">
+    <p class="flavor-text">
+      If you haven't already done, so, you'll want to install the Node.js web server application. Navigate to <a href="http://nodejs.org/" target="_blank">nodejs.org</a> and click on the install button. This will download an installer for your platform or the binaries if you're using Linux.
+      <ul>
+      	<li><span style="font-weight:bold">Linux</span> - move the binary files into the correct locations (the folder names give you this info)</li>
+      	<li><span style="font-weight:bold">Macintosh &amp; Windows</span> - run the installer</li>
+      </ul>
+    </p>
+    <h2>Warm Up</h2>
+  	<ol class="assignment">
+      <span class="topic">[Node.js]</span>
+      <li class="question">
+      Verify that your install worked by making your own "Hello world" server!
+      <br>
+      Open the command line and use the <pre inline>cd</pre> command to navigate to your server's JS file and execute <pre inline>node yourfile.js</pre>. Your server should start serving your website at <a href="http://localhost" target="_blank">localhost:yourPortNumber</a>
+      </li>
+  	</ol>
+
+    <h2>Practice problems</h2>
+    <ol class="assignment">
+    	<span class="topic">[Forms, WebSockets]</span>
+    	<li class="question">
+    	Use socket.io to create a real-time, push chat server. You can use <a href="assignment5_resources/chat-server.js" target="_blank">this</a> starter Node.js file and <a href="assignment5_resources/chat-client.html" target="_blank">this</a> starter HTML file.
+    	<br>
+    	Simple, for this question, means that the user should have some way of setting their username and sending a chat message to the chat room. Connected users should receive messages from other users basically as soon as they're posted.
+    	<br>
+    	This question should be easy to self-check, but since there is no checker, solutions will be posted.
+    	</li>
+    </ol>
+
+    <h2>Challenge problems</h2>
+    <ol class="assignment">
+      <span class="topic">[REST API (Express, routes), AJAX]</span>
+      <li class="question">
+      	Download <a href="assignment5_resources/people.js" target="_blank">this</a> file to your current Node.js workspace (wherever you've installed Express) and import it into your project using <pre inline>var people = require("./people.js")</pre>. This will provide a JS Array of Person Objects (I know how much you like these) as the <pre inline>people</pre> variable.
+      	<br>
+      	Do the same thing that you did for <a href="http://introjsiap.com/assignments/lecture3_assignment.html" target="_blank">Assignment 3 - Practice Problem 2</a> except you should retreive the Person's information from a webserver that you create. You should use AJAX to GET this data from the server.
+      	<br>
+      	Don't forget to import the checker (and set the title of the page to Assignment 5 - Challenge Problem #1)
+      </li>
+    </ol>
+  </div>
+</body>
+</html>

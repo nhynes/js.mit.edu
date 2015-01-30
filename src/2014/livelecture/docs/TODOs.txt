@@ -1,0 +1,33 @@
+TODO: push bigassobject <tentatively done>
+
+TODO: undo lost keywords when user disconnects
+
+TODO: make sure websocket comm actually works :\
+
+TODO: split main.js into separate files. very important
+
+TODO: add student join/leave counter. possibly display this on instructor page
+
+TODO: make socket authorization more robust (HTTP referer is notoriously unreliable)
+
+TODO: make lost/unlost verify that student is unlost/lost before pushing data. maybe store this data in redis for fast access
+
+TODO: add data persistence (to MongoDB)
+
+
+TODO: determine how much entropy is actually necessary for lectureID uniqueness. cookies can hold 4000 characters
+	uuids: 111 lectures
+	8-character ids: 500 lectures <- currently using
+	6-character ids: 666 lectures ;)
+
+TODO: Figure out way to delay lost keyword list order change when user goes from lost <—> unlost
+	currently too quick and somewhat confusing
+	should update on next ‘tick’ instead of instantly
+
+
+TODO: Remember if a user is lost / not lost when refreshing window
+
+TODO: Persist polls for instructor (in case of window refresh)
+
+
+TOADD: video streaming

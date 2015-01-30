@@ -1,0 +1,109 @@
+The server design can be logically split into two parts: the websockets layer and the REST API. The former is used for real-time communication of in-lecture happenings and the latter is used to issue commands that control the state of the lecture.
+
+REST API:
+	All params are urlencoded. If GET, the params are part of the URL (e.g. /api/newlecture?lectureLength=42). If POST/PUT, the params are passed as the message body in urlencoded format.
+
+	GET /api/newlecture
+		@params:
+			- instrPassword: the password to allow users to upgrade to instructors
+			- lectureLength: the length, in minutes, of the lecture
+
+		creates a new lecture with the requester as the instructor and length of either 3 hours (default) or lectureLength. Setting the instrPassword will allow users with the password to upgrade to instructors.
+
+		@returns:
+			{lectureTag: String} where lectureTag is the human-readable identifier of the lecture (accessible at /<lectureTag>)
+
+		Note: client is responsible for redirecting user to the newly-created lecture (/<lectureTag)
+
+
+	GET /api/mylectures
+		Returns a list of Lecture objects that a user has either instructed or participated in.
+
+		Note: this is currently unimplemented as it's not a "core feature"
+
+
+	GET /<lectureTag>/instructify
+		@params:
+			- instrPassword: the lecture's instructor upgrade password
+
+		Upgrades the requester to instructor if the instructor password is correct. Reload the lecture page to see the change.
+
+		@returns:
+			HTTP 200 if the user was upgraded to instructor
+			HTTP 403 if the instructor password was incorrect
+
+
+	POST /<lectureTag>/end
+		If the requester is an instructor, this will end the lecture and send a notification to everyone connected.
+
+		@returns:
+			HTTP 200 if lecture ended successfully
+			HTTP 403 if the requester is not an instructor
+
+
+Websockets:
+	Object sources/sinks:
+		Instructor -
+			source: Poll
+			sink: Response, Lost
+		Student -
+			source: Response, Lost
+			sink: Lost keywords, Poll
+		Both -
+			source: Question, Answer
+			sink: Question, Answer
+
+	Format of passed data:
+		{
+			type: String, //poll, response, question, answer, lost, lost-keyword
+			the rest of the keys are determined by the schema
+		}
+
+	What to do when creating an object (client):
+		Student -
+			response: set the pollId and response
+			lost: set isLost and keyword
+		Instructor -
+			poll: set everything but id and timestamp
+		Both -
+			question: set question
+			answer: set questionId and answer
+			<NOTE>: server will respond with the ID'd question after question creation. display this (or be more clever)
+
+	What to do when an object is received (server):
+		Student -
+			response - set the timestamp and studentId
+			lost - set the timestamp and studentId
+			<NOTE>: studentId is stored, not pushed
+		Instructor -
+			poll - set the pollId and timestamp
+		Both -
+			question - set the id and timestamp
+			answer - set the id and timestamp
+
+	What to do when an object is received (client):
+		Student -
+			lost-keyword: update the list of top lost keywords
+			poll: display a poll dialog
+		Instructor -
+			response: update the poll response display if pollId matches current
+			lost: update lost counter and update keywords
+		Both -
+			question: display the new question
+			answer: display the new answer
+			end-lecture: close socket, display "lecture over" dialog
+
+
+Internals (read: don't count on this staying the same):
+	- Instructor perms are stored as a cookie. Do not clear this if you want to remain an instructor.
+	- pushing is implemented using socket.io rooms
+	- studentId is stored as a cookie (persistent studentId)
+
+
+What is stored in the databases?
+	MongoDB - see lecture.schema
+
+	Redis - lecture info stored as a hash
+		id: lectureId,
+		instrPassword: instrPassword
+		lostKeywords: {keyword: numLost, ...}

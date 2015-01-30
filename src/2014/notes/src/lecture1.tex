@@ -1,0 +1,466 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage{minted}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{caption, newfloat}
+
+\renewcommand{\contentsname}{Topics}
+\renewcommand*{\addcontentsline}[3]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{}}}
+
+\newcommand{\todo}[1]{\marginpar{\color{red} #1}}
+
+\newcommand{\adj}[1]{{\color{blue} #1}}
+
+\newcommand{\say}[1]{{\color{magenta} #1}}
+
+\newenvironment{code}[3][false]
+ {\VerbatimEnvironment
+  \begin{lstlisting}
+  \caption{#3}
+  \begin{minted}[linenos=#1]{#2}}
+ {\end{minted}
+  \end{lstlisting}}
+
+\newenvironment{snippet}
+ {\begin{minted}{javascript}}
+  {\end{minted}}
+
+
+\DeclareFloatingEnvironment[placement={H}]{lstlisting}[Example][List of Listings]
+\captionsetup[lstlisting]{box=colorbox,boxcolor=gray,font={color=white},labelsep=endash,skip=5pt}
+
+\setlength{\headheight}{15pt}
+
+\begin{document}
+
+\title{Lecture 1: Introduction to JavaScript}
+\author{Nick Hynes}
+\date{January 9, 2014}
+
+\pagestyle{fancy}
+\fancyhead[C]{Introduction to JavaScript}
+\fancyhead[L]{IAP 2014}
+\fancyhead[R]{Nick Hynes}
+
+\maketitle
+
+\todo{ASK TAs FOR INPUT. Make everything past What is JS the second lecture. Make intro to HTML DOM and better what is js first lecture}
+
+\begin{spacing}{0}
+\setcounter{tocdepth}{1}
+\tableofcontents
+\end{spacing}
+
+\section{Introduction}
+Welcome to the first lecture of Introduction to JavaScript! Let me begin by introducing myself: my name is Nick Hynes and it is my great pleasure to be your instructor for this course. Joining me are the wonderful TAs \textless TA name 1 \textgreater, \textless TA name 2 \textgreater, and \textless TA name 3 \textgreater. They will be available to help you with your JavaScript-related queries during the peer-debugging sessions.
+\par
+During this hour of the class, you'll be participating in an interactive lecture powered by Live Lecture \todo{make name} (http://introjsiap.com/livelecture). You can use this to ask clarifying questions or let me know that you want something explained in more detail. This is experimental, though, so your feedback will determine its further use. \say{Otherwise, this will be your standard lecture although, hopefully, less sleep-inducing.}
+\par
+During the second hour, you'll be working in pairs or small groups to debug each other's code or work on the current assignment. If you have any questions, you can ask me or one of the TAs \todo{add TA names}. The goal is to allow you to practice material learned in lecture while hopefully gaining insight from different implementations. This, too, is experimental. Your feedback on issues encountered during debugging will used for research Tom Lieber and I are doing on ways to make JavaScript debugging more user-friendly.
+\par
+Since part of the idea of pair-debugging is to actually \emph{debug} code, assignments will be due at the end of each class. You'll receive feedback at the beginning of the next.
+\par
+Well, that's all I had as far as introductions go, so without further ado, let's begin!
+
+\section{What is JavaScript?}
+JavaScript is an object-oriented, weakly-typed, interpreted language that is used to write client and server applications. Now that you're convinced of my ability to regurgitate technical jargon, let's go over what they mean, and, more importantly, why they matter to you.
+\par
+\todo{this section kind of dense}
+JavaScript is interpreted. This means that the code you write is translated into commands that are executed by the JavaScript ``virtual machine'' -- a browser on the client, or a JavaScript interpreter packaged with an I/O library on the server. The ``virtual machine,'' or engine, provides a set of JavaScript objects that you can manipulate to change the state of the external environment, namely the HTML DOM on the client or the filesystems and networks of the server. It's almost like the levers used to operate a bulldozer: you move the controls and the engine takes care of the rest; the main difference is that the objects you're bulldozing are JavaScript, not rocks. Of course, the \adj{objects/controls} provided by the VM (particularly on the client) are designed to keep you from wreaking too much havoc on the user or the computer; this is known as \emph{sandboxing}. This may have been a bit abstract, so here's a visual. \emph{See \todo{insert figure number} lecture slides.} 
+\par
+As for weakly-typed, practically this means that, like Python and unlike Java, any type can be assigned to any variable. This is both good and bad, as, although you need to keep track of the types of variables in your system, you have more flexibility to do cool things. There will be more on that in just a bit, though.
+
+
+\section{Data Types}
+\todo{Tidy this up and remove excess/easy information}
+This section will focus on the \emph{what} rather than the \emph{how}. We'll cover syntax in the next section. The idea is to decouple ideation from implementation, thus allowing you to think about a problem in terms of its requirements and the capabilities of the language instead of as a particular implementation.
+\subsection{Objects}
+If you've ever gone through any other language tutorial, starting the ``Data Types'' section with objects might strike you as odd. However, in JavaScript \emph{everything} is an object. ``Really? Everything?!'' Yes \emph{everything}! Though some may present different interfaces, every data type has an object representation.
+\par
+\todo{clarify this. key-value store is never actually explained}
+What, then, is an object? An object is, at its very core, a key-value store. You're already familiar with this if you've ever worked with a hash table or Python dictionary. The keys, or properties, are strings or numbers and their values are objects of any type, since JS is weakly typed. Because of this, the ``type'' of an object is based entirely on its properties. It helps to think of objects in terms of what they can do rather than what they are.
+\par
+The language also defines some (I'd say useful) classes of objects that have default functionality. These constitute the primitive type system of the language. Let's look at them now.
+\subsection{Numbers}
+In general, \texttt{Numbers} are integers or double-precision floating point numbers -- that is, numbers containing a decimal point.
+\begin{Verbatim}[frame=single]
+42                //A Number (an integer)
+6.28318530717959  //Also a Number (a double)
+1e-7              //A double in scientific notation
+
+2i                //Not a Number
+notnumber         //Not a Number
+\end{Verbatim}
+Operations on Numbers work in much the same way as most other languages:
+\begin{Verbatim}[frame=single]
+1 + 1 = 2
+
+1.6666666667 - .3333333333 = 1.3333333335 //Rounding error!
+
+21 * 2 = 42
+
+-1024 / 32 = -32
+
+5 % 3 = 2 //%, the modulus (remainder) operator
+\end{Verbatim}
+
+There are also two special cases that you want to avoid, or for which you want to check. Instead a raised error or thrown exception, performing an invalid mathematical operation results in one of these:
+\begin{Verbatim}[frame=single]
+Infinity         //The result of dividing by zero
+NaN              //The result of something crazy like √-1
+\end{Verbatim}
+ \say{My favorite is NaN, which, despite its name is, in fact, a number}
+ The best part is that, since you can perform operations on these weird numbers, any bugs they cause will likely be far removed from the original source of the problem! Here are some examples, for your amusement.
+\begin{Verbatim}[frame=single]
+Infinity (-,*,/) real number = Infinity
+Infinity % any number = NaN
+Infinity + Infinity = Infinity
+Infinity - Infinity = NaN
+Infinity * Infinity = Infinity
+Infinity / Infinity = NaN    
+
+NaN (-,*,/,%) any number = NaN
+
+Any number (-,*,/,%) a number = NaN //+ is special
+\end{Verbatim}
+\say{basically if infinity gets smaller, you get NaN, bigger Infinity and once you go NaN you never go back}
+Fortunately, if you're in a situation when you absolutely \emph{must} have the flexibility to produce these numbers, you can compare your value to either \texttt{Infinity} or \texttt{NaN}.
+
+\subsection{Strings}
+Strings in JavaScript are similar to those found in Java and Python (and most languages). They're, quite literally, strings of characters. You can perform a bunch of neat operations on them like concatenating two or more Strings, taking substrings of a String, and splitting a String into an array. JS strings are immutable, so each operation produces a new string, leaving the original String unchanged.
+\par \todo{make flow better}
+Also, every object has a String representation. Incidentally the String representation of a String is (a copy of) itself.
+
+\subsection{Booleans}
+Without booleans, it is likely true to say that the statement ``conditionals make sense'' would be false. A boolean is a value that is either \texttt{true} or \texttt{false}. You generally use these in conditionals. In JavaScript, while the Booleans, themselves, make sense, their conversions from other types are not as clear.
+\todo{Do I really need this information?}
+\begin{center}
+\begin{tabular}{| l | c | c |}
+\hline
+\textbf{Data type} & \textbf{Value} & \textbf{Boolean value} \\
+\hline
+\multirow{4}{*}{Number}
+    & 0 & \texttt{false} \\
+    & not 0 & \texttt{true} \\
+    & NaN & \texttt{false} \\
+    & Infinity & \texttt{true} \\ 
+\hline
+\multirow{2}{*}{String}
+    & empty string & \texttt{false} \\
+    & non-empty string & \texttt{true} \\
+\hline
+Object & any other object & \texttt{true} \\
+\hline
+None & undefined & \texttt{false} \\
+\hline
+\end{tabular}
+\end{center}
+Fortunately, you'll create most of your Booleans either by explicitly setting them to \texttt{true} or \texttt{false}, or by using the comparison operators. \say{Watch out for bugs that occur when you cast Objects to Booleans}
+
+\subsection{Arrays}
+Arrays are most similar to Python lists, but an object-based explanation will likely be more meaningful. Essentially, an Array is an object that provides methods that operate on the non-negative integer-valued properties, or indices. \say{find a better name for these}. Some examples are pushing, popping, sorting, and slicing. This also means that, as with ordinary objects, you can assign any object to any index in an Array whether or not the previous indices have been filled. This also means that you can do some interesting (and possibly hacky) things with Arrays. You'll see some examples of this in the section on syntax.
+
+\subsection{Functions}
+In the spirit of saving the best things for last, I present to you, functions! \say{And, in the spirit of comparing JavaScript to languages you may already know, JavaScript functions are very similar in Python and also Objective-C.} Basically, a function is a special object that is ``callable,'' meaning that it's an executable block of instructions. Like in many other languages, functions can take arguments and produce a return value. Since functions are also objects, they can be assigned to a property of an object and be passed into and returned from other functions. \say{This parallels the use of lambda functions in Python which are frequently used as arguments to other functions.}
+\par
+The Function object is a bit different from the rest in that it possesses an internal \texttt{IsCallable} property that is set when a new function is initialized. Function objects also include a \emph{prototype} Object that can be used to assign properties to all other Objects that were constructed using the Function.
+
+\section{Syntax}
+Now that you're familiar with the type ecosystem, let's look at how you can interact with it. Of course, no introduction to any programming language would be complete without a ``hello world'' of some sort. Let's see how much utility we can eke out of this programming paradigm.
+\begin{code}[true]{javascript}{A simple statement}
+/* Displays an alert box (read: obnoxious modal dialog)
+   containing the text "Hello, world!" */
+alert("Hello, world!"); //Make the magic happen 
+\end{code}
+\par
+Okay, not bad. On lines 1 and 2, there's an example of a multi-line comment and there's a single-line comment on line 3. Generally, these look like /*...*/ and //..., respectively. The tastiest bit, the \texttt{alert}, is a function that takes one argument of any type -- a string, in this case -- and shows its string representation in a dialog box. Although there will be more on functions shortly, it's now important to note that whitespace is ignored and that every statement ends with a semicolon.
+\par
+\say{At this point, you may be thinking that JS looks similar to C/C++; if so, then you're correct:  JavaScript syntax (like Java's) is influenced by that of C.}
+\par Great! Now that the tribute to the programming gods has been made, we can move on to more interesting examples.
+
+\subsection{Variables and assignment}
+A JavaScript variable is, in practice, a name used to \emph{refer} to an object. As such, you can assign any object to any name and vice versa. The syntax to use when creating variables is \texttt{var variableName = Object}. Reading the value of a variable or property that does not exist will result in the special value of \texttt{undefined}, which is like \texttt{null} or \texttt{Nil} in other languages.
+\begin{code}{javascript}{Veritable variables}
+var aNumber = 42;         //camelCase
+var aWord = "beautiful";
+\end{code}
+\par
+Scoping, or determining the part of the code in which a variable exists, is relatively simple in JavaScript since there are only two scopes: local and global.
+Local variables are defined anywhere in a function and are accessible at any point after their definition in the same function. If a variable is defined outside of a function or without the \texttt{var} keyword, the variable becomes ``global,'' and is available to any other script running in the page.
+\begin{code}{javascript}{Veritable variables}
+var var1 = "I'm a global variable!";
+
+function assumeThisIsWhatFunctionsLookLike () {
+    var local = "I'm a local variable.";
+    var2 = "I'm a global variable, too!";
+
+    console.log(local); //Outputs "I'm a local variable."
+}
+
+console.log(var1);  //"I'm a global variable!"
+console.log(var2);  //"I'm a global variable, too!"
+console.log(local); //undefined
+\end{code}
+
+\subsection{Objects}
+Aside from creating one of the special classes of Object, the preferred method of creating an Object is the shorthand notation \texttt{\{\}}. Again, the keys of an object are Strings and the values are Objects. Key-value pairs are specified as \texttt{key: value} and are separated by commas.
+\par
+Since objects are just collections of keys and values, the only really important operations are adding and accessing keys and values. To access values of properties, you can use either the \emph{dot} operator or \emph{square brackets} operator. Whereas the dot operator can only access properties of un-spaced Strings that don't start with numbers, any string can be placed within brackets. The resulting reference to a value can be used in the same way as a variable.
+
+\begin{code}{javascript}{The key to an Object's values}
+var anObject = {
+    aKey: "a value"
+}
+
+console.log(anObject.aKey); //"a value"
+
+anObject["anotherKey"] = "another value";
+console.log(anObject.anotherKey); //"another value"
+\end{code}
+\say{Objects work too, but they'll be converted to strings}
+
+\subsubsection{Numbers}
+You've already seen most of the interesting things you can do with numbers earlier, so I'll start describing the \texttt{Math} object. The static \texttt{Math} object is provided to you by the browser and contains a variety of useful, basic mathematical functions like sin(), round(), and random() and constants like $\pi$ and $e$.
+\begin{code}{javascript}{Mathematical!}
+var angle = Math.PI/4.30355158;
+
+console.log(Math.sin(angle)); //0.6668696350365613
+\end{code}
+\subsubsection{Strings}
+Unfortunately, the string on the bag of String syntax has already been untied so there's nothing left to do at this point but let the [con]cat out! (I'm really sorry you had to read that). As a quick recap, new Strings are created using a pair of single or double quotes and any object can be ``made into'' a String by using its toString() function. Strings can be concatenated, or joined, by using the overloaded + operator. The + operator is overloaded in the sense that it both adds Numbers and concatenates Strings; this can lead to bugs if you're not careful.
+\begin{code}{javascript}{Letting the concat out of the bag}
+var pieStr = "I have pie";
+var happyStr = 'everything is great';
+
+console.log(pieStr + "; " + happyStr);
+//"I have pie; everything is great"
+\end{code}
+\begin{code}{javascript}{Well that was unexpected}
+console.log("The year is " + 2000 + 14);
+//"The year is 200014";
+
+console.log(2000 + 14 + " is the year");
+//2014 is the year
+\end{code}
+Notice how the operands are evalulated from left to right. Once a String is encountered, the expression becomes a String.
+\subsubsection{Arrays}
+Arrays are preferentially created using square brackets, but the Array() constructor works, too. Since Arrays are just objects with fancy functions, they are accessed in the same way; since the keys are (should be) numerical, this way uses square brackets.
+\par
+One important thing to note is that the \texttt{length} of an array is equal to its highest assigned index plus one. This is accessed using \texttt{theArray.length}.
+\begin{code}{javascript}{Arrays make sense!}
+var twoDimensionalArray = [];
+twoDimensionalArray[0] = new Array(4);
+twoDimensionalArray.push([1, 2, 3, 4]);
+
+console.log(twoDimensionalArray.length); //2
+console.log(twoDimensionalArray[0].length); //4
+\end{code}
+\subsection{Functions}
+\begin{Verbatim}[frame=single]
+function functionName(argument1, argument2, ...) {
+    /*code*/
+    return value; //This is optional
+}
+\end{Verbatim}
+\todo{constructor, prototype, new, this}
+
+You can also use a function to initialize new objects by using the \texttt{new} keyword. This will create a new object and then call the constructor function with the new object as \texttt{this} in a process known as \emph{binding}.
+
+\begin{code}[true]{javascript}{300: JavaScript edition}
+/**
+ * Represents a Movie about a topic
+ *
+ * @param about the topic of the movie
+ */
+function Movie(about) {
+    this.about = about;
+}
+
+var boxOfficeHit = new Movie("JavaScript");
+
+/**
+ * Plays a movie about the topic being madness
+ */
+Movie.prototype.play = function() {
+    console.log("Madness? This is " + this.about + "!");
+}
+
+//Notice that the new object now the play property
+boxOfficeHit.play(); //"Madness? This is JavaScript!"
+\end{code}
+On line 1, there's a function named Movie that takes one argument and sets it as the value of the bound object's \texttt{about} property. We make a new \texttt{Movie} on line 10.
+\par
+On line 15, we use the \texttt{prototype} object of the \texttt{Movie} function to add a new property to all \texttt{Movie}s. We then are able to call the function assigned to \texttt{play} from \texttt{boxOfficeHit} since prototype affects classes of, rather than particular, objects.
+\par
+Although it may only make sense to use \texttt{Movie()} as a constructor, there's nothing stopping a user from calling it as normal; this will result in the about property of the global \texttt{window} object being set.
+
+\say{Mention that prototype gives the method to every object without actually adding it as a property every time so it saves memory}
+
+\subsection{Flow control}
+If you understand flow control syntax, then you're well on your way to learning JavaScript. Otherwise, you're [probably] going to have a bad time!
+\say{something about bitwise operators}
+\subsubsection{Conditionals}
+A basic conditional in JavaScript is your standard if/else/else if statement. Before sallying forth to conquer the armies of unknown values, however, you should take these operators. It's dangerous to go alone.
+\begin{center}
+\begin{table}[position=h]
+\begin{tabular} {| l | l | l |}
+\hline
+\textbf{Name} & \textbf{Operator} & \textbf{Description} \\
+\hline
+Equals & a == b & casts to common type and compares \\
+\hline
+Strict equals & a === b & compares value and type \\
+\hline
+Not equals & a != b & casts and compares \\
+\hline
+Strict not equals & a !== b & compares value and type \\
+\hline
+Greater than & a \textgreater \space b & returns true iff a \textgreater \space b \\
+\hline
+Greater than or equal & a \textgreater= b & same as above but including a == b \\
+\hline
+Less than & a \textless \space b & returns true iff a \textless \space b \\
+\hline
+Less than or equal & a \textless= b & same as above but including a == b \\
+\hline
+\end{tabular}
+\caption{Comparison operators}
+\end{table}
+
+\begin{table}[location=h]
+\begin{tabular} {| l | l | l |}
+\hline
+\textbf{Name} & \textbf{Operator} & \textbf{Description} \\
+\hline
+And & a \&\& b & returns true iff a and b are both true \\
+\hline
+Or & a $||$ b & returns true if a or b is true \\
+\hline
+Not & !a & returns true if a is false \\
+\hline
+\end{tabular}
+\caption{Logical operators}
+\end{table}
+\end{center}
+And, of course, an example:
+\begin{code}{javascript}{Conditional number guessing}
+var randomNumber = "4"; //chosen by fair dice roll
+                        //guaranteed to be random
+if(a === 4) {
+    var response = "The number is 4!";
+} else if(a == 4) {
+    var response = 'The "number" is a "4"!';
+} else {
+    var response = "I give up! What was the number?";
+}
+
+console.log(response); //"The "number" is a "4"!"
+\end{code}
+Now that you know what the basic conditional looks like, let's look at some of the more exotic, labor saving varieties, namely the \texttt{switch} statement and the \emph{ternary} operator. The former is a compact way of expressing long if-else if-else clauses and the latter is useful as an inline (quite literally, in-line) statement. \say{which is aptly named as it takes 3 (count em), 3 whole operands}.
+\par
+\begin{code}{javascript}{Switching it up using \texttt{switch}}
+var requestedPage = window.location.hash;
+//the part of the URL including and after the #
+
+switch(requestedPage) { //This can be any expression
+    case "#home": //Like Python, but whitespace not required
+        showHomePage();
+        break;
+    case "#about":
+        showAboutPage();
+        break; //Don't forget to include this or
+               //execution will "fall through" to the next case
+    default:
+        showWittyErrorPage(); //I don't have an example.
+                              //That's an error.
+                              //That's all I know.
+}
+
+//This translates directly to:
+if(requestedPage == "#home") {
+    showHomePage();
+} else if(requestedPage == "#about") {
+    showAboutPage();
+} else {
+    showWittyErrorPage();
+}
+\end{code}
+The ternary operator, on the other hand, is not as intuitive. The general format is
+\begin{Verbatim}[frame=single]
+(expression) ? ifTrue : ifFalse
+\end{Verbatim}
+\begin{code}{javascript}{The \emph{Ternary} Operator}
+var isRealisticExample = false;
+
+console.log("This is " +
+  (isRealisticExample ? "a " : "an un") +
+  "realistic example."); //"This is an unrealistic example."
+\end{code}
+
+\subsubsection{Loops}
+There are three types of loops in JavaScript: for, while, and do while; the last type is rarely spotted in the wild, however.
+\par
+The first, and most often used loop, the \emph{for loop}, actually comes in two different flavors: vanilla and for...in (not quite something I'd eat on a cone).
+Your ordinary \texttt{for} loop takes the form
+\begin{Verbatim}[frame=single]
+for(Number; Test; Iterator) { /*do stuff*/ }
+\end{Verbatim}
+where Number is the variable on which to iterate. Test is an expression, evaluated before each iteration that, if false, ends the loop. Iterator is an expression that is run at the end of each iteration. \say{These are very much like for loops in Java and Objective C}
+\par
+The for...in loop is like a for...each loop that iterates over the properties of an object. \say{this is why it's a bad idea to use non-index keys in Arrays! \todo{explain the say}}
+\begin{code}{javascript}{Syntax for for}
+var problems = [];
+problems[99] = "too lazy to fill array";
+
+for(var i = 0; i < problems.length; i++) {
+    if(problems[i] === "can't use profanity in lecture") {
+        console.log("I feel you, bro");
+        break; //Exits the loop
+    }
+}
+if(i === problems.length) { //the loop finished/didn't break
+    console.log("I've got 99 problems.");
+    console.log("Most of them are undefined, though...")
+}
+\end{code}
+
+\begin{code}{javascript}{An example to make for...in less foreign}
+var dontDoThis = [];
+dontDoThis.push(1);
+dontDoThis[-1] = "wtf?";
+dontDoThis["-1"] = "stahp pls"; //Overwrites the previous value
+
+for(var badKey in dontDoThis) {
+    console.log(badKey);
+}
+//Outputs: "0", "-1"
+\end{code}
+\emph{While loops} are a bit more straightforward. They only have the Test component and generally look like this: 
+\begin{Verbatim}[frame=single]
+while(Test) { /*stuff*/ }
+\end{Verbatim}
+\emph{Do...while} loops are similar except that their body is run at least once.
+\par
+If you feel like all this information has thrown you through a loop, you should look at some examples while you wait.
+\begin{code}{javascript}{Whiling the time away}
+while(true) {
+    yoloSwag();
+}
+cureCancer();
+//To get to the magical land of all numbers big and small,
+//go down this this road for infinity and then make a left
+\end{code}
+\begin{code}{javascript}{A real life do...while!}
+var reasons = 0;
+do {
+    reasons++;
+} while (false === true)
+
+console.log("I can think of " +
+             reasons + " reason to use do...while loops");
+//"I can think of 1 reason to use do...while loops";
+\end{code}
+\say{The joke is that I actually can't think of any}
+\end{document}

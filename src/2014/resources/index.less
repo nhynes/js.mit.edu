@@ -1,0 +1,258 @@
+@font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url(http://themes.googleusercontent.com/static/fonts/opensans/v6/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+@font-face {
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 400;
+    src: url(http://themes.googleusercontent.com/static/fonts/ubuntu/v4/0ihfXUL2emPh0ROJezvraD8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+}
+
+html {
+    font-family: 'Open Sans',sans-serif;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	background-image: url(light_wool.png); /*Background pattern from www.subtlepatterns.com*/
+}
+
+.tilt(@angle: 0deg; @origin: center; @swingAmount: 0deg;) {
+	transform-origin: @origin;
+	-webkit-transform-origin: @origin;
+	-moz-transform-origin: @origin;
+	-o-transform-origin: @origin;
+
+	-webkit-transform: rotate(@angle);
+	-moz-transform: rotate(@angle);
+	-ms-transform: rotate(@angle);
+	-o-transform: rotate(@angle);
+}
+
+
+header {
+	text-align: center;
+	font-family: 'Ubuntu', sans-serif;
+	margin: auto;
+
+	.main-heading {
+		@verticalMargin: 5px;
+		display: inline-block;
+		margin-right: 10px;
+		margin-top: @verticalMargin;
+		margin-bottom: @verticalMargin;
+		-webkit-transition: transform .4s cubic-bezier(.56, .09, .93, .85);
+	    transition: transform .4s cubic-bezier(.56, .09, .93, .85);
+
+		&.tilted {
+			.tilt(7deg, left);
+			margin: 0;
+			cursor: pointer;
+		}
+	}
+}
+
+footer {
+	text-align: center;
+	text-decoration: overline;
+}
+
+.next-class {
+	font-size: 130%;
+	text-align: center;
+
+	.next-class-info {
+		cursor: pointer;
+		text-decoration: underline;
+	}
+
+	.next-class-info {
+		cursor: pointer;
+		text-decoration: underline;
+	}
+}
+
+hr {
+	border-radius: 20px;
+}
+
+.main-break {
+	width: 60%;
+	margin-top: 3px;
+	margin-bottom: 6px;
+}
+
+.content {
+	@padding: 10%;
+	text-align: center;
+	padding-left: @padding;
+	padding-right: @padding;
+
+	h2 {
+		margin-top: 10px;
+		margin-bottom: 5px;
+		text-align: left;
+	}
+
+	ul {
+		text-align: left;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	.text {
+		text-align: left;
+	}
+
+	.materials {
+		list-style-type: none;
+		text-align: left;
+		padding: 0;
+		margin-top: 10px;
+
+		li {
+			margin-top: 10px;
+			margin-bottom: 10px;
+			padding-left: 5%;
+
+			h3 {
+				display: inline-block;
+				margin-left: 2px;
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+
+			ul {
+				list-style-type: disc;
+				padding: 0;
+				padding-left: 115px;
+				margin: 0;
+
+				li {
+					margin: 0;
+					padding: 0;
+				}
+			}
+
+			.date {
+				margin-right: 2px;
+				display: inline-block;
+				color: grey;
+			}
+		}
+	}
+}
+
+.boxShadow(@xOffset: 0px; @yOffset: 0px; @blurRadius: 0px; @spreadRadius: 0px; @color: black) {
+	box-shadow: @xOffset @yOffset @blurRadius @spreadRadius @color;
+}
+
+.modal-dialog-background {
+	top: 0px;
+	left: 0px;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background-color: #fdfdfd;
+	z-index: 42;
+	opacity: .9;
+}
+
+.modal-dialog {
+	top: 0;
+	left: 0;
+
+	padding: 20px;
+
+	position: absolute;
+	z-index: 42;
+
+	background-color: white;
+
+	.boxShadow(0, 3px, 15px, 3px, grey);
+
+	transition: transform .4s cubic-bezier(.56, .09, .93, .85);
+	-webkit-transition: transform .4s cubic-bezier(.56, .09, .93, .85);
+
+
+	h1 {
+		padding: 0;
+		margin-top: 0;
+		margin-bottom: 5px;
+		font-size: 169%;
+	}
+
+	.close-button {
+		font-size: 1.2em;
+		width: 1.2em;
+		height: 1.2em;
+		position: absolute;
+		float: right;
+		right: 6px;
+		top: 6px;
+		cursor: pointer;
+	}
+	.close-button:hover {
+		color: grey;
+	}
+}
+
+.schedule {
+	text-align: center;
+	.class-list {
+		text-align: left;
+		margin: auto;
+		display: inline-block;
+		margin-right: 10px;
+		border-collapse: collapse;
+
+		tr {
+			cursor: default;
+			td {
+				padding: 7px;
+			}
+		}
+
+		tr:hover {
+			:last-child {
+			// text-shadow: 1px 1px .2em blue;
+				text-decoration: underline;
+			}
+		}
+	}
+	.maps {
+		margin-left: 10px;
+		display: inline-block;
+		width: 300px;
+		height: 300px;
+		background-image: url(resources/maps.jpg);
+	}
+}
+
+.additional-resource-link {
+	display: inline-block;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#signupForm {
+	margin: auto;
+}
+
+a {
+	color: black;
+}
+
+a:visited {
+	color: grey;
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Grid Fun</title>
+  <meta charset="utf-8" />
+  <meta name="description" content="Grid Fun" />
+  <style type="text/css">
+  	body {
+  		margin: 0; /*the body has a default margin*/
+  		text-align: center; /*so the divs are centered*/
+  		white-space: nowrap; /*prevents inlined divs from wrapping around*/
+  		line-height: 0; /*makes the height of the <br> zero (as opposed to 1em)*/
+  	}
+  </style>
+</head>
+<body>
+<script type='application/javascript'>
+/**
+ * Returns a random rgb() CSS color String
+ *
+ * @return a random CSS color String
+ */
+function randomColor() {
+	var red = Math.round(Math.random() * 255);
+	var green = Math.round(Math.random() * 255);
+	var blue = Math.round(Math.random() * 255);
+
+	return "rgb("+red+","+green+","+blue+")";
+}
+
+/**
+ * Sets a block/inline-block element's width, height,
+ * and margins so to make it and its row siblings fit in
+ * the screen's minimum dimension
+ *
+ * @param (DOM Node) box the box to size
+ */
+function sizeBox(box) {
+	var screenMinDim = Math.min(window.innerHeight, window.innerWidth);
+
+	var margin = Math.round(screenMinDim * .1 / gridSize);
+	var divDim = (screenMinDim - margin * gridSize * 2) / gridSize;
+
+	box.style.width = divDim+"px";
+	box.style.height = divDim+"px";
+	box.style.margin = margin+"px"
+}
+
+//resizes the divs when the screen is resized
+window.onresize = function() {
+	var boxes = document.getElementsByTagName("div");
+	for(var i = 0; i < boxes.length; i++) {
+		sizeBox(boxes[i]);
+	}
+};
+
+document.body.style.backgroundColor = randomColor();
+
+var gridSize = 3; //boxes along one axis
+
+//starting on 1 to take advantage of the %
+for(var numBoxes = 1; numBoxes <= Math.pow(gridSize, 2); numBoxes++) {
+	//make a new div (box)
+	var box = document.createElement("div");
+
+	sizeBox(box); //set the div size and margin
+
+	box.style.backgroundColor = randomColor();
+
+	//inline-block is like text but with margins and padding
+	box.style.display = "inline-block";
+
+	document.body.appendChild(box);
+
+	//if the grid needs to start a new row
+	if(numBoxes % gridSize === 0) {
+		document.body.appendChild(document.createElement("br"));
+	}
+}
+</script>
+</body>
+</html>

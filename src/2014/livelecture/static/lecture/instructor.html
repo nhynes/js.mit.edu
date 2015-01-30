@@ -1,0 +1,48 @@
+<div id="DashboardWrapper" class="instructor">
+	<div id="NewPollWrapper" class="modal" ng-show="showCreatePollModal">
+		<div class="modalInside">
+			<p>Create A New Poll</p>
+			<form>
+				<textarea placeholder="Poll Question" ng-model="newPoll.title"></textarea>
+				<input placeholder="Option 1" type="text" ng-model="newPoll.choices[0]" />
+				<input placeholder="Option 2" type="text" ng-model="newPoll.choices[1]"/>
+				<input placeholder="Option 3" type="text" ng-model="newPoll.choices[2]"/>
+				<input placeholder="Option 4" type="text" ng-model="newPoll.choices[3]"/>
+			</form>
+			<button ng-click="showCreatePollModal = false" style="opacity: .8;">Cancel</button>
+			<button ng-click="createNewPoll()">Submit</button>
+		</div>
+	</div>
+
+	<div id="Header">
+			<button class="createPoll" ng-click="showCreatePollModal = true">Create A Poll</button>
+			<div id="Logo">
+				<img src="img/logo.svg" height="90px" />
+			</div>
+	</div>
+
+	<div id="BodyWrapper">
+		<div id="Content">
+			<div id="PollResultsWrapper" ng-repeat="poll in polls | orderBy:'timestamp':true">
+				<h1>{{poll.title}}</h1>
+				<div class="table">
+					<div class="row" ng-repeat="c in poll.choices">
+						<div><b>{{letters[$index]}}</b>{{c}}</div>
+						<div>{{poll.responses[$index]}}</div>
+					</div>
+				<div>
+			</div>
+		</div>
+	</div> <!-- BodyWrapper -->
+
+	<div id="LostBar">
+		<div id="LostListWrapper" style="top:0">
+			<div class="bar" id="LostList">
+				<div class='lostItem' ng-repeat="k in lostKeywords | orderBy:'lostCount':true">
+					<p>{{k.keyword}}</p>
+					<p style="right:20px; font-weight:bold">{{k.lostCount}}</p>
+				</div>
+			</div>
+		</div>
+	</div> <!-- LostBar -->
+</div>

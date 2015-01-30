@@ -1,0 +1,66 @@
+<html>
+<head>
+	<title>Tic-Tac-Toe!</title>
+	<script type="application/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js">
+	</script>
+	<script type="application/javascript" src="http://localhost:4242/socket.io/socket.io.js"></script>
+	<style type="text/css">
+		td {
+			width: 40px;
+			height: 40px;
+			border: 1px solid black;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+	</table>
+	<script type="application/javascript">
+		var listener = function() {
+			socket.emit("play", {x: this.id.split(' ')[0], y: this.id.split(' ')[1]});
+			this.style.cursor = "default";
+			this.removeEventListener("click", listener);
+		};
+
+		var tds = document.getElementsByTagName("td");
+		for(var i=0; i < tds.length;i++) {
+			var x = i%3;
+			var y = Math.floor(i/3);
+			tds[i].id =  x + " " + y;
+			tds[i].style.cursor = "pointer";
+			tds[i].addEventListener("click", listener);
+		}
+		var socket = io.connect('http://localhost:4242');
+
+		socket.on('play', function(play) {
+			if(play.win == true) {
+				alert("Game!");
+			}
+			var x = play.x;
+			var y = play.y;
+			var letter = play.letter;
+			console.log(letter);
+			var square = document.getElementById(x+" "+y);
+			square.innerHTML = letter;
+			square.removeEventListener("click", listener);
+			square.style.cursor = "default";
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,811 @@
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+
+    font-family: HelveticaNeue, Helvetica, Arial;
+    font-size: 0;
+}
+
+p {
+    font-size: 10px;
+    color: black;
+}
+
+hr {
+    height: 1px;
+    border: none;
+    background-color:  #b7b7b7;
+
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.modal {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+
+    text-align: center;
+    background: rgba(0, 0, 0, .2);
+
+    z-index: 1000;
+}
+
+.modalInside {
+    width: 750px;
+    height: 450px;
+    position: relative;
+    margin:auto;
+    margin-top: -280px;
+    top: 50%;
+
+    font-size: 12px;
+    
+    background: white;
+    border: 1px solid #e5e5e5;
+}
+
+#DashboardWrapper {
+    width: 100%;
+    height: 100%;
+}
+
+#DashboardWrapper #Header {
+    width: 100%;
+    height: 150px;
+    background: #62829e;
+    position: fixed;
+    z-index: 100;
+
+    text-align: center;
+}
+
+#DashboardWrapper #Header #Logo {
+    margin:auto;
+    padding-top: 25px;
+
+    width: 500px;
+}
+
+#DashboardWrapper #BodyWrapper {
+    width: 100%;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+
+    overflow: hidden;
+}
+
+#DashboardWrapper #BodyWrapper #Content {
+    width: auto;
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+
+    padding-top: 150px;
+
+    text-align: center;
+}
+
+#DashboardWrapper.new #ButtonWrapper,
+#DashboardWrapper.new #NewFormWrapper,
+#DashboardWrapper.new #NewFormResult {
+    margin: auto;
+    padding-top: 80px;
+    text-align: center;
+    font-size: 10px;
+}
+
+#DashboardWrapper.new button {
+    width: 200px;
+    height: 80px;
+
+    font-size: 12px;
+    color: #858585;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.05);
+    
+    background-color: #d9d9d9;
+
+    border: none;
+    border-radius: 6px;
+    -webkit-box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow:    1px 1px 0px 0px rgba(0, 0, 0, 0.2);
+    box-shadow:         1px 1px 0px 0px rgba(0, 0, 0, 0.2);
+}
+
+#DashboardWrapper.new button:hover {
+    cursor: pointer;
+    color: #555555;
+    background-color: #cecece;
+
+    -webkit-box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow:    1px 1px 0px 0px rgba(0, 0, 0, 0.3);
+    box-shadow:         1px 1px 0px 0px rgba(0, 0, 0, 0.3);
+}
+
+#DashboardWrapper.new label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #666;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+#DashboardWrapper.new #NewFormWrapper input {
+    width: 380px;
+    height: 50px;
+    padding-left: 10px;
+    margin-bottom: 20px;
+
+    font-size: 16px;
+
+    border: 1px solid #b7b7b7;
+}
+
+#DashboardWrapper.new #NewFormWrapper button,
+#DashboardWrapper.new #NewFormResult button {
+    width: 160px;
+    height: 40px;
+}
+
+#DashboardWrapper.new #NewFormResult .urlBox {
+    width: 500px;
+    margin: auto;
+
+    padding: 30px 20px;
+    margin-bottom: 40px;
+
+    font-size: 24px;
+    text-align: left;
+    color: #858585;
+    letter-spacing: 1px;
+
+    border: 1px solid #d7d7d7;
+    border-radius: 6px;
+    -webkit-box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow:    1px 1px 0px 0px rgba(0, 0, 0, 0.05);
+    box-shadow:         1px 1px 0px 0px rgba(0, 0, 0, 0.05);
+}
+
+#DashboardWrapper.student #Header button.askQuestion,
+#DashboardWrapper.instructor #Header button.createPoll {
+    width: 200px;
+    height: 60px;
+
+    top: 50px;
+    left: 100px;
+    position: absolute;
+
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(0, 0, 0, .5);
+
+
+    background: #a5c579;
+    border: none;
+    border-radius: 8px;
+
+    -webkit-box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow:    1px 1px 1px 0px rgba(0, 0, 0, 0.3);
+    box-shadow:         1px 1px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+#DashboardWrapper.student #Header button.askQuestion:hover,
+#DashboardWrapper.instructor #Header button.createPoll:hover {
+    cursor: pointer;
+}
+
+#DashboardWrapper.student #Header #UnansweredPollsWrapper {
+    top: 50px;
+    right: 0px;
+    position: absolute;
+}
+
+#DashboardWrapper.student #Header #UnansweredPollsWrapper {
+    top: 35px;
+    right: 0px;
+    position: absolute;
+}
+
+#DashboardWrapper.student #Header #UnansweredPollsWrapper button {
+    width: 80px;
+    height: 80px;
+
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(0, 0, 0, .5);
+
+    margin-right: 40px;
+
+    background: #e2dc98;
+    border: none;
+    border-radius: 60px;
+
+    -webkit-box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow:    1px 1px 1px 0px rgba(0, 0, 0, 0.3);
+    box-shadow:         1px 1px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+#DashboardWrapper.student #Header #UnansweredPollsWrapper button:hover {
+    cursor: pointer;
+    background: #cbc689;
+}
+
+#DashboardWrapper.student #BodyWrapper #Content,
+#DashboardWrapper.instructor #BodyWrapper #Content {
+    padding-right: 350px;
+}
+
+#DashboardWrapper .bar {
+    width: 350px;
+    height: auto;
+    position: fixed;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    margin-top: 150px;
+
+    background: #faf9f9;
+    overflow: hidden;
+    z-index: 100;
+}
+
+#DashboardWrapper .bar {
+    width: 350px;
+    height: auto;
+    position: fixed;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    margin-top: 150px;
+
+    background: #faf9f9;
+    overflow: hidden;
+    z-index: 100;
+}
+
+#LostBar #LostFormWrapper {
+    width: auto;
+    height: 57px;
+    background: #f1f1f1;
+    border-bottom: solid 1px #e5e5e5;
+}
+
+#LostBar #LostForm input {
+    width: 228px;
+    height: 33px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+
+    padding-left: 10px;
+
+    font-size: 12px;
+
+    border: 1px solid #b7b7b7;
+}
+
+#LostBar #LostForm button {
+    width: 75px;
+    height: 32px;
+    position: absolute;
+    top: 12px;
+    right: 10px;
+
+    font-size: 10px;
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    background: #c8524e;
+    border-radius: 3px;
+    border: none;
+}
+
+#LostBar #LostForm button:hover {
+    background: #a12b2f;
+    cursor: pointer;
+}
+
+#LostBar #LostListWrapper {
+    width: 100%;
+    height: auto;
+    position:absolute;
+    top: 58px;
+    bottom: 0;
+
+    overflow: scroll;
+}
+
+#LostBar .lostItem {
+    height: 48px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+
+    display: inline-block;
+
+    border-bottom: 1px solid rgba(0, 0, 0, .03);
+}
+
+#LostBar .lostItem p {
+    position: absolute;
+    font-size: 14px;
+    padding-left: 15px;
+    padding-top: 2px;
+    color: #3f3f3f;
+}
+
+#LostBar .lostItem button {
+    width: 64px;
+    height: 24px;
+    float: right;
+    position: relative;
+    top: 12px;
+    right: 16px;
+
+    font-size: 10px;
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    background: #eba078;
+    border-radius: 3px;
+    border: none;
+}
+
+#LostBar .lostItem button:hover {
+    cursor: pointer;
+}
+
+#LostBar .lostItem button.lost {
+    background: #a12b2f;
+}
+
+.questionsWrapper {
+    width: 90%;
+    max-width: 780px;
+    height: 100%;
+    margin:auto;
+    position: relative;
+
+    padding-left: 10px;
+    padding-right: 10px;
+
+    overflow: scroll;
+    overflow: visible;
+}
+
+.questionsWrapper::-webkit-scrollbar { 
+    display: none;
+}
+
+.questionsWrapper .list {
+    height: auto;
+    padding-bottom: 40px;
+}
+
+.questionsWrapper .questionRespondWrapper {
+    margin-top: 20px;
+    padding-bottom: 60px;
+
+    font-weight: bold;
+    font-size: 12px;
+    text-align: left;
+    color: #2b2b2d;
+}
+
+.questionsWrapper .questionRespondWrapper p {
+    padding-left: 20px;
+    font-size: 16px;
+
+    color: #555;
+    letter-spacing: 1px;
+}
+
+.questionsWrapper .questionRespondWrapper textarea {
+    width: auto;
+    height: 200px;
+    padding: 15px 10px;
+    margin: 0px 10px;
+    left: 0;
+    right: 0;
+    position: absolute;
+    resize: none;
+
+    font-size: 12px;
+    color: #444;
+
+    border: 1px solid #d7d7d7;
+    border-radius: 2px;
+}
+
+.questionsWrapper .questionRespondWrapper button {
+    width: 120px;
+    height: 40px;
+
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #555;
+
+    background: #c0c0c0;
+    border: none;
+    border-radius: 4px;
+
+    opacity: .9;
+}
+
+.questionsWrapper .questionRespondWrapper button:hover {
+    cursor: pointer;
+    color: #333;
+    background: #9f9f9f;
+}
+
+.questionsWrapper .questionListItem {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+
+    font-size: 12px;
+
+    border: 1px solid #d7d7d7;
+    border-radius: 2px;
+    -webkit-box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow:    1px 1px 0px 0px rgba(0, 0, 0, 0.05);
+    box-shadow:         1px 1px 0px 0px rgba(0, 0, 0, 0.05);
+}
+
+.questionsWrapper .questionListItem .question {
+    padding: 25px 20px 20px 20px;
+
+    font-weight: bold;
+    font-size: 12px;
+    text-align: left;
+
+    color: #2b2b2d;
+}
+
+.questionsWrapper .questionListItem .question.large {
+    font-size: 16px;
+    padding: 20px;
+}
+
+.questionsWrapper .questionListItem .optionsPanel {
+    width: 100%;
+    height: 34px;
+    text-align: center;
+    border-top: 1px solid #e5e5e5;
+    background: #faf9f9;
+}
+
+.questionsWrapper .questionListItem .optionsPanel p {
+    font-size: 11px;
+    color: #7b7b7b;
+}
+
+.questionsWrapper .questionListItem .optionsPanel div {
+    height: 100%;
+    display: inline-block;
+    text-align: left;
+}
+
+.questionsWrapper .questionListItem .optionsPanel div.l {
+    float: left;
+    padding-left: 20px;
+}
+
+.questionsWrapper .questionListItem .optionsPanel div.r {
+    float: right;
+    width: 150px;
+}
+
+.questionsWrapper .questionListItem .optionsPanel div.button {
+    text-align: center;
+    background: #F8DCCC;
+    text-transform: uppercase;
+    color: white;
+
+    border-left: 1px solid #eba078;
+
+    -moz-border-radius-topleft: 8px;
+    border-top-left-radius: 8px;
+}
+
+.questionsWrapper .questionListItem .optionsPanel div.button p,
+.questionsWrapper .questionListItem.clickable:hover .optionsPanel div.button p {
+    color: #eba078;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.questionsWrapper .questionListItem.clickable:hover {
+    cursor: pointer;
+    border-color: #bab9b9;
+
+    background: #faf9f9;
+
+    -webkit-box-shadow: 1px 1px 0px 0px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow:    1px 1px 0px 0px rgba(0, 0, 0, 0.1);
+    box-shadow:         1px 1px 0px 0px rgba(0, 0, 0, 0.1);
+}
+
+.questionsWrapper .questionListItem .optionsPanel div.button:hover p,
+.questionsWrapper .questionListItem.clickable:hover .optionsPanel div.button:hover p {
+    color: #dc7d49;
+}
+
+.questionsWrapper .questionListItem.clickable:hover .optionsPanel {
+    background: #efefef;
+    border-top-color: #e5e5e5;
+}
+
+.questionsWrapper .questionListItem.clickable:hover .optionsPanel p {
+    font-size: 11px;
+    color: #7a7a7a;
+}
+
+.questionsWrapper .questionListItem.clickable:hover .optionsPanel p {
+    font-size: 11px;
+    color: #7a7a7a;
+}
+
+.questionsWrapper .questionListItem .optionsPanel div.button:hover {
+    background: #f2cfb8;
+}
+
+.questionsWrapper #OpenQuestionHeader {
+    background: #f1f1f1;
+    padding-bottom: 14px;
+    margin-top: 20px;
+}
+
+.questionsWrapper #OpenQuestionHeader div {
+    display: inline-block;
+    padding: 10px;
+    font-size: 12px;
+    color: #7a7a7a;
+}
+
+.questionsWrapper #OpenQuestionHeader div.button {
+
+}
+
+.questionsWrapper #OpenQuestionHeader div.button:hover {
+    cursor: pointer;
+    color: #333;
+    background: #e5e5e5
+}
+
+.questionsWrapper #OpenQuestionHeader div.l {
+    float: left;
+}
+
+.questionsWrapper #OpenQuestionHeader div.r {
+    float: right;
+}
+
+.questionsWrapper .answerWrapper {
+    width: 100%;
+    height: auto;
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+
+    background: #faf9f9;
+
+    border-bottom: 1px solid #e5e5e5;
+    -moz-border-radius-topright: 2px;
+    border-top-right-radius: 2px;
+    -moz-border-radius-topleft: 2px;
+    border-top-left-radius: 2px;
+}
+
+.questionsWrapper .answerWrapper .answer {
+    text-align: left;
+    padding: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.questionsWrapper .answerWrapper .timestamp {
+    text-align: right;
+    padding-right: 20px;
+    font-size: 10px;
+    color: #AAA;
+}
+
+
+
+/* MODAL VIEWS */
+
+#NewQuestionWrapper p,
+#NewPollWrapper p {
+    padding: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+
+    color: #777;
+    letter-spacing: 1px;
+}
+
+#NewQuestionWrapper textarea,
+#NewPollWrapper textarea {
+    width: 670px;
+    height: 280px;
+    padding: 15px;
+    resize: none;
+
+    font-size: 12px;
+    color: #444;
+}
+
+#NewPollWrapper textarea {
+    width: 540px;
+    height: 56px;
+    padding: 8px 15px;
+    font-size: 16px;
+}
+
+#NewQuestionWrapper button,
+#NewPollWrapper button,
+#OpenPollWrapper button
+ {
+    width: 120px;
+    height: 40px;
+    margin-right: 20px;
+
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #555;
+
+    background: #c0c0c0;
+    border: none;
+    border-radius: 4px;
+}
+
+#NewQuestionWrapper button:hover,
+#NewPollWrapper button:hover,
+#OpenPollWrapper button:hover {
+    cursor: pointer;
+    color: #333;
+    background: #9f9f9f;
+}
+
+#NewPollWrapper button {
+    margin-top: 22px;
+}
+
+#NewPollWrapper input {
+    width: 540px;
+    height: 36px;
+    padding: 0px 15px;
+    margin:auto;
+    display: block;
+
+    margin-top: 18px;
+
+    font-size: 14px;
+}
+
+#DashboardWrapper.instructor #PollResultsWrapper {
+    width: 90%;
+    margin: auto;
+    margin-top: 25px;
+
+    text-align: left;
+
+    background: #faf9f9;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+#PollResultsWrapper h1 {
+    font-size: 14px;
+    padding: 15px 0px 0px 15px;
+}
+
+#PollResultsWrapper div.table {
+    display: table;
+}
+
+#PollResultsWrapper div.table div.row {
+    display: table-row;
+    height: 40px;
+}
+
+#PollResultsWrapper div.table div.row div {
+    font-size: 12px;
+    display: table-cell;
+    padding: 10px 10px 0px 10px;
+}
+
+#PollResultsWrapper div.table div.row div:first-child {
+    padding-left: 25px;
+}
+
+#PollResultsWrapper div.table div.row div b {
+    padding-right: 10px;
+}
+
+#OpenPollWrapper .pollTitle {
+    height: 80px;
+    padding-top: 30px;
+
+    font-size: 22px;
+    font-weight: bold;
+    color: 2b2b2d;
+    letter-spacing: 1px;
+}
+
+#OpenPollWrapper .pollOption {
+    width: 100%;
+    height: 60px;
+
+    text-align: left;
+}
+
+#OpenPollWrapper #OptionsWrapper {
+    width: 100%;
+    height: auto;
+    bottom: 60px;
+    position: absolute;
+
+    margin: auto;
+}
+
+#OpenPollWrapper .pollOption {
+    opacity: .6;
+    margin-top: 2px;
+}
+
+#OpenPollWrapper .pollOption.selected,
+#OpenPollWrapper .pollOption.selected:hover {
+    opacity: 1;
+    background-color: #eee;
+}
+
+#OpenPollWrapper .pollOption:hover {
+    cursor: pointer;
+    opacity: .8;
+    background-color: #fafafa;
+}
+
+#OpenPollWrapper .pollOption p {
+    margin: 0;
+    padding: 18px 0px 0px 0px;
+    padding-left: 30px;
+    font-size: 20px;
+}
+
+#OpenPollWrapper .pollOption p b {
+    padding-right: 20px;
+}
+
+#OpenPollWrapper #ButtonWrapper {
+    width: 100%;
+    height: 50px;
+    bottom: 0;
+    position: absolute;
+
+}

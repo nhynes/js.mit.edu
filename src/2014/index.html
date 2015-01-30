@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!-- hey ;) -->
+<html ng-app="introjs">
+<head>
+  <title>Intro to JS!</title>
+  <meta charset="utf-8" />
+  <meta name="description" content="" />
+  <link rel="icon" type="image/png" href="resources/js.png" />
+  <link rel="stylesheet" type="text/css" href="resources/index.css" />
+  <script type="application/javascript" src="js/jquery.min.js"></script>
+  <script type="application/javascript" src="js/3ssc.js"></script>
+  <script type="application/javascript" src="js/angular.min.js"></script>
+  <script type="application/javascript" src="js/introjs_angular.js"></script>
+  <script type="application/javascript" src="js/intro.js"></script>
+  <script type="application/javascript">
+		document.addEventListener("DOMContentLoaded",onload); //because nothing but the DOM content matters
+  </script>
+</head>
+<body>
+	<header>
+		<h1 class="main-heading">Introduction to</h1><h1 class="main-heading tilted">JavaScript!</h1>
+	</header>
+	<hr class="main-break" />
+	<div class="next-class">
+		<span>Next class:</span>&nbsp;<a class="next-class-info" id="nextClassInfo">Eventually</a>
+	</div>
+	<div class="content">
+		<p class="text">Hello, and welcome to the home page of Introduction to JavaScript (IAP 2014)!
+		<br />
+		Prepare to be amazed by the wonders of JS on both the client and the server as you complete a fast-paced adventure through the workings and use of the language. In particular, we'll be covering:</p>
+		<ul>
+			<li>DOM (HTML element) manipulation</li>
+			<li>JavaScript libraries - lots of jQuery, mention of AngularJS, D3, 3SSC, and others</li>
+			<li>Console debugging and developer tools</li>
+			<li>AJAX/Asynchronous HTTP requests</li>
+			<li>JavaScript on the server using Node.js and Express</li>
+		</ul>
+		<p class="text">
+			Classes are on <span style="font-weight:bold">Tuesdays and Thursdays 1/9 to 1/30 from 2:00 to 4:00 pm.</span>
+			<br />
+			The first hour will be consist of lecture and activities. The second hour will be used for pair-debugging, during which students work in pairs (or small groups) to debug their code and solidify their understanding of the material.
+		</p>
+		<p class="text">
+			<span style="color: grey; font-size:60%">*read this in a disclaimer voice (think: batteries not included)*</span>
+			<br />
+			Some programming experience is necessary.
+		</p>
+		<p class="text">If you have any questions, please email me at ude.tim@senyhn (take that spam crawlers!). Also, I hacked this site together quickly, so please excuse any unattached components!</p>
+		<hr />
+		<h2>Course Materials</h2>
+		<ul class="materials" ng-controller="CourseMaterialListControl">
+			<li ng-repeat="section in content | filter:isAvailable">
+				<span class="date">{{section.date.split(' ')[0].substring(0,3)+" "+section.date.split(' ')[1]}}</span>
+				<h3>{{section.title}}</h3>
+				<ul>
+					<li><a href="notes/lecture{{$index+1}}_notes.pdf">Lecture Notes</a></li>
+					<li><a href="slides/lecture{{$index+1}}_slides.pdf">Lecture Slides</a></li>
+					<li><a href="assignments/lecture{{$index+1}}_assignment.html">Assignment</a></li>
+					<li><a href="javascript:void(0);" data-classNumber="{{$index}}" onclick="displayAdditionalResources(this)">Additional Resources</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<br /><br /><br />
+	<footer>
+		This course is licensed under a <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+	</footer>
+	<input type="hidden" id="easter-egg" />
+</body>
+</html>

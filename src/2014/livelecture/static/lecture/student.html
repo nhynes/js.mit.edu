@@ -1,0 +1,115 @@
+<div id="DashboardWrapper" class="student">
+
+	<div id="OpenPollWrapper" class="modal" ng-show="showOpenPoll">
+		<div class="modalInside">
+			<div class="pollTitle">{{openPoll.title}}</div>
+			<div id="OptionsWrapper">
+				<div class="pollOption" ng-repeat="c in openPoll.choices" ng-click="openPoll.selectedChoiceIndex = $index" ng-class='{"selected":openPoll.selectedChoiceIndex == $index}'>
+					<p><b>{{letters[$index]}}</b>{{c}}</p>
+				</div>
+			</div>
+			<div id="ButtonWrapper">
+				<button ng-click="closeOpenPoll()" style="opacity: .8;">Hide</button>
+				<button ng-click="respondToPoll()">Submit</button>
+			</div>
+
+		</div>
+	</div>
+
+	<div id="NewQuestionWrapper" class="modal" ng-show="showNewQuestionModal">
+		<div class="modalInside">
+			<p>Ask the class a question</p>
+			<form id="">
+				<textarea ng-model="newQuestionFormBoxContent"></textarea>
+				<div style="float:right; padding-right:10px; padding-top:12px;">
+					<button ng-click="showNewQuestionModal = false" style="opacity: .8;">Cancel</button>
+					<button ng-click="askNewQuestion()">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="Header">
+			<button class="askQuestion" ng-click="showNewQuestionModal = true">Ask A Question</button>
+			<div id="Logo">
+				<img src="img/logo.svg" height="90px" />
+			</div>
+			<div id="UnansweredPollsWrapper">
+				<button  ng-repeat="p in polls" ng-click="openPollAction(p)" ng-show="openPoll.id != p.id">New Poll</button>
+			</div>
+	</div>
+
+	<div id="BodyWrapper">
+		<div id="Content">
+
+			<div class="questionsWrapper" ng-show="openQuestion != null">
+				<div id="OpenQuestionHeader">
+					<div class="l button" style="padding-right:20px;" ng-click="closeQuestion()">Back</div>
+					<div class="r">{{openQuestion.timestamp | date:'MMM d yyyy h:m a'}}</div>
+					<div style="clear:both"></div>
+				</div>
+				<div class="questionListItem">
+					<div class="question large">{{openQuestion.question}}</div>
+				</div>
+				<hr />
+				<div ng-repeat="ans in openQuestion.answers | orderBy:'timestamp'">
+					<div class="answerWrapper">
+						<div class="answer">{{ans.answer}}</div>
+						<div class="timestamp">{{ans.timestamp | date:'MMM d yyyy h:m a'}}</div>
+					</div>
+				</div>
+
+				<div class="questionRespondWrapper">
+					<p>Answer Question:</p>
+					<textarea ng-model="answerQuestionFormBoxContent"></textarea><br />
+					<div style="float:right; margin-top:240px;">
+						<button ng-click="answerQuestion()">Submit</button>
+					</div>
+				</div>
+
+			</div> <!-- questionsWrapper -->
+
+			<div class="questionsWrapper" ng-show="openQuestion == null">
+				<div class="questionListItem clickable" ng-repeat="q in questions | orderBy:'timestamp':true" ng-click="displayQuestion(q)">
+					<div class="question">
+						{{q.question}}
+					</div>
+					<div class="optionsPanel">
+						<div class="l">
+							<p>{{q.timestamp | date:'MMM d yyyy h:m a'}}</p>
+						</div>
+						<div class="r button">
+							<p>{{q.answers.length == 0 ? "Post Answer" : "View Responses"}}</p>
+						</div>
+						<div class="r">
+							<p>RESPONSE{{q.answers.length != 1 ? "S" : ""}} {{q.answers.length}}</p>
+						</div>
+					</div>
+				</div>
+			<div> <!-- questionsWrapper -->
+
+		</div>
+	</div> <!-- BodyWrapper -->
+
+	<div class="bar" id="LostBar">
+		<div id="LostFormWrapper">
+			<form id="LostForm">
+				<input name="name"
+                    type="text"
+                    placeholder="Lost Keyword"
+                    ng-model="newLostKeyword" />
+
+                <button ng-click="addLostKeyword()" />I'm Lost</button>
+			</form>
+		</div>
+
+		<div id="LostListWrapper">
+			<div id="LostList">
+				<div class='lostItem' ng-repeat="k in lostKeywords | orderBy:'lostCount':true">
+					<p>{{k.keyword}}</p>
+					<button ng-click="updateLostKeyword(k)" ng-class='{"lost":k.isLost}' />{{k.isLost ? "Lost" : "Me Too"}}</button>
+				</div>
+			</div>
+		</div>
+	</div> <!-- LostBar -->
+</div>

@@ -1,0 +1,39 @@
+<div id="DashboardWrapper" class="new">
+	<div id="Header">
+		<div id="Logo">
+			<img src="img/logo.svg" height="90px" />
+		</div>
+	</div>
+	<div id="BodyWrapper">
+		<div id="Content">
+			<div id="ButtonWrapper" ng-show="!showNewForm && !showNewResult">
+				<button ng-click="showNewForm = true">Create New Lecture</button>
+			</div>
+			<div id="NewFormWrapper" ng-show="showNewForm">
+				<form>
+					<label>Please provide an instructor passphrase:</label><br />
+					<input name="name"
+	                    type="text"
+	                    ng-model="password"
+	                    required /><br /><br /><br />
+
+	                <label>How long should the lecture remain open? (in hours)</label><br />
+					<input style="width:200px;" name="name"
+	                    type="text"
+	                    ng-model="lectureLength"
+	                    required /><br /><br />
+
+					<button ng-click="createNewLecture()">Submit</button>
+				</form>
+			</div>
+			<div id="NewFormResult" ng-show="showNewResult">
+				<label>New Lecture URL:</label>
+				<div class="urlBox">
+					{{baseURL}}{{newLectureTag}}
+				</div>
+
+				<button ng-click="goToLecture()">Open Lecture</button>
+			</div>
+		</div>
+	</div>
+</div>

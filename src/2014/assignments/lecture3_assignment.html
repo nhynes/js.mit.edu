@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Intro to JavaScript P-Set 3</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Intro to JavaScript P-Set 3">
+  <link rel="icon" type="image/png" href="../resources/js.png">
+  <link rel="stylesheet" type="text/css" href="../resources/assignment.css">
+  <script type="application/javascript" src="../js/jquery.min.js"></script>
+</head>
+<body>
+	<header>
+		<h1>Introduction to JavaScript - Problem Set 3</h1>
+	</header>
+  <div class="content">
+    <p class="flavor-text">
+      This assignment should be reasonably straightforward. If you forgot how to use the Console or Inspector, you can refer to the flavor text of the last assignment. Okay, now let me get out of your way so that you can begin!
+    </p>
+    <p class="flavor-text">
+      If you're using the Brackets editor, I recommend that you use the Extension Manager to install the Theseus extension. This will allow you to see, in real-time, when, with what arguments, and how many times a function was called. This might come in handy when debugging your asynchronous code.
+    </p>
+    <h2>Warm Up</h2>
+  	<ol class="assignment">
+      <span class="topic">[D3 JS library]</span>
+      <li class="question">Go to <a href="http://d3js.org/" target="_blank">d3js.org</a> and play with some of the examples. Witness the power of JavaScript.
+      <br>
+      D3 is a JS library designed to make creating visualizations of data&#151;using events, SVG, HTML, and CSS&#151;easy. Take a look at the introduction on the home page to learn more about what it can do! (&larr; actually do this, though. It might be useful in the future, and, at the very least, give you an idea of how JS libraries work.) If you have any questions, please ask! I've been using D3 with great success for my research project on JS debugging.
+      </li>
+
+      <span class="topic">[MouseEvents]</span>
+      <li class="question">Download <a href="http://introjsiap.com/assignments/assignment3_resources/sketchpad.html">this file</a> and follow the instructions contained within to turn your browser into a sketchpad!
+      </li>
+
+      <span class="topic">[Events, jQuery UI]</span>
+      <li class="question">Use the <pre inline>mouseover</pre> and <pre inline>mouseout</pre> events to create a &quot;hover&quot; effect for an element. Compare this to using the CSS <pre inline>:hover</pre> pseudo-class.
+      <br>
+      Also, experiment with a few of the <a href="http://jqueryui.com/" target="_blank">jQuery UI</a> one-liner <a href="http://jqueryui.com/effect/" target="_blank">effects</a>.
+      </li>
+  	</ol>
+
+    <h2>Practice problems</h2>
+    <ol class="assignment">
+      <span class="topic">[Forms]</span>
+      <li class="question">Create a form that contains a text input field for Name and House and a submit button. Set the <pre inline>id</pre> attributes of the inputs to &quot;name&quot; and &quot;house&quot;.
+      <br>
+      Name should only contain the characters A-Z and spaces and House should be either Gryffindor, Hufflepuff, Ravenclaw, or Slytherin. The submit button should be titled "Enter Chamber of Secrets". Although you can use the <pre inline>pattern</pre> attribute for validation, you should use JavaScript for this question.
+      <br>
+      If the input is incorrect, a span of red-colored text should appear at the bottom of the form, displaying the text "Try again, mortal." If the input is correct, a span of green-colored "In exchange for your soul, you may enter the Chamber." should appear below the form.
+      <br>
+      Don't forget to import the HTML checker (http://introjsiap.com/js/htmlchecker.js) after jQuery and set the title of the page to Assignment 3 - Practice problem #1!
+      </li>
+
+
+      <span class="topic">[HashChangeEvent, &quot;Classes&quot;]</span>
+      <li class="question">Create a &quot;social networking site&quot; for Person objects. The Person's page should be located at thefile.html#lowercasefullnamewithoutspaces and should contain a top-level heading displaying the Person's full name, and a list of the Person's friends' names that link (think <pre inline>&lt;a&gt;</pre>) to the friends' pages.
+      <br>
+      You'll want to import jQuery and the HTML checker (don't forget to set the title of the page to Assignment 3 - Practice problem #2!). The HTML checker will provide the function <pre inline>getPeople()</pre> which will return a list of Person objects for you to use.
+      </li>
+    </ol>
+
+    <h2>Challenge problems</h2>
+    <ol class="assignment">
+      <span class="topic">[Animations, events]</span>
+      <li class="question">Use <a href="https://raw.github.com/nhynes/3ssc/master/3ssc.js" target="_blank">3SSC</a>, a CSS transformation library, to create <a href="http://introjsiap.com/assignments/assignment3_resources/sakura.png" target="_blank">cherry blossoms</a> that appear, centered, under the clicked mouse, fade in while rotating (by a random amount), and then fall to the bottom of the screen. (Hint: use <pre inline>rotateToAngle()</pre> and <pre inline>enableGravity()</pre>. You have to set the CSS transition property for the rotation <pre inline>transform</pre> and <pre inline>opacity</pre> to be animated.) There is no checker for this one, but it's not hard and should not take long.
+      </li>
+
+      <span class="topic">[Animations, events]</span>
+      <li class="question">Build a basic version of the 2D calculator game, <a href="http://www.youtube.com/watch?v=BW-L14EPwtA#t=0m12s" target="_blank">Future Phoenix</a>, in your browser. This isn't an easy task, so there will be a substantial prize for the best implementation! (Hint: feel free to cut corners)
+      </li>
+    </ol>
+  </div>
+</body>
+</html>

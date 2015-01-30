@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Intro to JavaScript P-Set 2</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Intro to JavaScript P-Set 2">
+  <link rel="icon" type="image/png" href="../resources/js.png">
+  <link rel="stylesheet" type="text/css" href="../resources/assignment.css">
+  <link rel="stylesheet" type="text/css" href="../resources/assignment2.css">
+  <script type="application/javascript" src="../js/jquery.min.js"></script>
+  <script type="application/javascript" src="../js/assignment2.js"></script>
+  <script type="application/javascript">
+    document.addEventListener("DOMContentLoaded",onload);
+  </script>
+</head>
+<body>
+	<header>
+		<h1>Introduction to JavaScript - Problem Set 2</h1>
+	</header>
+  <div class="content">
+    <p class="flavor-text">
+      If you've already seen the first assignment, then welcome back! Otherwise, you seem to have stumbled upon the second assignment of Introduction to JavaScript!
+    </p>
+    <p class="flavor-text">
+      For this assignment and the rest of your JavaScript programming career (which will be forever, right? (JavaScript, not the assignment...)), you'll need a text editor suitable for programming. If you already have one, then you're already good to go. If not, I would recommend <a href="http://brackets.io" target="_blank">Brackets</a> or <a href="http://sublimetext.com" target="_blank">Sublime Text</a>. Brackets is nice because it's designed specifically for web development and, along with having some cool web dev features like live-preview and inline CSS editing, it allows you to write editor extensions in HTML, JS, and CSS (and it's free!). Sublime Text is a general-purpose text editor that can be used for any language or build system; unfortunately, it's not free, but it does have an unlimited trial period.
+      </p>
+    <p class="flavor-text">
+      Here's a refresher on how to open the console, in case you forgot:</p>
+    <ul>
+      <li>If you are using Firefox: right click on this page, select "Inspect Element," and then navigate to the "Console" tab (on the left)</li>
+      <li>If you are using Chrome: right click on this page, select "Inspect Element," and then navigate to the "Console" tab (on the right)</li>
+      <li>If you are using Internet Explorer: click on the start menu, select "Shut down," and <span style="text-decoration:line-through">install <a href="http://linuxmint.com/" target="_blank">a better operating system</a></span> try to use a more developer-friendly browser</li>
+    </ul>
+    <p class="flavor-text">
+      We'll be using another useful tool that comes with your browser: the Inspector. While not a detective, the Inspector allows you to examine and modify HTML elements and their properties. This is the dialog that pops up when you select &quot;Inspect Element&quot;.
+    </p>
+    <h2>Warm Up</h2>
+  	<ol class="assignment">
+      <span class="topic">[Including external JS]</span>
+      <li class="question">Create an HTML page and include jQuery and the assignment checker, in that order. You may include jQuery from <a href="http://introjsiap.com/js/jquery.min.js" target="_blank">http://introjsiap.com/js/jquery.min.js</a> and the checker from <a href="http://introjsiap.com/js/htmlchecker.js" target="_blank">http://introjsiap.com/js/htmlchecker.js</a>. Set the title of the page to &quot;Assignment 2 - Warm up #1&quot; for the checker to work.
+      <br>
+      Once you have done that, open the page, open the console and type <pre inline>check()</pre> to check your answer. The rest of the questions will work in the same way.
+      </li>
+
+
+      <span class="topic">[Inspector]</span>
+      <li class="question">Move this square to the right side of the screen.
+        <div class="move-me-container">
+          <div class="move-me"></div>
+        </div>
+      </li>
+
+      <span class="topic">[jQuery, selectors, modifying CSS]</span>
+      <li class="question">Download <a href="http://introjsiap.com/assignments/assignment2_resources/warmup_2.html" target="_blank">this HTML file</a> and, in the <pre inline>&lt;script&gt;</pre> tag provided, select the elements with the class "selectMe" and add the class <pre inline>selected</pre> to each.
+      </li>
+  	</ol>
+
+    <h2>Practice problems</h2>
+    <ol class="assignment">
+
+
+
+
+      <span class="topic">[&quot;Classes&quot;, adding elements to the DOM]</span>
+      <li class="question">
+        Download <a href="http://introjsiap.com/assignments/assignment2_resources/practice_1.html" target="_blank">this file</a> and follow the instructions contained within.
+      </li>
+
+
+      <span class="topic">[Creating and styling elements]</span>
+      <li class="question">
+        Create a new HTML page that, on load, creates a 3x3 grid of randomly colored squares on a randomly colored background. The size of the squares plus the spacing between them should be sufficient to fill the smallest dimension of the screen. (Hint: for the colors, generate a random <pre inline><a href="http://www.w3.org/wiki/CSS/Properties/color/RGB" target="_blank">rgb(number,number,number) CSS string</a></pre>. For the sizing, use <pre inline>window.innerHeight</pre> and <pre inline>window.innerWidth</pre>)
+        <br>
+        Note: this is not tabular data, so you should not use a <pre inline>table</pre> element.
+        <br>
+        This is a self-check problem since HTML pages have much too much variety to check automatically. (<a href="assignment2_resources/grid.html" target="_blank">Solution</a>)
+      </li>
+
+
+
+
+    </ol>
+
+    <h2>Challenge problems</h2>
+    <ol class="assignment">
+      <span class="topic">[HTML, CSS]</span>
+      <li class="question">Keeping in mind that HTML also specifies semantics, create a web page that looks similar to <a href="http://introjsiap.com/assignments/assignment2_resources/tots.png" target="_blank">this</a>. Feel free to take some artistic liberty. The idea is to gain an understanding of UI layout, which will become very important in the next lecture on events and user interaction!
+      <br>
+      If you'd like to make a more faithful rendition, you can import the 'Ubuntu' and 'Open Sans' font faces into your CSS file using &lt;link href='http://fonts.googleapis.com/css?family=Ubuntu|Open+Sans' rel='stylesheet' type='text/css'&gt; Additonally, the background image can be found here: <a href="http://simmons.mit.edu/img/bg.jpg" target="_blank">http://simmons.mit.edu/img/bg.jpg</a>
+      <br>
+      If you want to make a <span style="font-style:italic">really</span> faithful rendition, there is a full example page located here: <a href="http://serv776.mit.edu/dev/events/" target="_blank">http://serv776.mit.edu/dev/events/</a>
+        <br>
+        This is a self-check question since there's a nearly infinite variety of ways that you could make this happen. Don't let this sap your motivation, though!
+      </li>
+
+
+      <span class="topic">[DOM API, jQuery, class modification]</span>
+      <li class="question">To demonstrate how easy jQuery makes things, clone the basic jQuery <pre inline><a href="http://api.jquery.com/addClass/" target="_blank">addClass</a></pre> and <pre inline><a href="http://api.jquery.com/removeClass/" target="_blank">removeClass</a></pre> functions.
+      <br>
+      A <a href="http://introjsiap.com/assignments/assignment2_resources/challenge_2.html" target="_blank">starter HTML page</a> has been provided, for your convenience.
+      </li>
+    </ol>
+  </div>
+</body>
+</html>

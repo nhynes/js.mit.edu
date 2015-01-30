@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Browser Sketchpad!</title>
+  <meta charset="utf-8" />
+  <meta name="description" content="An in-browser sketchpad" />
+  <style type="text/css">
+  	.dot {
+  		position: absolute;
+  		width: 10px;
+  		height: 10px;
+  		border-radius: 10px;
+  		background-color: black;
+  	}
+  </style>
+</head>
+<body>
+  <script type="application/javascript">
+	/* When the user clicks and drags the mouse a "line"
+	   should appear.
+
+	   Complete the event listener functions to make this
+	   happen!
+
+	   Once you get it working, click and drag the mouse
+	   quickly and observe the result. Think about how you
+	   could fix this problem.
+	*/
+
+	window.addEventListener('click', function(event) {
+		//Your code here
+		//should handle the special case of clicking but not
+		//dragging
+	});
+
+	window.addEventListener('mousemove', function(event) {
+		//Your code here
+	});
+
+	function drawPoint(x, y) {
+		var dot = document.createElement("div");
+		dot.className = "dot";
+		dot.style.left = x-5+"px";
+		dot.style.top = y-5+"px";
+
+		document.body.appendChild(dot);
+	}
+  </script>
+</body>
+</html>
